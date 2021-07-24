@@ -1,0 +1,33 @@
+{
+    "inputs": [
+        {
+            "name": "src",
+            "label": "Reads File",
+            "type": "file",
+            "required": true
+        },
+        {
+            "name": "merge_lanes",
+            "label": "Merge Lanes",
+            "type": "boolean",
+            "default": true
+        }
+    ],
+    "outputs": [
+        {
+            "name": "fastq",
+            "type": "file",
+            "match": "*.fastq*"
+        },
+        {
+            "name": "report",
+            "type": "file",
+            "match": "*.html"
+        },
+        {
+            "name": "data",
+            "type": "file",
+            "match": "*.zip"
+        }
+    ]
+}
