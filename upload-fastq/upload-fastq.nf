@@ -18,7 +18,7 @@ process uploadFastq {
 
 
     """
-    /Applications/FastQC.app/Contents/MacOS/fastqc $params.src
+    fastqc $params.src
     """
 }
 
