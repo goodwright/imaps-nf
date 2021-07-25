@@ -1,0 +1,17 @@
+{
+    "inputs": [
+        {
+            "name": "xlsx",
+            "label": "Annotation Spreadsheet",
+            "type": "file",
+            "required": true
+        }
+    ],
+    "outputs": [
+        {
+            "name": "xlsx",
+            "type": "file",
+            "match": "*.xlsx"
+        }
+    ]
+}
