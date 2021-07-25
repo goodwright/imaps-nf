@@ -28,6 +28,11 @@
             "name": "data",
             "type": "file",
             "match": "*.zip"
+        },
+        {
+            "name": "fastqc_version",
+            "type": "basic",
+            "match": "fastqc_version:"
         }
     ]
 }
