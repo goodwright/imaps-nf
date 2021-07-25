@@ -14,12 +14,14 @@ process uploadFastq {
     output:
     file '*.html' into html
     file '*.zip' into zip
+    file 'output.txt' into output
 
 
     """
-    fastqc $params.src
+    fastqc $params.src >> output.txt 2>&1
     """
 }
 
 html.collectFile()
 zip.collectFile()
+output.collectFile()
