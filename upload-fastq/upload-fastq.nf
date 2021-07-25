@@ -12,7 +12,6 @@ process uploadFastq {
     file input from src
 
     output:
-    stdout ch
     file '*.html' into html
     file '*.zip' into zip
 
