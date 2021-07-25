@@ -19,7 +19,7 @@ process uploadFastq {
 
     """
     VERSION=`fastqc -v`
-    printf "fastqc_version: \${VERSION}\n" >> output.txt 2>&1
+    printf "fastqc_version: \${VERSION}\\n" >> output.txt 2>&1
     fastqc $params.src >> output.txt 2>&1
     """
 }

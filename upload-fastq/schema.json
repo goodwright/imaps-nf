@@ -5,12 +5,6 @@
             "label": "Reads File",
             "type": "file",
             "required": true
-        },
-        {
-            "name": "merge_lanes",
-            "label": "Merge Lanes",
-            "type": "boolean",
-            "default": true
         }
     ],
     "outputs": [
