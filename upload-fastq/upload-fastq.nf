@@ -14,16 +14,14 @@ process uploadFastq {
     output:
     file '*.html' into html
     file '*.zip' into zip
-    file 'output.txt' into output
 
 
     """
     VERSION=`fastqc -v`
-    printf "fastqc_version: \${VERSION}\\n" >> output.txt 2>&1
-    fastqc $params.src >> output.txt 2>&1
+    printf "fastqc_version: \${VERSION}\\n"
+    fastqc $params.src 2>&1
     """
 }
 
 html.collectFile()
 zip.collectFile()
-output.collectFile()
