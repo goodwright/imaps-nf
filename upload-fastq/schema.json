@@ -27,6 +27,11 @@
             "name": "fastqc_version",
             "type": "basic",
             "match": "fastqc_version:"
+        },
+        {
+            "name": "quality_pass",
+            "type": "basic",
+            "match": "quality_pass:"
         }
     ]
 }
