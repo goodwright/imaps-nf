@@ -1,0 +1,25 @@
+{
+    "inputs": [
+        {
+            "name": "fastq",
+            "label": "FASTQ File",
+            "type": "data",
+            "dataType": "fastq",
+            "required": true
+        },
+        {
+            "name": "annotation",
+            "label": "Annotation Spreadsheet",
+            "type": "data",
+            "dataType": "samplelist",
+            "required": true
+        }
+    ],
+    "outputs": [
+        {
+            "name": "output_count",
+            "type": "basic",
+            "match": "output_count:"
+        }
+    ]
+}
