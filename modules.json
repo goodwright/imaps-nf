@@ -1,0 +1,34 @@
+{
+    "name": "goodwright/imapsnf",
+    "homePage": "https://github.com/nf-core/rnaseq",
+    "repos": {
+        "luslab/nf-core-modules": {
+            "ultraplex": {
+                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+            }
+        },
+        "nf-core/modules": {
+            "bowtie/align": {
+                "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
+            },
+            "bowtie/build": {
+                "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
+            },
+            "fastqc": {
+                "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
+            },
+            "star/align": {
+                "git_sha": "5de3f2c50e063bda30316342b6606b485a12e38c"
+            },
+            "star/genomegenerate": {
+                "git_sha": "f43778b0e641a9643ae73fe1f2fe2d5bb81edffc"
+            },
+            "trimgalore": {
+                "git_sha": "c5235a983d454787fa0c3247b02086969217163b"
+            },
+            "umitools/dedup": {
+                "git_sha": "2ade120249b92e382f964bd75701befa2c2dc75d"
+            }
+        }
+    }
+}
