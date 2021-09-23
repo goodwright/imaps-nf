@@ -3,6 +3,9 @@
     "homePage": "https://github.com/nf-core/rnaseq",
     "repos": {
         "luslab/nf-core-modules": {
+            "icount/segment": {
+                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+            },
             "ultraplex": {
                 "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
             }
