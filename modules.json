@@ -20,6 +20,9 @@
             "fastqc": {
                 "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
             },
+            "gunzip": {
+                "git_sha": "906577873b66253b0d244871bfec2eeeaff73053"
+            },
             "star/align": {
                 "git_sha": "5de3f2c50e063bda30316342b6606b485a12e38c"
             },
