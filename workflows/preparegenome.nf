@@ -9,9 +9,10 @@ Steps:
 
 nextflow.enable.dsl=2
 
-
-include { STAR_GENOMEGENERATE         } from '../modules/nf-core/modules/star/genomegenerate/main'
 include { GUNZIP                      } from '../modules/nf-core/modules/gunzip/main'
+include { STAR_GENOMEGENERATE         } from '../modules/nf-core/modules/star/genomegenerate/main'
+include { SAMTOOLS_FAIDX              } from '../modules/nf-core/modules/samtools/faidx/main'
+include { ICOUNT_SEGMENT              } from '../modules/luslab/nf-core-modules/icount/segment/main'
 
 
 
@@ -21,20 +22,24 @@ workflow {
     genome_fasta_file = file(params.fasta)
 
     if (params.fasta.matches(".*gz")) {
-        GUNZIP(
-            params.fasta
-        )
-        ch_fasta = GUNZIP.out.gunzip
+        ch_fasta = GUNZIP( params.fasta ).gunzip
     } else {
-        Channel
-            .fromPath(params.fasta, checkIfExists: true)
-            .into { ch_fasta }
+        ch_fasta = file(params.fasta)
     }
 
-
+// STEP 1 - Index the genome using STAR module
     STAR_GENOMEGENERATE(
         ch_fasta,
         params.gtf
+    )
+
+//STEP 2 - Prepare genome segmentation file using iCount
+//First need to create an index for our genome fasta file
+    ch_fai = SAMTOOLS_FAIDX( ch_fasta ).fai
+
+    ICOUNT_SEGMENT(
+        params.gtf,
+        ch_fai
     )
 
 }
