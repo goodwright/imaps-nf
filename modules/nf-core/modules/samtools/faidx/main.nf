@@ -23,15 +23,12 @@ process SAMTOOLS_FAIDX {
 
     output:
     path "*.fai"        , emit: fai
-    path "versions.yml" , emit: version
+    path "*.version.txt", emit: version
 
     script:
     def software = getSoftwareName(task.process)
     """
     samtools faidx $fasta
-    cat <<-END_VERSIONS > versions.yml
-    ${getProcessName(task.process)}:
-        ${getSoftwareName(task.process)}: \$(samtools --version 2>&1 | sed 's/^.*samtools //; s/Using.*\$//')
-    END_VERSIONS
+    echo \$(samtools --version) | sed s'/samtools //g' | tr -d '\n' | sed s'/Using.*//g' > ${software}.version.txt
     """
 }
