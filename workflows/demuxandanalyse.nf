@@ -7,6 +7,7 @@ DEMULTIPLEX & ANALYSE
 nextflow.enable.dsl=2
 
 include { ULTRAPLEX } from '../modules/luslab/nf-core-modules/ultraplex/main'    addParams( options: [:] )
+include { CSV_TO_BARCODE } from '../modules/local/csv_to_barcode/main'    addParams( options: [:] )
 include { INPUT_CHECK } from '../subworkflows/input_check'    addParams( options: [:] )
 include { FASTQC } from '../modules/nf-core/modules/fastqc/main' addParams( options: [:] )
 include { TRIMGALORE } from '../modules/nf-core/modules/trimgalore/main'  addParams( options: [:] )
@@ -18,17 +19,30 @@ workflow {
     
 // Initialise channels
     ch_software_versions = Channel.empty()
+
 //demultiplexing
 
     ch_input_meta = Channel.fromPath(params.input)
-    ch_input_fasta = file(params.demultiplexed_fastq)
+    ch_input_fasta = file(params.multiplexed_fastq)
+    dummy_file = file(params.dummy_file)
 
-    
 
-    INPUT_CHECK (
-        ch_input_meta,
-        ch_input_fasta
+    def meta = [:]
+    meta.id           = "test-string"
+
+    CSV_TO_BARCODE (
+        ch_input_meta
     )
+
+    ULTRAPLEX (
+        [meta, ch_input_fasta], 
+        CSV_TO_BARCODE.out
+    )
+
+    // INPUT_CHECK (
+    //     ch_input_meta,
+    //     ch_input_fasta
+    // )
 //fastqc
  //   FASTQC (
   //      ch_input_fasta
