@@ -12,7 +12,7 @@ workflow INPUT_CHECK {
     main:
     samplesheet
         .splitCsv ( header:true, sep:',' )
-        .map { create_fastq_channel(it) }
+        .map { create_fastq_channel(it, input_fastq) }
         .set { reads }
 
     emit:
@@ -20,7 +20,7 @@ workflow INPUT_CHECK {
 }
 
 // Function to get list of [ meta, fastq_1 ]
-def create_fastq_channel(LinkedHashMap row) {
+def create_fastq_channel(LinkedHashMap row, String input_fastq) {
     def meta = [:]
     meta.id           = row['Sample name']
     meta.genome       = row['mapto']
