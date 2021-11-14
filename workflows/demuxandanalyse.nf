@@ -15,12 +15,15 @@ include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'    addP
 
 
 workflow {
+    
 // Initialise channels
     ch_software_versions = Channel.empty()
 //demultiplexing
+
     ch_input_meta = Channel.fromPath(params.input)
     ch_input_fasta = file(params.demultiplexed_fastq)
 
+    
 
     INPUT_CHECK (
         ch_input_meta,
