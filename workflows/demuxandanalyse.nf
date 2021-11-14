@@ -24,7 +24,6 @@ workflow {
 
     ch_input_meta = Channel.fromPath(params.input)
     ch_input_fasta = file(params.multiplexed_fastq)
-    dummy_file = file(params.dummy_file)
 
 
     def meta = [:]
