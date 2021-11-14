@@ -12,11 +12,11 @@ process ICOUNT_SEGMENT {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
 
-    conda (params.enable_conda ? "bioconda::icount=2.0.0" : null)
+    conda (params.enable_conda ? "bioconda::icount-mini=2.0.3" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/icount:2.0.0--py_1"
+        container "https://depot.galaxyproject.org/singularity/icount-mini:2.0.3--pyh5e36f6f_0"
     } else {
-        container "quay.io/biocontainers/icount:2.0.0--py_1"
+        container "quay.io/biocontainers/icount-mini:2.0.3--pyh5e36f6f_0"
     }
 
     input:

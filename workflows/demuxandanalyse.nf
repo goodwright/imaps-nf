@@ -1,11 +1,58 @@
-/*
-========================================================================================
-    IMPORT MODULES/SUBWORKFLOWS
-========================================================================================
+#!/usr/bin/env nextflow
+
+/* 
+DEMULTIPLEX & ANALYSE
 */
 
-include { ULTRAPLEX } from '../modules/luslab/nf-core-modules/ultraplex'    addParams( options: [:] )
-include { FASTQC } from '../modules/nf-core/fastqc' addParams( genome_options: publish_genome_options, index_options: publish_index_options, gffread_options: gffread_options,  star_index_options: star_genomegenerate_options,  hisat2_index_options: hisat2_build_options, rsem_index_options: rsem_preparereference_options, salmon_index_options: salmon_index_options )
-include { TRIMGALORE } from '../modules/nf-core/trimgalore'  addParams( calculateexpression_options: rsem_calculateexpression_options, samtools_sort_options: samtools_sort_genome_options, samtools_index_options: samtools_index_genome_options, samtools_stats_options: samtools_index_genome_options, merge_counts_options: modules['rsem_merge_counts'] )
-include { BOWTIE } from '../modules/nf-core/bowtie/align'    addParams( genome_options: publish_genome_options, tximport_options: modules['star_salmon_tximport'], salmon_quant_options: modules['star_salmon_quant'], merge_counts_options: modules['star_salmon_merge_counts'] )
-include { STAR_ALIGN } from '../modules/nf-core/star/align'    addParams( genome_options: publish_genome_options, tximport_options: modules['salmon_tximport'], salmon_quant_options: salmon_quant_options, merge_counts_options: modules['salmon_merge_counts'] )
+nextflow.enable.dsl=2
+
+include { INPUT_CHECK } from '../subworkflows/input_check'    addParams( options: [:] )
+include { ULTRAPLEX } from '../modules/luslab/nf-core-modules/ultraplex/main'    addParams( options: [:] )
+include { FASTQC } from '../modules/nf-core/modules/fastqc/main' addParams( options: [:] )
+include { TRIMGALORE } from '../modules/nf-core/modules/trimgalore/main'  addParams( options: [:] )
+include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'    addParams( options: [:] )
+include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'    addParams( options: [:] )
+
+
+
+
+workflow {
+// Initialise channels
+    ch_software_versions = Channel.empty()
+//demultiplexing
+    ch_input_meta = file(params.input)
+    ch_input_fasta = file(params.demultiplexed_fastq)
+
+
+    INPUT_CHECK (
+        ch_input_meta,
+        ch_input_fasta
+    )
+//fastqc
+ //   FASTQC (
+  //      ch_input_fasta
+  //  )
+//trim-galore
+
+//bowtie to small RNA
+
+//unmapped to STAR GENOME
+
+//UMI-TOOLS
+
+//GET CROSSLINKS
+
+//ICOUNT SUMMARY
+
+//ICOUNT RNAMAPS
+
+//GET COVERAGE
+
+//PEKA
+
+//PARACLU
+
+//ICOUNT PEAKS
+
+//CLIPPY
+}

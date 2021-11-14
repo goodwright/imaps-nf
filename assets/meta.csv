@@ -1,0 +1,2 @@
+sample,fastq
+TDP43_1,s3://nf-core-awsmegatests/clipseq/input_data/fastq/ERR1530360.fastq.gz
