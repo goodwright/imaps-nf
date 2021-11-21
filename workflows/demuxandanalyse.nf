@@ -67,6 +67,9 @@ ch_demuxed_reads
     )
 
 //trim-galore
+    TRIMGALORE (
+        ch_demuxed_readz
+    )
 //bowtie to small RNA
 //unmapped to STAR GENOME
 //UMI-TOOLS
