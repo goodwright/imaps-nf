@@ -38,14 +38,15 @@ workflow {
         CSV_TO_BARCODE.out
     )
 
-    // INPUT_CHECK (
-    //     ch_input_meta,
-    //     ch_input_fasta
-    // )
+    INPUT_CHECK (
+         ch_input_meta
+     )
+
 //fastqc
- //   FASTQC (
-  //      ch_input_fasta
-  //  )
+    FASTQC (
+        INPUT_CHECK.out.reads
+    )
+
 //trim-galore
 //bowtie to small RNA
 //unmapped to STAR GENOME
