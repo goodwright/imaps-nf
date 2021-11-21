@@ -71,6 +71,7 @@ ch_demuxed_reads
         ch_demuxed_readz
     )
 //bowtie to small RNA
+
 //unmapped to STAR GENOME
 //UMI-TOOLS
 //GET CROSSLINKS
