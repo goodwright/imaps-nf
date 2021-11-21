@@ -54,7 +54,6 @@ INPUT_CHECK.out.readsMeta
     .cross(demuxed_reads)
     .set {ch_demuxed_reads}
 
-
 ch_demuxed_reads
     .map {
         meta, fastq ->
@@ -70,8 +69,13 @@ ch_demuxed_reads
     TRIMGALORE (
         ch_demuxed_readz
     )
-//bowtie to small RNA
 
+//bowtie to small RNA
+<<<<<<< Updated upstream
+
+=======
+TRIMGALORE.out.reads
+>>>>>>> Stashed changes
 //unmapped to STAR GENOME
 //UMI-TOOLS
 //GET CROSSLINKS
