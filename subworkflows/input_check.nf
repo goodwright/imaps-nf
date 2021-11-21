@@ -10,28 +10,23 @@ workflow INPUT_CHECK {
 
     main:
     samplesheet
-        .splitCsv ( header:true, sep:',' )
+        .splitCsv ( header:true, sep:',', strip:true)
         //.println it.toString()
         .map { create_fastq_channel(it) }
-        .set { reads }
+        .set { readsMeta }
 
     emit:
-    reads                                     // channel: [ val(meta), [ reads ] ]
+    readsMeta                                     // channel: [ meta ]
 }
 
 // Function to get list of [ meta, fastq_1 ]
 def create_fastq_channel(LinkedHashMap row) {
 
     def meta = [:]
-    meta.id           = row[Sample Name]
-    println meta.id
+    meta.id           = row.entrySet().iterator().next().getValue() // This is janky and means sample id always has to come 1st
     meta.genome       = row.Species
-    meta.barcode      = row["5'barcode"]
-    
-    fastq_name = "ultraplex_demux_" + meta.id + "_fastq.gz"
-    def array = []
-    array = [ meta, [fastq_name] ]
+    meta.barcode      = row.FivePrimeBarcode
+    meta.single_end   = true
 
-    println Arrays.toString(array)
-    return array
+    return meta
 }

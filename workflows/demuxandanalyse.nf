@@ -40,11 +40,25 @@ workflow {
 
     INPUT_CHECK (
          ch_input_meta
-     )
+    )
 
+
+ULTRAPLEX.out.fastq
+    .flatten()
+    .filter(~/.*ultraplex.*/)
+    .map { it -> ["id":it.toString().replaceAll(/.*ultraplex_demux_/,"").replaceAll(/\.fastq\.gz/,""),"fastq":it] }
+    .set {demuxed_reads}
+
+INPUT_CHECK.out.readsMeta
+    .flatten()
+    .cross(demuxed_reads)
+    .set {ch_demuxed_reads}
+
+
+ch_demuxed_reads.view()
 //fastqc
     FASTQC (
-        INPUT_CHECK.out.reads
+        ch_demuxed_reads
     )
 
 //trim-galore
