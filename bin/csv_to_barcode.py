@@ -8,8 +8,8 @@ def annotation_to_barcode(annotation_path, output_path="barcode.csv"):
     input: annotation file as a string path
     """
     data = pd.read_csv(annotation_path)
-    data = data[["5' Barcode", 'Sample Name']]
-    new = [f"{x}:{y}" for x,y in zip(data["5' Barcode"], data["Sample Name"])]
+    data = data[["FivePrimeBarcode", 'SampleName']]
+    new = [f"{x}:{y}" for x,y in zip(data["FivePrimeBarcode"], data["SampleName"])]
     newdf = pd.DataFrame(new)
     newdf.to_csv(output_path, index=False, header=False)
 
