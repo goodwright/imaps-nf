@@ -26,15 +26,15 @@ workflow {
     ch_input_fasta = file(params.multiplexed_fastq)
 
 
-    def meta = [:]
-    meta.id           = "test-string"
+    def metaid = [:]
+    metaid.id           = "test-string"
 
     CSV_TO_BARCODE (
         ch_input_meta
     )
 
     ULTRAPLEX (
-        [meta, ch_input_fasta], 
+        [metaid, ch_input_fasta], 
         CSV_TO_BARCODE.out
     )
 
@@ -45,7 +45,7 @@ workflow {
 
 ULTRAPLEX.out.fastq
     .flatten()
-    .filter(~/.*ultraplex.*/)
+    .filter(~/.*ultraplex.*/) // get rid of dummy meta.id
     .map { it -> ["id":it.toString().replaceAll(/.*ultraplex_demux_/,"").replaceAll(/\.fastq\.gz/,""),"fastq":it] }
     .set {demuxed_reads}
 
@@ -55,10 +55,15 @@ INPUT_CHECK.out.readsMeta
     .set {ch_demuxed_reads}
 
 
-ch_demuxed_reads.view()
+ch_demuxed_reads
+    .map {
+        meta, fastq ->
+            [ meta, fastq.fastq ] }
+    .set {ch_demuxed_readz}
+
 //fastqc
     FASTQC (
-        ch_demuxed_reads
+        ch_demuxed_readz
     )
 
 //trim-galore
