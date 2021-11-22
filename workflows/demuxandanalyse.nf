@@ -11,7 +11,7 @@ include { CSV_TO_BARCODE } from '../modules/local/csv_to_barcode/main'    addPar
 include { INPUT_CHECK } from '../subworkflows/input_check'    addParams( options: [:] )
 include { FASTQC } from '../modules/nf-core/modules/fastqc/main' addParams( options: [:] )
 include { TRIMGALORE } from '../modules/nf-core/modules/trimgalore/main'  addParams( options: [:] )
-include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'    addParams( options: [:] )
+include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'    addParams( save_unaligned: true, options: [args:"-v 2 -m 1 --norc --best --strata"] )
 include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'    addParams( options: [:] )
 
 
