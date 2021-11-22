@@ -71,11 +71,11 @@ ch_demuxed_reads
     )
 
 //bowtie to small RNA
-<<<<<<< Updated upstream
-
-=======
-TRIMGALORE.out.reads
->>>>>>> Stashed changes
+    BOWTIE_ALIGN (
+        TRIMGALORE.out.reads,
+        file(params.smrna_genome)
+    )
+//TRIMGALORE.out.reads
 //unmapped to STAR GENOME
 //UMI-TOOLS
 //GET CROSSLINKS
