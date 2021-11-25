@@ -32,10 +32,10 @@ process ICOUNT_SEGMENT {
     def filename = "icount_segmentation"
     def prefix   = options.suffix ? "${filename}${options.suffix}" : "${filename}"
     """
-    iCount segment \\
+    iCount-Mini segment \\
         $gtf \\
         ${prefix}.gtf \\
         $fai
-    echo \$(iCount -v) > ${software}.version.txt
+    echo \$(iCount-Mini -v) > ${software}.version.txt
     """
 }
