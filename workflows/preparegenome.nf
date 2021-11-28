@@ -49,9 +49,4 @@ workflow {
     )
     ch_software_versions = ch_software_versions.mix(ICOUNT_SEGMENT.out.version.ifEmpty(null))
 
-// Collect together all software versions and output them to a file
-    GET_SOFTWARE_VERSIONS (
-        ch_software_versions.map { it }.collect()
-    )
-
 }
