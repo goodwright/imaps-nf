@@ -3,7 +3,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process ICOUNT_SIGXLS {
+process ICOUNT_PEAKS {
     tag "$meta.id"
     label "low_cores"
     label "low_mem"
@@ -12,11 +12,11 @@ process ICOUNT_SIGXLS {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
-    conda (params.enable_conda ? "bioconda::icount-mini=2.0.3" : null)
+    conda (params.enable_conda ? "bioconda::icount=2.0.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/icount-mini:2.0.3--pyh5e36f6f_0"
+        container "https://depot.galaxyproject.org/singularity/icount:2.0.0--py_1"
     } else {
-        container "quay.io/biocontainers/icount-mini:2.0.3--pyh5e36f6f_0"
+        container "quay.io/biocontainers/icount:2.0.0--py_1"
     }
 
     input:
@@ -32,12 +32,12 @@ process ICOUNT_SIGXLS {
     def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
-    iCount-Mini sigxls \\
+    iCount peaks \\
         $segmentation \\
         $bed \\
         ${prefix}.peaks.bed.gz \\
         --scores ${prefix}.scores.tsv \\
         $options.args
-    echo \$(iCount-Mini -v) > ${software}.version.txt
+    echo \$(iCount -v) > ${software}.version.txt
     """
 }

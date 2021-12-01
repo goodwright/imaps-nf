@@ -24,7 +24,8 @@ process ICOUNT_SEGMENT {
     path(fai)
 
     output:
-    path("*.gtf")       , emit: gtf
+    path("icount_segmentation.gtf")       , emit: gtf
+    path("regions.gtf.gz")       , emit: regions
     path "*.version.txt", emit: version
 
     script:

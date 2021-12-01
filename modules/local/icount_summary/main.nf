@@ -3,7 +3,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 options        = initOptions(params.options)
 
-process ICOUNT_SIGXLS {
+process ICOUNT_SUMMARY {
     tag "$meta.id"
     label "low_cores"
     label "low_mem"
@@ -24,20 +24,23 @@ process ICOUNT_SIGXLS {
     path(segmentation)
 
     output:
-    tuple val(meta), path("*.peaks.bed.gz"), emit: peaks
-    tuple val(meta), path("*.scores.tsv")  , emit: scores
+    tuple val(meta), path("*summary_type.tsv"), emit: summary_type
+    tuple val(meta), path("*summary_subtype.tsv")  , emit: summary_subtype
+    tuple val(meta), path("*summary_gene.tsv")  , emit: summary_gene
     path "*.version.txt"                   , emit: version
 
     script:
     def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
-    iCount-Mini sigxls \\
+    iCount-Mini summary \\
         $segmentation \\
         $bed \\
-        ${prefix}.peaks.bed.gz \\
-        --scores ${prefix}.scores.tsv \\
+        . \\
         $options.args
+    mv summary_type.tsv ${prefix}_summary_type.tsv
+    mv summary_subtype.tsv ${prefix}_summary_subtype.tsv
+    mv summary_gene.tsv ${prefix}_summary_gene.tsv
     echo \$(iCount-Mini -v) > ${software}.version.txt
     """
 }
