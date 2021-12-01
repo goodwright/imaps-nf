@@ -3,6 +3,15 @@
     "homePage": "https://github.com/nf-core/rnaseq",
     "repos": {
         "luslab/nf-core-modules": {
+            "crosslinks/coverage": {
+                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+            },
+            "crosslinks/normcoverage": {
+                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+            },
+            "icount/peaks": {
+                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+            },
             "icount/segment": {
                 "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
             },
@@ -25,6 +34,9 @@
             },
             "samtools/faidx": {
                 "git_sha": "906577873b66253b0d244871bfec2eeeaff73053"
+            },
+            "samtools/index": {
+                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
             },
             "star/align": {
                 "git_sha": "5de3f2c50e063bda30316342b6606b485a12e38c"

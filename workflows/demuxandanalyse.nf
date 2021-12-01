@@ -12,8 +12,14 @@ include { INPUT_CHECK } from '../subworkflows/input_check'    addParams( options
 include { FASTQC } from '../modules/nf-core/modules/fastqc/main' addParams( options: [:] )
 include { TRIMGALORE } from '../modules/nf-core/modules/trimgalore/main'  addParams( options: [:] )
 include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'    addParams( save_unaligned: true, options: [args:"-v 2 -m 1 --norc --best --strata"] )
-include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'    addParams( options: [:] )
-
+include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'    addParams( options: [args:"--readFilesCommand zcat --outSAMtype BAM SortedByCoordinate"] )
+include { UMITOOLS_DEDUP } from '../modules/nf-core/modules/umitools/dedup/main'    addParams( options: [args:"--umi-separator='rbc:'"] )
+include { SAMTOOLS_INDEX as STAR_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'    addParams( options: [:] )
+include { SAMTOOLS_INDEX as UMITOOLS_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'    addParams( options: [:] )
+include { GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'    addParams( options: [:] )
+include { CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/coverage/main'    addParams( options: [:] )
+include { CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'    addParams( options: [:] )
+include { ICOUNT_PEAKS } from '../modules/luslab/nf-core-modules/icount/peaks/main'    addParams( options: [:] )
 
 workflow {
     
@@ -41,7 +47,6 @@ workflow {
     INPUT_CHECK (
          ch_input_meta
     )
-
 
 ULTRAPLEX.out.fastq
     .flatten()
@@ -75,15 +80,63 @@ ch_demuxed_reads
         TRIMGALORE.out.reads,
         file(params.smrna_genome)
     )
-//TRIMGALORE.out.reads
-//unmapped to STAR GENOME
+
+//unmapped reads to STAR GENOME
+    STAR_ALIGN (
+        BOWTIE_ALIGN.out.fastq,
+        file(params.star_index),
+        file(params.gtf)
+    )
+
+// Index the BAM
+    STAR_SAMTOOLS_INDEX (
+        STAR_ALIGN.out.bam_sorted
+    )
+
+ch_umi_input = STAR_ALIGN.out.bam_sorted.combine(STAR_SAMTOOLS_INDEX.out.bai, by: 0)
+
 //UMI-TOOLS
+    UMITOOLS_DEDUP (
+        ch_umi_input
+    )
+
+//SAMTOOLS INDEX THE DEDUPED BAM
+    UMITOOLS_SAMTOOLS_INDEX (
+        UMITOOLS_DEDUP.out.bam
+    )
+
+ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by: 0)
+
 //GET CROSSLINKS
+    GET_CROSSLINKS (
+        ch_xl_input,
+        file(params.genome_fai)
+    )
+
+//GET COVERAGE AND NORMALIZED COVERAGE
+    CROSSLINKS_COVERAGE (
+        GET_CROSSLINKS.out.crosslinkBed
+    )
+
+    CROSSLINKS_NORMCOVERAGE (
+        GET_CROSSLINKS.out.crosslinkBed
+    )
+
 //ICOUNT SUMMARY
+
+
 //ICOUNT RNAMAPS
-//GET COVERAGE
+
 //PEKA
+
 //PARACLU
+
 //ICOUNT PEAKS
+    ICOUNT_PEAKS (
+        GET_CROSSLINKS.out.crosslinkBed,
+        file(params.icount_segment)
+    )
+
 //CLIPPY
+
 }
