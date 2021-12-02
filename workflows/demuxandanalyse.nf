@@ -22,6 +22,7 @@ include { CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/cros
 include { ICOUNT_SIGXLS } from '../modules/luslab/nf-core-modules/icount/sigxls/main'    addParams( options: [:] )
 include { ICOUNT_SUMMARY } from '../modules/local/icount_summary/main'    addParams( options: [:] )
 include { ICOUNT_RNAMAPS } from '../modules/local/icount_rnamaps/main'    addParams( options: [:] )
+include { ICOUNT_PEAKS } from '../modules/local/icount_peaks/main'    addParams( options: [:] )
 
 workflow {
     
@@ -125,6 +126,7 @@ ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by
     )
 
 // PEAK CALLERS
+
 //PARACLU
 
 //ICOUNT SIGXLS
@@ -133,9 +135,15 @@ ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by
         file(params.icount_segment)
     )
 
+ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigxls, by: 0)
+
 //ICOUNT PEAKS
+    ICOUNT_PEAKS (
+        ch_icount_peaks
+    )
 
 //CLIPPY
+
 
 //ICOUNT SUMMARY
     ICOUNT_SUMMARY (
