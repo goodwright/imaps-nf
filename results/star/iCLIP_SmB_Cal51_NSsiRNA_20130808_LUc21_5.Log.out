@@ -1,0 +1,167 @@
+STAR version=2.7.9a
+STAR compilation time,server,dir=2021-05-04T09:43:56-0400 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
+##### Command Line:
+STAR --genomeDir star --readFilesIn iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.unmapped.fastq.gz --runThreadN 2 --outFileNamePrefix iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5. --sjdbGTFfile gencode.v35.chr21.gtf --outSAMattrRGline ID:iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5 SM:iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5 --readFilesCommand zcat --outSAMtype BAM SortedByCoordinate
+##### Initial USER parameters from Command Line:
+outFileNamePrefix                 iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.
+###### All USER parameters from Command Line:
+genomeDir                     star     ~RE-DEFINED
+readFilesIn                   iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.unmapped.fastq.gz        ~RE-DEFINED
+runThreadN                    2     ~RE-DEFINED
+outFileNamePrefix             iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.     ~RE-DEFINED
+sjdbGTFfile                   gencode.v35.chr21.gtf     ~RE-DEFINED
+outSAMattrRGline              ID:iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5   SM:iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5        ~RE-DEFINED
+readFilesCommand              zcat        ~RE-DEFINED
+outSAMtype                    BAM   SortedByCoordinate        ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runThreadN                        2
+genomeDir                         star
+readFilesIn                       iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.unmapped.fastq.gz   
+readFilesCommand                  zcat   
+outFileNamePrefix                 iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.
+outSAMtype                        BAM   SortedByCoordinate   
+outSAMattrRGline                  ID:iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5   SM:iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5   
+sjdbGTFfile                       gencode.v35.chr21.gtf
+
+-------------------------------
+##### Final effective command line:
+STAR   --runThreadN 2   --genomeDir star   --readFilesIn iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.unmapped.fastq.gz      --readFilesCommand zcat      --outFileNamePrefix iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.   --outSAMtype BAM   SortedByCoordinate      --outSAMattrRGline ID:iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5   SM:iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5      --sjdbGTFfile gencode.v35.chr21.gtf
+----------------------------------------
+
+Number of fastq files for each mate = 1
+
+   Input read files for mate 1 :
+-rw-r--r--    1 29879596 wheel        78741 Dec  1 21:51 iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.unmapped.fastq.gz
+
+   readsCommandsFile:
+exec > "iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5._STARtmp/tmp.fifo.read1"
+echo FILE 0
+zcat      "iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.unmapped.fastq.gz"
+
+WARNING --outSAMattrRG defines a read group, therefore STAR will output RG attribute
+ParametersSolo: --soloCellFilterType CellRanger2.2 filtering parameters:  3000 0.99 10
+WARNING: --limitBAMsortRAM=0, will use genome size as RAM limit for BAM sorting
+Finished loading and checking parameters
+Reading genome generation parameters:
+### STAR   --runMode genomeGenerate      --runThreadN 2   --genomeDir star/   --genomeFastaFiles homosapien-hg37-chr21.fa      --genomeSAindexNbases 12   --limitGenomeGenerateRAM 6342450944   --sjdbGTFfile gencode.v35.chr21.gtf
+### GstrandBit=32
+versionGenome                 2.7.4a     ~RE-DEFINED
+genomeType                    Full     ~RE-DEFINED
+genomeFastaFiles              homosapien-hg37-chr21.fa        ~RE-DEFINED
+genomeSAindexNbases           12     ~RE-DEFINED
+genomeChrBinNbits             18     ~RE-DEFINED
+genomeSAsparseD               1     ~RE-DEFINED
+genomeTransformType           None     ~RE-DEFINED
+genomeTransformVCF            -     ~RE-DEFINED
+sjdbOverhang                  100     ~RE-DEFINED
+sjdbFileChrStartEnd           -        ~RE-DEFINED
+sjdbGTFfile                   gencode.v35.chr21.gtf     ~RE-DEFINED
+sjdbGTFchrPrefix              -     ~RE-DEFINED
+sjdbGTFfeatureExon            exon     ~RE-DEFINED
+sjdbGTFtagExonParentTranscripttranscript_id     ~RE-DEFINED
+sjdbGTFtagExonParentGene      gene_id     ~RE-DEFINED
+sjdbInsertSave                Basic     ~RE-DEFINED
+genomeFileSizes               49188040   296557325        ~RE-DEFINED
+Genome version is compatible with current STAR
+Number of real (reference) chromosomes= 1
+1	chr21	48129895	0
+--sjdbOverhang = 100 taken from the generated genome
+Started loading the genome: Wed Dec  1 21:51:48 2021
+
+Genome: size given as a parameter = 49188040
+SA: size given as a parameter = 296557325
+SAindex: size given as a parameter = 1
+Read from SAindex: pGe.gSAindexNbases=12  nSAi=22369620
+nGenome=49188040;  nSAbyte=296557325
+GstrandBit=32   SA number of indices=71892684
+Shared memory is not used for genomes. Allocated a private copy of the genome.
+Genome file size: 49188040 bytes; state: good=1 eof=0 fail=0 bad=0
+Loading Genome ... done! state: good=1 eof=0 fail=0 bad=0; loaded 49188040 bytes
+SA file size: 296557325 bytes; state: good=1 eof=0 fail=0 bad=0
+Loading SA ... done! state: good=1 eof=0 fail=0 bad=0; loaded 296557325 bytes
+Loading SAindex ... done: 97867203 bytes
+Finished loading the genome: Wed Dec  1 21:51:53 2021
+
+Processing splice junctions database sjdbN=4744,   pGe.sjdbOverhang=100 
+alignIntronMax=alignMatesGapMax=0, the max intron size will be approximately determined by (2^winBinNbits)*winAnchorDistNbins=589824
+Dec 01 21:51:54   Loaded database junctions from the generated genome star//sjdbList.out.tab: 4744 total junctions
+
+Dec 01 21:51:54 ..... processing annotations GTF
+Processing pGe.sjdbGTFfile=gencode.v35.chr21.gtf, found:
+		2969 transcripts
+		16982 exons (non-collapsed)
+		4744 collapsed junctions
+Total junctions: 9488
+Dec 01 21:51:54 ..... finished GTF processing
+
+Dec 01 21:51:54   Finished preparing junctions
+Dec 01 21:51:54 ..... inserting junctions into the genome indices
+Dec 01 21:51:54   Finished SA search: number of new junctions=0, old junctions=4744
+Dec 01 21:51:54   Finished sorting SA indicesL nInd=0
+Genome size with junctions=49188040  48234496   953544
+GstrandBit1=32   GstrandBit=32
+Dec 01 21:51:55   Finished inserting junction indices
+Dec 01 21:51:56   Finished SAi
+Dec 01 21:51:56 ..... finished inserting junctions into genome
+Created thread # 1
+Starting to map file # 0
+mate 1:   iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.unmapped.fastq.gz
+Thread #1 end of input stream, nextChar=-1
+Completed: thread #0
+BAM sorting: 1019 mapped reads
+BAM sorting bins genomic start loci:
+1	0	10175821
+2	0	15269219
+3	0	17501872
+4	0	18091318
+5	0	18091318
+6	0	18091318
+7	0	18091318
+8	0	18091318
+9	0	18091318
+10	0	18091318
+11	0	18091318
+12	0	18091321
+13	0	18091323
+14	0	18091336
+15	0	18091340
+16	0	18091340
+17	0	18091341
+18	0	18091341
+19	0	18091345
+20	0	18091372
+21	0	18091386
+22	0	18721030
+23	0	19061154
+24	0	20345221
+25	0	20717559
+26	0	21798446
+27	0	23577579
+28	0	24654177
+29	0	24654184
+30	0	25402679
+31	0	26830491
+32	0	27451076
+33	0	28879957
+34	0	30259671
+35	0	31719022
+36	0	32853111
+37	0	33638921
+38	0	34867087
+39	0	35202530
+40	0	36511073
+41	0	37997877
+42	0	38483448
+43	0	39902032
+44	0	41397472
+45	0	42492601
+46	0	43837637
+47	0	44468271
+48	0	45333443
+Completed: thread #1
+Joined thread # 1
+Dec 01 21:51:59 ..... started sorting BAM
+Max memory needed for sorting = 38753
+ALL DONE!
