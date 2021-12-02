@@ -21,6 +21,7 @@ include { CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslin
 include { CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'    addParams( options: [:] )
 include { ICOUNT_SIGXLS } from '../modules/luslab/nf-core-modules/icount/peaks/main'    addParams( options: [:] )
 include { ICOUNT_SUMMARY } from '../modules/local/icount_summary/main'    addParams( options: [:] )
+include { ICOUNT_RNAMAPS } from '../modules/local/icount_rnamaps/main'    addParams( options: [:] )
 
 workflow {
     
@@ -130,6 +131,10 @@ ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by
     )
 
 //ICOUNT RNAMAPS
+    ICOUNT_RNAMAPS (
+        GET_CROSSLINKS.out.crosslinkBed,
+        file(params.icount_regions)
+    )
 
 //PEKA
 
