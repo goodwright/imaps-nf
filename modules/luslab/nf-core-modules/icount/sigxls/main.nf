@@ -24,7 +24,7 @@ process ICOUNT_SIGXLS {
     path(segmentation)
 
     output:
-    tuple val(meta), path("*.peaks.bed.gz"), emit: peaks
+    tuple val(meta), path("*.sigxls.bed.gz"), emit: peaks
     tuple val(meta), path("*.scores.tsv")  , emit: scores
     path "*.version.txt"                   , emit: version
 
@@ -35,7 +35,7 @@ process ICOUNT_SIGXLS {
     iCount-Mini sigxls \\
         $segmentation \\
         $bed \\
-        ${prefix}.peaks.bed.gz \\
+        ${prefix}.sigxls.bed.gz \\
         --scores ${prefix}.scores.tsv \\
         $options.args
     echo \$(iCount-Mini -v) > ${software}.version.txt

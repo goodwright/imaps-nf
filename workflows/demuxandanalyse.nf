@@ -19,7 +19,7 @@ include { SAMTOOLS_INDEX as UMITOOLS_SAMTOOLS_INDEX} from '../modules/nf-core/mo
 include { GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'    addParams( options: [:] )
 include { CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/coverage/main'    addParams( options: [:] )
 include { CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'    addParams( options: [:] )
-include { ICOUNT_SIGXLS } from '../modules/luslab/nf-core-modules/icount/peaks/main'    addParams( options: [:] )
+include { ICOUNT_SIGXLS } from '../modules/luslab/nf-core-modules/icount/sigxls/main'    addParams( options: [:] )
 include { ICOUNT_SUMMARY } from '../modules/local/icount_summary/main'    addParams( options: [:] )
 include { ICOUNT_RNAMAPS } from '../modules/local/icount_rnamaps/main'    addParams( options: [:] )
 
@@ -124,6 +124,19 @@ ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by
         GET_CROSSLINKS.out.crosslinkBed
     )
 
+// PEAK CALLERS
+//PARACLU
+
+//ICOUNT SIGXLS
+    ICOUNT_SIGXLS (
+        GET_CROSSLINKS.out.crosslinkBed,
+        file(params.icount_segment)
+    )
+
+//ICOUNT PEAKS
+
+//CLIPPY
+
 //ICOUNT SUMMARY
     ICOUNT_SUMMARY (
         GET_CROSSLINKS.out.crosslinkBed,
@@ -137,17 +150,5 @@ ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by
     )
 
 //PEKA
-
-//PARACLU
-
-//ICOUNT SIGXLS
-    ICOUNT_SIGXLS (
-        GET_CROSSLINKS.out.crosslinkBed,
-        file(params.icount_segment)
-    )
-
-//ICOUNT PEAKS
-
-//CLIPPY
 
 }
