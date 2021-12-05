@@ -125,7 +125,21 @@ ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by
         GET_CROSSLINKS.out.crosslinkBed
     )
 
-// PEAK CALLERS
+//ICOUNT SUMMARY
+    ICOUNT_SUMMARY (
+        GET_CROSSLINKS.out.crosslinkBed,
+        file(params.icount_regions)
+    )
+
+//ICOUNT RNAMAPS
+    ICOUNT_RNAMAPS (
+        GET_CROSSLINKS.out.crosslinkBed,
+        file(params.icount_regions)
+    )
+
+/**
+ * Peak Callers *
+ */
 
 //PARACLU
 
@@ -145,17 +159,9 @@ ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigx
 //CLIPPY
 
 
-//ICOUNT SUMMARY
-    ICOUNT_SUMMARY (
-        GET_CROSSLINKS.out.crosslinkBed,
-        file(params.icount_regions)
-    )
-
-//ICOUNT RNAMAPS
-    ICOUNT_RNAMAPS (
-        GET_CROSSLINKS.out.crosslinkBed,
-        file(params.icount_regions)
-    )
+/**
+ * Post-peak calling analysis *
+ */
 
 //PEKA
 
