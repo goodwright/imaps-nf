@@ -23,6 +23,11 @@ include { ICOUNT_SIGXLS } from '../modules/luslab/nf-core-modules/icount/sigxls/
 include { ICOUNT_SUMMARY } from '../modules/local/icount_summary/main'    addParams( options: [:] )
 include { ICOUNT_RNAMAPS } from '../modules/local/icount_rnamaps/main'    addParams( options: [:] )
 include { ICOUNT_PEAKS } from '../modules/local/icount_peaks/main'    addParams( options: [:] )
+include { CLIPPY } from '../modules/luslab/nf-core-modules/clippy/main'    addParams( options: [:] )
+include { PARACLU_CONVERT } from '../modules/luslab/nf-core-modules/paraclu/convert/main'    addParams( options: [:] )
+include { PARACLU_PARACLU } from '../modules/luslab/nf-core-modules/paraclu/paraclu/main'    addParams( options: [:] )
+include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main'    addParams( options: [:] )
+
 
 workflow {
     
@@ -142,6 +147,17 @@ ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by
  */
 
 //PARACLU
+    PARACLU_PARACLU (
+        GET_CROSSLINKS.out.crosslinkBed
+    )
+
+    PARACLU_CUT (
+        PARACLU_PARACLU.out.sigxls
+    )
+
+    PARACLU_CONVERT (
+        PARACLU_CUT.out.peaks
+    )
 
 //ICOUNT SIGXLS
     ICOUNT_SIGXLS (
@@ -157,7 +173,11 @@ ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigx
     )
 
 //CLIPPY
-
+    CLIPPY (
+        GET_CROSSLINKS.out.crosslinkBed,
+        file(params.gtf),
+        file(params.genome_fai)
+    )
 
 /**
  * Post-peak calling analysis *
