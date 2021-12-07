@@ -4,6 +4,18 @@
 DEMULTIPLEX & ANALYSE
 */
 
+
+/* 
+RESOLVE PIPELINE FLOW
+*/
+
+// transcriptomic TRUE/FALSE
+// clippy TRUE/FALSE
+// icount TRUE/FALSE
+// paraclu TRUE/FALSE
+// which-workflow? group, primary, demultiplex-and-analyse (reseq handled above this pipeline)
+
+
 nextflow.enable.dsl=2
 
 include { ULTRAPLEX } from '../modules/luslab/nf-core-modules/ultraplex/main'    addParams( options: [:] )
