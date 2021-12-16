@@ -10,7 +10,7 @@ process ICOUNT_RNAMAPS {
     label "regular_queue"
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:"icount_rnamaps", meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "bioconda::icount-mini=2.0.3" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {

@@ -10,9 +10,9 @@ RESOLVE PIPELINE FLOW
 */
 
 // transcriptomic TRUE/FALSE
-// clippy TRUE/FALSE
-// icount TRUE/FALSE
-// paraclu TRUE/FALSE
+// clippy TRUE/FALSE (followed by peka using clippy peaks)
+// icount TRUE/FALSE (followed by peka using icount peaks)
+// paraclu TRUE/FALSE (followed by peka using paraclu peaks)
 // which-workflow? group, primary, demultiplex-and-analyse (reseq handled above this pipeline)
 
 
