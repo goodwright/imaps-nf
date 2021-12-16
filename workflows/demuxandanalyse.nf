@@ -98,7 +98,7 @@ ch_demuxed_reads
 //bowtie to small RNA
     BOWTIE_ALIGN (
         TRIMGALORE.out.reads,
-        file(params.smrna_genome)
+        Channel.fromPath(params.smrna_genome)
     )
 
 //unmapped reads to STAR GENOME

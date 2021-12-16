@@ -26,27 +26,6 @@
                     "description": "A GTF file containing annotations of various loci within the genome."
                 }
             }
-        },
-        "extra_options": {
-            "title": "Extra options",
-            "type": "object",
-            "fa_icon": "fas fa-terminal",
-            "description": "Additional options and parameters.",
-            "properties": {
-                "param1": {
-                    "type": "string",
-                    "mimetype": "text/plain",
-                    "pattern": "fa.gz",
-                    "required": true,
-                    "description": "Additional parameter 1."
-                },
-                "param2": {
-                    "type": "string",
-                    "mimetype": "text/plain",
-                    "pattern": "gtf",
-                    "description": "Additional parameter 2."
-                }
-            }
         }
     },
     "allOf": [
