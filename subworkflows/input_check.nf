@@ -11,7 +11,6 @@ workflow INPUT_CHECK {
     main:
     samplesheet
         .splitCsv ( header:true, sep:',', strip:true)
-        //.println it.toString()
         .map { create_fastq_channel(it) }
         .set { readsMeta }
 
@@ -21,6 +20,8 @@ workflow INPUT_CHECK {
 
 // Function to get list of [ meta, fastq_1 ]
 def create_fastq_channel(LinkedHashMap row) {
+    // Takes a row from a samples CSV file and creates a meta object which
+    // describes it.
 
     def meta = [:]
     meta.id           = row.entrySet().iterator().next().getValue() // This is janky and means sample id always has to come 1st
