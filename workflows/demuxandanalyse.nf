@@ -89,6 +89,13 @@ workflow {
     // Run TrimGalore on each of the reads
     TRIMGALORE ( ch_reads_with_meta )
 
+    // Run Bowtie Align on each of the reads, with the provided genome index
+    // files as reference
+    BOWTIE_ALIGN (
+        TRIMGALORE.out.reads,
+        file(params.smrna_genome)
+    )
+
 
  /*    ch_reads_with_meta
     .map {

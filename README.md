@@ -67,6 +67,15 @@ input channel is a tuple of meta object and reads file.
 There are output channels for the reads, the report log (both as meta tuples)
 and the version.
 
+### `BOWTIE_ALIGN`
+
+Aligns reads files to a reference RNA genome. It has an input channel for the
+reads file (a tuple of meta object and reads file) and for the genome index, for
+which it expects multiple files.
+
+There are output channels for unmapped reads, a BAM alignment file, and a
+version text file.
+
 ## Workflows
 
 ### Prepare Genome
