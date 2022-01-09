@@ -96,6 +96,23 @@ workflow {
         file(params.smrna_genome)
     )
 
+    // Run STAR Align on the reads which didn't match above
+    STAR_ALIGN (
+        BOWTIE_ALIGN.out.fastq,
+        file(params.star_index),
+        file(params.gtf)
+    )
+
+    /* STAR_ALIGN (
+        BOWTIE_ALIGN.out.fastq,
+        file(params.star_index),
+        file(params.gtf)
+    )
+
+    STAR_SAMTOOLS_INDEX (
+        STAR_ALIGN.out.bam_sorted
+    ) */
+
 
  /*    ch_reads_with_meta
     .map {
