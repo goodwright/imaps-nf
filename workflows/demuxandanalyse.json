@@ -38,8 +38,24 @@
                     "format": "file-path",
                     "mimetype": "text/plain",
                     "pattern": "ebwt",
-                    "required": false,
+                    "required": true,
                     "description": "smRNA files."
+                },
+                "star_index": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "",
+                    "required": true,
+                    "description": "STAR Genome."
+                },
+                "gtf": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "gtf",
+                    "required": true,
+                    "description": "GTF File."
                 }
             }
         }

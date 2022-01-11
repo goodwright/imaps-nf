@@ -103,15 +103,17 @@ workflow {
         file(params.gtf)
     )
 
-    /* STAR_ALIGN (
-        BOWTIE_ALIGN.out.fastq,
-        file(params.star_index),
-        file(params.gtf)
-    )
+    STAR_SAMTOOLS_INDEX ( STAR_ALIGN.out.bam_sorted )
 
-    STAR_SAMTOOLS_INDEX (
-        STAR_ALIGN.out.bam_sorted
-    ) */
+    ch_umi_input = STAR_ALIGN.out.bam_sorted.combine(STAR_SAMTOOLS_INDEX.out.bai, by: 0)
+
+    //UMI-TOOLS
+    UMITOOLS_DEDUP ( ch_umi_input )
+
+    //SAMTOOLS INDEX the deduped BAM
+    UMITOOLS_SAMTOOLS_INDEX ( UMITOOLS_DEDUP.out.bam )
+
+
 
 
  /*    ch_reads_with_meta
