@@ -125,6 +125,23 @@ workflow {
     CROSSLINKS_COVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
     CROSSLINKS_NORMCOVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
 
+    //iCount summary
+    ICOUNT_SUMMARY (
+        GET_CROSSLINKS.out.crosslinkBed,
+        file(params.icount_regions)
+    )
+
+    //iCount RNA-maps
+    ICOUNT_RNAMAPS (
+        GET_CROSSLINKS.out.crosslinkBed,
+        file(params.icount_regions)
+    )
+
+    // Run peak callers - starting with Paraclu
+    PARACLU_PARACLU ( GET_CROSSLINKS.out.crosslinkBed )
+    PARACLU_CUT ( PARACLU_PARACLU.out.sigxls )
+    PARACLU_CONVERT ( PARACLU_CUT.out.peaks )
+
 
 
 
