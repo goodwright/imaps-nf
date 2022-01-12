@@ -56,6 +56,14 @@
                     "pattern": "gtf",
                     "required": true,
                     "description": "GTF File."
+                },
+                "genome_fai": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "fai",
+                    "required": true,
+                    "description": "FAI File."
                 }
             }
         }

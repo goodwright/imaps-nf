@@ -113,6 +113,18 @@ workflow {
     //SAMTOOLS INDEX the deduped BAM
     UMITOOLS_SAMTOOLS_INDEX ( UMITOOLS_DEDUP.out.bam )
 
+    ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by: 0)
+
+    //Get crosslinks
+    GET_CROSSLINKS (
+        ch_xl_input,
+        file(params.genome_fai)
+    )
+
+    // Get coverage and normalized coverage
+    CROSSLINKS_COVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
+    CROSSLINKS_NORMCOVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
+
 
 
 
