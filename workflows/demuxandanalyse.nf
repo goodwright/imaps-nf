@@ -8,6 +8,8 @@
 
 nextflow.enable.dsl=2
 
+include { DEMULTIPLEX } from '../subworkflows/demultiplex'
+
 include { ULTRAPLEX } from '../modules/luslab/nf-core-modules/ultraplex/main'    addParams( options: [:] )
 include { CSV_TO_BARCODE } from '../modules/local/csv_to_barcode/main'    addParams( options: [:] )
 include { FASTQC } from '../modules/nf-core/modules/fastqc/main' addParams( options: [:] )
@@ -31,9 +33,14 @@ include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main
 
 
 workflow {
+
+    DEMULTIPLEX(
+        params.csv,
+        params.multiplexed_fastq
+    )
     
-    // Create channel for CSV file
     ch_csv = Channel.fromPath(params.csv)
+    /* // Create channel for CSV file
 
     // Get ultraplex barcodes file from CSV file
     CSV_TO_BARCODE ( ch_csv )
@@ -49,7 +56,7 @@ workflow {
     ULTRAPLEX (
         [initialMeta, ch_multiplexed_fastq], 
         CSV_TO_BARCODE.out
-    )
+    ) */
 
     // Create a channel which produces a meta object for each row in the CSV
     ch_csv
@@ -59,7 +66,7 @@ workflow {
 
     // Create a new channel from the FASTQ output in which every entry is a
     // tuple, with an ID string and a fastq path.
-    ULTRAPLEX.out.fastq
+    DEMULTIPLEX.out
     .flatten()
     .map { it -> ["id":it.toString().replaceAll(/.*ultraplex_demux_/,"")
         .replaceAll(/\.fastq\.gz/,""),"fastq":it] }
@@ -71,9 +78,6 @@ workflow {
     .cross(ch_demuxed_reads)
     .map { meta, fastq -> [ meta, fastq.fastq ] }
     .set {ch_reads_with_meta}
-
-    // Run FASTQC on each of the reads
-    FASTQC ( ch_reads_with_meta )
 
     // Run TrimGalore on each of the reads
     TRIMGALORE ( ch_reads_with_meta )

@@ -12,8 +12,9 @@ workflow {
 
 workflow DEMULTIPLEX {
 
-    take: csv
-    take: multiplexed_fastq
+    take:
+        csv
+        multiplexed_fastq
     
     main:
     // Create channel for CSV file
@@ -58,6 +59,9 @@ workflow DEMULTIPLEX {
 
     // Run FASTQC on each of the reads
     FASTQC ( ch_reads_with_meta )
+
+    emit:
+      ULTRAPLEX.out.fastq
 
 }
 
