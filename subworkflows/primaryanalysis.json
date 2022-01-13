@@ -15,18 +15,6 @@
                     "required": true,
                     "description": "The name of the sample the reads file represents."
                 },
-                "species": {
-                    "type": "string",
-                    "mimetype": "text/plain",
-                    "required": true,
-                    "description": "The species whose genome is being used."
-                },
-                "barcode": {
-                    "type": "string",
-                    "mimetype": "text/plain",
-                    "required": true,
-                    "description": "The 5' barcode this reads file originally had."
-                },
                 "single_end": {
                     "type": "string",
                     "mimetype": "text/plain",

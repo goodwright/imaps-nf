@@ -17,51 +17,62 @@ workflow DEMULTIPLEX {
         multiplexed_fastq
     
     main:
-    // Create channel for CSV file
+    // Create channel and load the CSV file into it
     ch_csv = Channel.fromPath(csv)
+
+    // Create channel and load the multiplexed reads file into it
+    ch_multiplexed_fastq = file(multiplexed_fastq)
 
     // Get ultraplex barcodes file from CSV file
     CSV_TO_BARCODE ( ch_csv )
 
-    // Create channel for multiplexed reads file
-    ch_multiplexed_fastq = file(multiplexed_fastq)
-
-    // Create the meta object required for some of the following processes
-    def initialMeta = [:]
-    initialMeta.id = "test-string"
+    // Create the meta object describing the reads file needed by Ultraplex
+    meta = [:]
+    meta.id = file(multiplexed_fastq).name
 
     // Run Ultraplex on the reads and barcodes
     ULTRAPLEX (
-        [initialMeta, ch_multiplexed_fastq], 
+        [meta, ch_multiplexed_fastq], 
         CSV_TO_BARCODE.out
     )
 
-    // Create a channel which produces a meta object for each row in the CSV
+    // Ultraplex's fastq output channel produces a tuple containing:
+    // (1) the meta object it was passed
+    // (2) a list of produced fastq files
+    // Create a new channel with just the reads files loaded into it
+    ULTRAPLEX.out.fastq
+    .map { it -> it[1]}
+    .set { demultiplexed_reads }
+
+    // Create channel which is loaded with a meta object for each row in the CSV
     ch_csv
-    .splitCsv ( header:true, sep:',', strip:true)
+    .splitCsv ( header: true, sep:',', strip:true)
     .map { create_fastq_channel(it) }
     .set { readsMeta }
 
-    // Create a new channel from the FASTQ output in which every entry is a
-    // tuple, with an ID string and a fastq path.
-    ULTRAPLEX.out.fastq
-    .flatten()
-    .map { it -> ["id":it.toString().replaceAll(/.*ultraplex_demux_/,"")
-        .replaceAll(/\.fastq\.gz/,""),"fastq":it] }
-    .set { ch_demuxed_reads }
+    // For every file that comes out of demultiplexed_reads, map it to a tuple
+    // where the first item is an ID (from the filename) and the second is the
+    // reads file itself
+    demultiplexed_reads.flatten().map { it -> [
+        "id":it.toString()
+        .replaceAll(/.*ultraplex_demux_/,"")
+        .replaceAll(/\.fastq\.gz/,""),
+        "fastq":it
+    ] }.set { ch_reads_with_id }
 
-    // Create a channel combining the CSV meta objects with the reads
+    // Combine the above two channels to create a channel loaded with tuples of
+    // [meta, fastq.gz], which is the form that FASTQC needs them
     readsMeta
     .flatten()
-    .cross(ch_demuxed_reads)
+    .cross(ch_reads_with_id)
     .map { meta, fastq -> [ meta, fastq.fastq ] }
-    .set {ch_reads_with_meta}
+    .set { ch_reads_with_meta }
 
-    // Run FASTQC on each of the reads
+    // Run FASTQC on each of the meta-reads pairs
     FASTQC ( ch_reads_with_meta )
 
     emit:
-      ULTRAPLEX.out.fastq
+      ch_reads_with_meta
 
 }
 
@@ -74,8 +85,6 @@ def create_fastq_channel(LinkedHashMap row) {
 
     def meta = [:]
     meta.id           = row.entrySet().iterator().next().getValue() // This is janky and means sample id always has to come 1st
-    meta.genome       = row.Species
-    meta.barcode      = row.FivePrimeBarcode
     meta.single_end   = true
     return meta
 }

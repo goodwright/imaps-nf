@@ -21,12 +21,21 @@ include { PARACLU_PARACLU } from '../modules/luslab/nf-core-modules/paraclu/para
 include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main'    addParams( options: [:] )
 
 workflow {
+    // If running straight from command line, will need to construct the
+    // [meta, reads] pair channel first
+    ch_fastq = file(params.fastq)
+    meta = [:]
+    meta.id           = params.id
+    meta.single_end   = params.single_end
+    reads = [meta, ch_fastq]
+
+    reads = [[id: params.id, single_end: params.single_end], file(params.fastq)]
+
+
+
+    // Now just pass that along with the rest of params
     PRIMARY_ANALYSIS (
-        params.id,
-        params.species,
-        params.barcode,
-        params.single_end,
-        params.fastq,
+        reads,
         params.smrna_genome,
         params.star_index,
         params.gtf,
@@ -39,11 +48,7 @@ workflow {
 workflow PRIMARY_ANALYSIS {
 
     take:
-        id
-        species
-        barcode
-        single_end
-        fastq
+        reads
         smrna_genome
         star_index
         gtf
@@ -53,18 +58,9 @@ workflow PRIMARY_ANALYSIS {
         
 
     main:
-    // Create channel for demultiplexed fastq file
-    ch_fastq = file(fastq)
-
-    // Create the meta object that will be passed throughout the analysis
-    meta = [:]
-    meta.id           = id
-    meta.genome       = species
-    meta.barcode      = barcode
-    meta.single_end   = single_end
 
     // Start things off with TrimGalore
-    TRIMGALORE ( [meta, ch_fastq] )
+    TRIMGALORE ( reads )
 
     // Run Bowtie Align on each of the reads, with the provided genome index
     // files as reference
