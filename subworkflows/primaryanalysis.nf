@@ -23,15 +23,7 @@ include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main
 workflow {
     // If running straight from command line, will need to construct the
     // [meta, reads] pair channel first
-    ch_fastq = file(params.fastq)
-    meta = [:]
-    meta.id           = params.id
-    meta.single_end   = params.single_end
-    reads = [meta, ch_fastq]
-
     reads = [[id: params.id, single_end: params.single_end], file(params.fastq)]
-
-
 
     // Now just pass that along with the rest of params
     PRIMARY_ANALYSIS (
