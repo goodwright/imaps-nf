@@ -1,5 +1,9 @@
 # imaps-nf
 
+This repository contains the Nextflow workflows, subworkflows and modules which
+are used in [iMaps](https://imaps.goodwright.com). They are primarily concerned
+with CLIP analysis.
+
 ## Modules
 
 ### `GUNZIP`
@@ -76,6 +80,19 @@ which it expects multiple files.
 There are output channels for unmapped reads, a BAM alignment file, and a
 version text file.
 
+## Subworkflows
+
+### Demultiplex
+
+Takes a multiplexed reads file, and a CSV file describing the different samples
+it contains, and demultiplexes them using Ultraplex. The reads files produced
+are then quality checked with FASTQC.
+
+### Primary Analysis
+
+Takes a demultiplexed reads file and performs the primary CLIP analysis workflow
+on it.
+
 ## Workflows
 
 ### Prepare Genome
@@ -85,3 +102,9 @@ the raw genome in FASTA format, and an accompanying annotation GTF file.
 
 Specifically, it will generate a STAR index file, a FAI index file, and some
 segmentation GTF annotation files.
+
+### Demultiplex and Analyse
+
+Uses the Demultiplex subworkflow to split a multiplexed reads file into its
+component sample reads files, then performs the Primary Analysis subworkflow on
+each downstream reads file.
