@@ -34,6 +34,7 @@
                     "format": "file-path",
                     "mimetype": "text/plain",
                     "pattern": "fastq.gz",
+                    "imapsType": "demultiplexed",
                     "required": true,
                     "description": "Demultiplexed reads file."
                 },
