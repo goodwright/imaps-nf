@@ -30,8 +30,8 @@ process CSV_TO_BARCODE {
     import pandas as pd
 
     data = pd.read_csv("$annotation")
-    data = data[["FivePrimeBarcode", 'SampleName']]
-    new = [f"{x}:{y}" for x,y in zip(data["FivePrimeBarcode"], data["SampleName"])]
+    data = data[["5' Barcode", 'Sample Name']]
+    new = [f"{x}:{y}" for x,y in zip(data["5' Barcode"], data["Sample Name"])]
     newdf = pd.DataFrame(new)
     newdf.to_csv("barcode.csv", index=False, header=False)
     """
