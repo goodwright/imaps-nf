@@ -108,3 +108,8 @@ segmentation GTF annotation files.
 Uses the Demultiplex subworkflow to split a multiplexed reads file into its
 component sample reads files, then performs the Primary Analysis subworkflow on
 each downstream reads file.
+
+## Common issues
+#### I'm trying to run the test data locally and STAR is erroring!
+Check the Docker settings on your laptop - for some reason they tend to default very low and even test data requires a bit of memory for STAR. Here are some example settings that work:
+![image](https://user-images.githubusercontent.com/23729133/150817122-0c94471c-21f3-4568-b600-936f7529a8cf.png)
