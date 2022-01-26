@@ -4,6 +4,12 @@ This repository contains the Nextflow workflows, subworkflows and modules which
 are used in [iMaps](https://imaps.goodwright.com). They are primarily concerned
 with CLIP analysis.
 
+## Quick-start
+To run the test data use a command similar to:
+```
+nextflow run workflows/demuxandanalyse.nf -c workflows/demuxandanalyse.config -profile docker,test
+```
+
 ## Modules
 
 ### `GUNZIP`
