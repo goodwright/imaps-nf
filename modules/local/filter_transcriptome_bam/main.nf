@@ -26,7 +26,7 @@ process FILTER_TRANSCRIPTS {
     path(transcripts)
 
     output:
-    tuple val(meta), path("*.bam"), emit: filtered_bam
+    tuple val(meta), path("*filtered.bam"), emit: filtered_bam
 
     script:
       def prefix    = "${meta.id}"
@@ -35,6 +35,7 @@ process FILTER_TRANSCRIPTS {
     """
     samtools sort $transcriptome_bam > sorted.bam
     samtools index sorted.bam
-    samtools view -h sorted.bam `cat $transcripts` > ${prefix}.bam
+    samtools view -h sorted.bam `cat $transcripts` > filtunsort.bam
+    samtools sort filtunsort.bam > ${prefix}_filtered.bam
     """
 }

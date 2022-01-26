@@ -20,8 +20,6 @@ include { GET_CROSSLINKS as TOME_GET_CROSSLINKS } from '../modules/local/get_cro
 include { CROSSLINKS_COVERAGE as TOME_CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/coverage/main'    addParams( options: [:] )
 include { CROSSLINKS_NORMCOVERAGE as TOME_CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'    addParams( options: [:] )
 
-
-/*
 include { ICOUNT_SIGXLS } from '../modules/luslab/nf-core-modules/icount/sigxls/main'    addParams( options: [:] )
 include { ICOUNT_SUMMARY } from '../modules/local/icount_summary/main'    addParams( options: [:] )
 include { ICOUNT_RNAMAPS } from '../modules/local/icount_rnamaps/main'    addParams( options: [:] )
@@ -30,7 +28,6 @@ include { CLIPPY } from '../modules/luslab/nf-core-modules/clippy/main'    addPa
 include { PARACLU_CONVERT } from '../modules/luslab/nf-core-modules/paraclu/convert/main'    addParams( options: [:] )
 include { PARACLU_PARACLU } from '../modules/luslab/nf-core-modules/paraclu/paraclu/main'    addParams( options: [:] )
 include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main'    addParams( options: [:] )
-*/
 
 workflow {
     // If running straight from command line, will need to construct the
@@ -138,7 +135,7 @@ workflow PRIMARY_ANALYSIS {
     TOME_CROSSLINKS_NORMCOVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed )
 
     // Peak calling, summary statistics, RNA-maps and PEKA
-    /*
+    
     //iCount summary
     ICOUNT_SUMMARY (
         GET_CROSSLINKS.out.crosslinkBed,
@@ -173,5 +170,5 @@ workflow PRIMARY_ANALYSIS {
         file(params.gtf),
         file(params.genome_fai)
     )
-    */
+    
 }
