@@ -23,17 +23,12 @@ include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main
 workflow {
     // If running straight from command line, will need to construct the
     // [meta, reads] pair channel first
-    reads = [[id: params.id, single_end: params.single_end], file(params.fastq)]
+    reads = [[id: params.id, single_end: params.single_end, species: params.species], file(params.fastq)]
 
     // Now just pass that along with the rest of params
     PRIMARY_ANALYSIS (
         reads,
-        params.smrna_genome,
-        params.star_index,
-        params.gtf,
-        params.genome_fai,
-        params.icount_regions,
-        params.icount_segment,
+        params.genome,
     )
 }
 
@@ -41,15 +36,17 @@ workflow PRIMARY_ANALYSIS {
 
     take:
         reads
-        smrna_genome
-        star_index
-        gtf
-        genome_fai
-        icount_regions
-        icount_segment
+        genome
         
-
     main:
+
+    // Get genome files from supplied genomes directory
+    smrna_genome = file("$genome/smrna_genome/*.ebwt")
+    star_index = file("$genome/star_index")
+    gtf = file("$genome/gtf.gtf")
+    genome_fai = file("$genome/genome_fai.fa.fai")
+    icount_regions = file("$genome/regions.gtf.gz")
+    icount_segment = file("$genome/segments.gtf")
 
     // Start things off with TrimGalore
     TRIMGALORE ( reads )
@@ -58,14 +55,14 @@ workflow PRIMARY_ANALYSIS {
     // files as reference
     BOWTIE_ALIGN (
         TRIMGALORE.out.reads,
-        file(params.smrna_genome)
+        smrna_genome
     )
 
     // Run STAR Align on the reads which didn't match above
     STAR_ALIGN (
         BOWTIE_ALIGN.out.fastq,
-        file(params.star_index),
-        file(params.gtf)
+        star_index,
+        gtf
     )
 
     STAR_SAMTOOLS_INDEX ( STAR_ALIGN.out.bam_sorted )
@@ -83,7 +80,7 @@ workflow PRIMARY_ANALYSIS {
     //Get crosslinks
     GET_CROSSLINKS (
         ch_xl_input,
-        file(params.genome_fai)
+        genome_fai
     )
 
     // Get coverage and normalized coverage
@@ -93,13 +90,13 @@ workflow PRIMARY_ANALYSIS {
     //iCount summary
     ICOUNT_SUMMARY (
         GET_CROSSLINKS.out.crosslinkBed,
-        file(params.icount_regions)
+        icount_regions
     )
 
     //iCount RNA-maps
     ICOUNT_RNAMAPS (
         GET_CROSSLINKS.out.crosslinkBed,
-        file(params.icount_regions)
+        icount_regions
     )
 
     // Run peak callers - starting with Paraclu
@@ -110,7 +107,7 @@ workflow PRIMARY_ANALYSIS {
     //ICOUNT SIGXLS
     ICOUNT_SIGXLS (
         GET_CROSSLINKS.out.crosslinkBed,
-        file(params.icount_segment)
+        icount_segment
     )
 
     ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigxls, by: 0)
@@ -121,7 +118,7 @@ workflow PRIMARY_ANALYSIS {
     //CLIPPY
     CLIPPY (
         GET_CROSSLINKS.out.crosslinkBed,
-        file(params.gtf),
-        file(params.genome_fai)
+        gtf,
+        genome_fai
     )
 }
