@@ -19,7 +19,9 @@ workflow {
         params.gtf,
         params.genome_fai,
         params.icount_regions,
-        params.icount_segment
+        params.icount_segment,
+        params.longest_transcripts,
+        params.transcriptome_fai
     )
 
 }
