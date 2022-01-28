@@ -14,7 +14,7 @@ process FILTER_TRANSCRIPTS {
     label "process_medium"
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:"filtered_transcriptome_bam", meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "bioconda::samtools=1.14" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -26,7 +26,7 @@ process FILTER_TRANSCRIPTS {
     path(transcripts)
 
     output:
-    tuple val(meta), path("*filtered.bam"), emit: filtered_bam
+    tuple val(meta), path("*transcriptome.bam"), emit: filtered_bam
 
     script:
       def prefix    = "${meta.id}"
@@ -36,6 +36,6 @@ process FILTER_TRANSCRIPTS {
     samtools sort $transcriptome_bam > sorted.bam
     samtools index sorted.bam
     samtools view -h sorted.bam `cat $transcripts` > filtunsort.bam
-    samtools sort filtunsort.bam > ${prefix}_filtered.bam
+    samtools sort filtunsort.bam > ${prefix}_transcriptome.bam
     """
 }

@@ -12,7 +12,7 @@ include { GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'    addPar
 include { CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/coverage/main'    addParams( options: [:] )
 include { CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'    addParams( options: [:] )
 
-include { FILTER_TRANSCRIPTS } from '../modules/local/filter_transcriptome_bam/main'    addParams( options: [args:"--umi-separator='rbc:'"] )
+include { FILTER_TRANSCRIPTS } from '../modules/local/filter_transcriptome_bam/main'    addParams( options: [:] )
 include { UMITOOLS_DEDUP as TOME_UMITOOLS_DEDUP } from '../modules/nf-core/modules/umitools/dedup/main'    addParams( options: [args:"--umi-separator='rbc:'"] )
 include { SAMTOOLS_INDEX as TOME_STAR_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'    addParams( options: [:] )
 include { SAMTOOLS_INDEX as TOME_UMITOOLS_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'    addParams( options: [:] )
