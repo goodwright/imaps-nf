@@ -32,19 +32,15 @@ include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main
 workflow {
     // If running straight from command line, will need to construct the
     // [meta, reads] pair channel first
-    reads = [[id: params.id, single_end: params.single_end, species: params.species], file(params.fastq)]
+    reads = [[
+        id: params.fastq.split("/")[-1].replace(".gz", "").replace(".fastq", "").replace("ultraplex_demux_", ""),
+        single_end: params.single_end
+    ], file(params.fastq)]
 
     // Now just pass that along with the rest of params
     PRIMARY_ANALYSIS (
         reads,
-        params.smrna_genome,
-        params.star_index,
-        params.gtf,
-        params.genome_fai,
-        params.icount_regions,
-        params.icount_segment,
-        params.longest_transcripts,
-        params.transcriptome_fai
+        params.genome
     )
 }
 
@@ -52,24 +48,9 @@ workflow PRIMARY_ANALYSIS {
 
     take:
         reads
-        smrna_genome
-        star_index
-        gtf
-        genome_fai
-        icount_regions
-        icount_segment
-        longest_transcripts
-        transcriptome_index
+        genome
 
     main:
-
-    // Get genome files from supplied genomes directory
-    smrna_genome = file("$genome/smrna_genome/*.ebwt")
-    star_index = file("$genome/star_index")
-    gtf = file("$genome/gtf.gtf")
-    genome_fai = file("$genome/genome_fai.fa.fai")
-    icount_regions = file("$genome/regions.gtf.gz")
-    icount_segment = file("$genome/segments.gtf")
 
     // Start things off with TrimGalore
     TRIMGALORE ( reads )
@@ -78,20 +59,18 @@ workflow PRIMARY_ANALYSIS {
     // files as reference
     BOWTIE_ALIGN (
         TRIMGALORE.out.reads,
-        smrna_genome
+        genome.map{ folder -> file(folder + "/BOWTIE_BUILD/bowtie")}
     )
 
     // Run STAR Align on the reads which didn't match above
     STAR_ALIGN (
         BOWTIE_ALIGN.out.fastq,
-        star_index,
-        gtf
+        genome.map{ folder -> file(folder + "/STAR_GENOMEGENERATE/star")},
+        genome.map{ folder -> file(folder + "/*.gtf")}
     )
 
     // Preparing crosslinks from genomic mapping
-
     STAR_SAMTOOLS_INDEX ( STAR_ALIGN.out.bam_sorted )
-
     ch_umi_input = STAR_ALIGN.out.bam_sorted.combine(STAR_SAMTOOLS_INDEX.out.bai, by: 0)
 
     //UMI-TOOLS
@@ -105,7 +84,7 @@ workflow PRIMARY_ANALYSIS {
     //Get crosslinks
     GET_CROSSLINKS (
         ch_xl_input,
-        genome_fai
+        genome.map{ folder -> file(folder + "/SAMTOOLS_FAIDX/*.fa.fai")},
     )
 
     // Get coverage and normalized coverage
@@ -114,10 +93,9 @@ workflow PRIMARY_ANALYSIS {
 
 
     // Preparing crosslinks from transcriptome maping
-
     FILTER_TRANSCRIPTS ( 
         STAR_ALIGN.out.bam_transcript, 
-        file(params.longest_transcripts)
+        genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.txt")},
     )
 
     TOME_STAR_SAMTOOLS_INDEX ( FILTER_TRANSCRIPTS.out.filtered_bam )
@@ -135,7 +113,7 @@ workflow PRIMARY_ANALYSIS {
     //Get crosslinks
     TOME_GET_CROSSLINKS (
         tome_ch_xl_input,
-        file(params.transcriptome_fai)
+        genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.fa.fai")},
     )
 
     // Get coverage and normalized coverage
@@ -147,13 +125,13 @@ workflow PRIMARY_ANALYSIS {
     //iCount summary
     ICOUNT_SUMMARY (
         GET_CROSSLINKS.out.crosslinkBed,
-        icount_regions
+        genome.map{ folder -> file(folder + "/ICOUNT_SEGMENT/*regions*")},
     )
 
     //iCount RNA-maps
     ICOUNT_RNAMAPS (
         GET_CROSSLINKS.out.crosslinkBed,
-        icount_regions
+        genome.map{ folder -> file(folder + "/ICOUNT_SEGMENT/*regions*")},
     )
 
     // Run peak callers - starting with Paraclu
@@ -164,7 +142,7 @@ workflow PRIMARY_ANALYSIS {
     //ICOUNT SIGXLS
     ICOUNT_SIGXLS (
         GET_CROSSLINKS.out.crosslinkBed,
-        icount_segment
+        genome.map{ folder -> file(folder + "/ICOUNT_SEGMENT/*segmentation*")},
     )
 
     ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigxls, by: 0)
@@ -175,8 +153,8 @@ workflow PRIMARY_ANALYSIS {
     //CLIPPY
     CLIPPY (
         GET_CROSSLINKS.out.crosslinkBed,
-        gtf,
-        genome_fai
+        genome.map{ folder -> file(folder + "/*.gtf")},
+        genome.map{ folder -> file(folder + "/SAMTOOLS_FAIDX/*.fa.fai")},
     )
     
 }
