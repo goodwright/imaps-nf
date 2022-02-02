@@ -52,6 +52,15 @@ workflow PRIMARY_ANALYSIS {
 
     main:
 
+    bowtie_index = genome.map{ folder -> file(folder + "/BOWTIE_BUILD/bowtie")}
+    star_index = genome.map{ folder -> file(folder + "/STAR_GENOMEGENERATE/star")}
+    genome_gtf = genome.map{ folder -> file(folder + "/*.gtf")}
+    genome_fai = genome.map{ folder -> file(folder + "/SAMTOOLS_FAIDX/*.fa.fai")}
+    longest_transcript = genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.txt")}
+    longest_transcript_index = genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.fa.fai")}
+    segmentation_gtf = genome.map{ folder -> file(folder + "/ICOUNT_SEGMENT/*segmentation*")}
+    regions_gtf = genome.map{ folder -> file(folder + "/ICOUNT_SEGMENT/*regions*")}
+
     // Start things off with TrimGalore
     TRIMGALORE ( reads )
 
@@ -59,14 +68,14 @@ workflow PRIMARY_ANALYSIS {
     // files as reference
     BOWTIE_ALIGN (
         TRIMGALORE.out.reads,
-        genome.map{ folder -> file(folder + "/BOWTIE_BUILD/bowtie")}
+        bowtie_index
     )
 
     // Run STAR Align on the reads which didn't match above
     STAR_ALIGN (
         BOWTIE_ALIGN.out.fastq,
-        genome.map{ folder -> file(folder + "/STAR_GENOMEGENERATE/star")},
-        genome.map{ folder -> file(folder + "/*.gtf")}
+        star_index,
+        genome_gtf
     )
 
     // Preparing crosslinks from genomic mapping
@@ -84,7 +93,7 @@ workflow PRIMARY_ANALYSIS {
     //Get crosslinks
     GET_CROSSLINKS (
         ch_xl_input,
-        genome.map{ folder -> file(folder + "/SAMTOOLS_FAIDX/*.fa.fai")},
+        genome_fai
     )
 
     // Get coverage and normalized coverage
@@ -95,7 +104,7 @@ workflow PRIMARY_ANALYSIS {
     // Preparing crosslinks from transcriptome maping
     FILTER_TRANSCRIPTS ( 
         STAR_ALIGN.out.bam_transcript, 
-        genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.txt")},
+        longest_transcript
     )
 
     TOME_STAR_SAMTOOLS_INDEX ( FILTER_TRANSCRIPTS.out.filtered_bam )
@@ -113,7 +122,7 @@ workflow PRIMARY_ANALYSIS {
     //Get crosslinks
     TOME_GET_CROSSLINKS (
         tome_ch_xl_input,
-        genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.fa.fai")},
+        longest_transcript_index,
     )
 
     // Get coverage and normalized coverage
@@ -125,13 +134,13 @@ workflow PRIMARY_ANALYSIS {
     //iCount summary
     ICOUNT_SUMMARY (
         GET_CROSSLINKS.out.crosslinkBed,
-        genome.map{ folder -> file(folder + "/ICOUNT_SEGMENT/*regions*")},
+        regions_gtf
     )
 
     //iCount RNA-maps
     ICOUNT_RNAMAPS (
         GET_CROSSLINKS.out.crosslinkBed,
-        genome.map{ folder -> file(folder + "/ICOUNT_SEGMENT/*regions*")},
+        regions_gtf
     )
 
     // Run peak callers - starting with Paraclu
@@ -142,7 +151,7 @@ workflow PRIMARY_ANALYSIS {
     //ICOUNT SIGXLS
     ICOUNT_SIGXLS (
         GET_CROSSLINKS.out.crosslinkBed,
-        genome.map{ folder -> file(folder + "/ICOUNT_SEGMENT/*segmentation*")},
+        segmentation_gtf,
     )
 
     ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigxls, by: 0)
@@ -153,8 +162,8 @@ workflow PRIMARY_ANALYSIS {
     //CLIPPY
     CLIPPY (
         GET_CROSSLINKS.out.crosslinkBed,
-        genome.map{ folder -> file(folder + "/*.gtf")},
-        genome.map{ folder -> file(folder + "/SAMTOOLS_FAIDX/*.fa.fai")},
+        genome_gtf,
+        genome_fai,
     )
     
 }

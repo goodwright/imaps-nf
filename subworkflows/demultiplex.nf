@@ -69,7 +69,7 @@ workflow DEMULTIPLEX {
     .set { ch_reads_with_meta }
 
     // Run FASTQC on each of the meta-reads pairs
-    //FASTQC ( ch_reads_with_meta )
+    FASTQC ( ch_reads_with_meta )
 
     emit:
       ch_reads_with_meta
