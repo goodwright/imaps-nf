@@ -34,13 +34,16 @@ workflow {
     // [meta, reads] pair channel first
     reads = [[
         id: params.fastq.split("/")[-1].replace(".gz", "").replace(".fastq", "").replace("ultraplex_demux_", ""),
-        single_end: params.single_end
+        single_end: true
     ], file(params.fastq)]
+
+    // What is the genome param called?
+    genomeParamName = params.keySet().find{k -> k.endsWith("_genome")}
 
     // Now just pass that along with the rest of params
     PRIMARY_ANALYSIS (
         reads,
-        params.genome
+        Channel.from(params[genomeParamName])
     )
 }
 
