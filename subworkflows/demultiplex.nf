@@ -86,5 +86,6 @@ def create_fastq_channel(LinkedHashMap row) {
     def meta = [:]
     meta.id           = row.entrySet().iterator().next().getValue() // This is janky and means sample id always has to come 1st
     meta.single_end   = true
+    meta.species      = row.Species
     return meta
 }

@@ -12,6 +12,7 @@ nextflow.enable.dsl=2
 
 include { GUNZIP                      } from '../modules/nf-core/modules/gunzip/main'
 include { STAR_GENOMEGENERATE         } from '../modules/nf-core/modules/star/genomegenerate/main'
+include { BOWTIE_BUILD                } from '../modules/nf-core/modules/bowtie/build/main'
 include { SAMTOOLS_FAIDX              } from '../modules/nf-core/modules/samtools/faidx/main'
 include { ICOUNT_SEGMENT              } from '../modules/luslab/nf-core-modules/icount/segment/main'
 include { LONGEST_TRANSCRIPT          } from '../modules/local/find_longest_transcript/main'
@@ -29,6 +30,10 @@ workflow {
     STAR_GENOMEGENERATE (
         ch_fasta,
         params.gtf
+    )
+
+    BOWTIE_BUILD (
+        ch_fasta
     )
 
     // Create a FAI genome index using samtools

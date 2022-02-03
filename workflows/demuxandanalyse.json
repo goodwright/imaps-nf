@@ -28,62 +28,6 @@
                     "description": "A multiplexed reads file containing reads from multiple experiments, distinguishable by barcode sequence."
                 }
             }
-        },
-        "analysis_options": {
-            "title": "Analysis options",
-            "type": "object",
-            "fa_icon": "fas fa-terminal",
-            "description": "Files needed for downstream processing of individual reads files.",
-            "properties": {
-                "smrna_genome": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "ebwt",
-                    "required": true,
-                    "description": "smRNA files."
-                },
-                "star_index": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "",
-                    "required": true,
-                    "description": "STAR Genome."
-                },
-                "gtf": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "gtf",
-                    "required": true,
-                    "description": "GTF File."
-                },
-                "genome_fai": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "fai",
-                    "required": true,
-                    "description": "FAI File."
-                },
-                "icount_regions": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "gtf.gz",
-                    "required": true,
-                    "description": "iCount Regions File."
-                },
-                "icount_segment": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "gtf",
-                    "required": true,
-                    "description": "iCount Segmentation File."
-                }
-            }
         }
     },
     "allOf": [

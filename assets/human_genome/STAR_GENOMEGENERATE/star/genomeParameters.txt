@@ -1,0 +1,19 @@
+### /usr/local/bin/STAR   --runMode genomeGenerate      --runThreadN 2   --genomeDir star/   --genomeFastaFiles hs.GRCh38.chr21.fa      --genomeSAindexNbases 12   --limitGenomeGenerateRAM 8489934592   --sjdbGTFfile hs.GRCh38.chr21.gtf
+### GstrandBit 32
+versionGenome	2.7.4a
+genomeType	Full
+genomeFastaFiles	hs.GRCh38.chr21.fa 
+genomeSAindexNbases	12
+genomeChrBinNbits	18
+genomeSAsparseD	1
+genomeTransformType	None
+genomeTransformVCF	-
+sjdbOverhang	100
+sjdbFileChrStartEnd	- 
+sjdbGTFfile	hs.GRCh38.chr21.gtf
+sjdbGTFchrPrefix	-
+sjdbGTFfeatureExon	exon
+sjdbGTFtagExonParentTranscript	transcript_id
+sjdbGTFtagExonParentGene	gene_id
+sjdbInsertSave	Basic
+genomeFileSizes	47900234 338746810

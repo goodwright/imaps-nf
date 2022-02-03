@@ -12,16 +12,11 @@ workflow {
         params.multiplexed_fastq
     )
 
+    DEMULTIPLEX.out.map{pair -> params[pair[0].species + "_genome"]}.set { ch_genome }
+
     PRIMARY_ANALYSIS (
         DEMULTIPLEX.out, // [meta, reads] pairs
-        params.smrna_genome,
-        params.star_index,
-        params.gtf,
-        params.genome_fai,
-        params.icount_regions,
-        params.icount_segment,
-        params.longest_transcripts,
-        params.transcriptome_fai
+        ch_genome
     )
 
 }
