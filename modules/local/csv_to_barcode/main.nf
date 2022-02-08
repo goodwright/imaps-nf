@@ -27,12 +27,32 @@ process CSV_TO_BARCODE {
     """
     #!/usr/bin/env python3
 
-    import pandas as pd
+    from pandas import read_csv
+    from sys import exit
 
-    data = pd.read_csv("$annotation")
-    data = data[["5' Barcode", 'Sample Name']]
-    new = [f"{x}:{y}" for x,y in zip(data["5' Barcode"], data["Sample Name"])]
-    newdf = pd.DataFrame(new)
-    newdf.to_csv("barcode.csv", index=False, header=False)
+    data = read_csv("$annotation", dtype=str, keep_default_na=False)
+
+    five_prime = data["5' Barcode"]
+    three_prime = data["3' Barcode (optional)"]
+    sample_names = data["Sample Name"]
+
+    barcode_dict = {}
+
+    for idx in range(len(five_prime)):
+        barcode_dict.setdefault(five_prime[idx], [])
+        barcode_dict[five_prime[idx]].append(
+            three_prime[idx] + ":" + sample_names[idx]
+        )
+
+    with open("barcode.csv", "w") as out_f:
+        for five, threes in barcode_dict.items():
+            if len(threes) > 1:
+                if any([three.startswith(":") for three in threes]):
+                    exit("5' barcode ambiguity between samples")
+                out_f.write(",".join([five] + threes) + "\\n")
+            else:
+                if not threes[0].startswith(":"):
+                    threes[0] = "," + threes[0]
+                out_f.write(five + threes[0] + "\\n")
     """
 }
