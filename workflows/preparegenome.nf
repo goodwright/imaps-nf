@@ -16,6 +16,8 @@ include { BOWTIE_BUILD                } from '../modules/nf-core/modules/bowtie/
 include { SAMTOOLS_FAIDX              } from '../modules/nf-core/modules/samtools/faidx/main'
 include { ICOUNT_SEGMENT              } from '../modules/luslab/nf-core-modules/icount/segment/main'
 include { LONGEST_TRANSCRIPT          } from '../modules/local/find_longest_transcript/main'
+include { FILTER_GTF                  } from '../modules/local/filter_gtf/main'
+include { RESOLVE_UNANNOTATED         } from '../modules/local/resolve_unannotated/main'
 
 workflow {
 
@@ -25,6 +27,9 @@ workflow {
     } else {
         ch_fasta = file(params.fasta)
     }
+
+
+    FILTER_GTF ( params.gtf )
 
     // Index the genome using STAR module
     STAR_GENOMEGENERATE (
@@ -44,6 +49,13 @@ workflow {
     ICOUNT_SEGMENT (
         params.gtf,
         ch_fai
+    )
+
+
+    RESOLVE_UNANNOTATED(
+        ICOUNT_SEGMENT.out.regions, // segment
+        params.gtf, // gtf
+        ch_fai, // fai
     )
 
     // Find the longest CDS transcript per gene.
