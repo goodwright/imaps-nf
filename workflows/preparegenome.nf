@@ -10,7 +10,8 @@ Steps:
 
 nextflow.enable.dsl=2
 
-include { GUNZIP                      } from '../modules/nf-core/modules/gunzip/main'
+include { GUNZIP as DNA_GUNZIP        } from '../modules/nf-core/modules/gunzip/main'
+include { GUNZIP as RNA_GUNZIP        } from '../modules/nf-core/modules/gunzip/main'
 include { STAR_GENOMEGENERATE         } from '../modules/nf-core/modules/star/genomegenerate/main'
 include { BOWTIE_BUILD                } from '../modules/nf-core/modules/bowtie/build/main'
 include { SAMTOOLS_FAIDX              } from '../modules/nf-core/modules/samtools/faidx/main'
@@ -23,9 +24,16 @@ workflow {
 
     // If genome is compressed, uncompress it
     if (params.fasta.matches(".*gz")) {
-        ch_fasta = GUNZIP ( params.fasta ).gunzip
+        ch_fasta = DNA_GUNZIP ( file(params.fasta) ).gunzip
     } else {
         ch_fasta = file(params.fasta)
+    }
+
+    // If smrna genome is compressed, uncompress it
+    if (params.smrna_fasta.matches(".*gz")) {
+        ch_smrna_fasta = RNA_GUNZIP ( file(params.smrna_fasta) ).gunzip
+    } else {
+        ch_smrna_fasta = file(params.smrna_fasta)
     }
 
 
@@ -38,7 +46,7 @@ workflow {
     )
 
     BOWTIE_BUILD (
-        ch_fasta
+        ch_smrna_fasta
     )
 
     // Create a FAI genome index using samtools

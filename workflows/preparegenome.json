@@ -24,6 +24,14 @@
                     "pattern": "gtf",
                     "required": true,
                     "description": "A GTF file containing annotations of various loci within the genome."
+                },
+                "smrna_fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "fn?a(sta)?(\\.gz)?$",
+                    "required": true,
+                    "description": "A FASTA file containing the smRNA genome sequences of the genome."
                 }
             }
         }
