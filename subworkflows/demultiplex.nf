@@ -4,6 +4,7 @@ nextflow.enable.dsl=2
 
 include { ULTRAPLEX } from '../modules/luslab/nf-core-modules/ultraplex/main'    addParams( options: [:] )
 include { CSV_TO_BARCODE } from '../modules/local/csv_to_barcode/main'    addParams( options: [:] )
+include { XLSX_TO_CSV } from '../modules/local/xlsx_to_csv/main'    addParams( options: [:] )
 include { FASTQC } from '../modules/nf-core/modules/fastqc/main' addParams( options: [:] )
 
 workflow {
@@ -18,7 +19,11 @@ workflow DEMULTIPLEX {
     
     main:
     // Create channel and load the CSV file into it
-    ch_csv = Channel.fromPath(csv)
+    if (params.csv.matches(".*xlsx")) {
+        ch_csv = XLSX_TO_CSV ( params.csv ).csv
+    } else {
+        ch_csv = Channel.fromPath(csv)
+    }
 
     // Create channel and load the multiplexed reads file into it
     ch_multiplexed_fastq = file(multiplexed_fastq)
