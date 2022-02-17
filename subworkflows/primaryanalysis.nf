@@ -57,7 +57,7 @@ workflow PRIMARY_ANALYSIS {
 
     bowtie_index = genome.map{ folder -> file(folder + "/BOWTIE_BUILD/bowtie")}
     star_index = genome.map{ folder -> file(folder + "/STAR_GENOMEGENERATE/star")}
-    genome_gtf = genome.map{ folder -> file(folder + "/*.gtf")}
+    genome_gtf = genome.map{ folder -> file(folder + "/FILTER_GTF/*.gtf")}
     genome_fai = genome.map{ folder -> file(folder + "/SAMTOOLS_FAIDX/*.fa.fai")}
     longest_transcript = genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.txt")}
     longest_transcript_index = genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.fa.fai")}
