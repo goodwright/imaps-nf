@@ -7,14 +7,15 @@ with CLIP analysis.
 ## Quick-start
 
 To run any of the pipelines, use the associated config file and run it with the
-profiles `test` and `iMaps`. For example:
+profiles `test`, `local` and `iMaps`. For example:
 
 ```bash
-nextflow -C workflows/demuxandanalyse.config run workflows/demuxandanalyse.nf -profile iMaps,test
+nextflow -C workflows/demuxandanalyse.config run workflows/demuxandanalyse.nf -profile test,local,iMaps
 ```
 
 The `test` profile will auto-add all params from the `assets` folder, and the
-iMaps profile will set up all the docker config.
+iMaps profile will set up all the docker config. The `local` profile sets low
+resource allowance limits.
 
 
 ## Workflows
