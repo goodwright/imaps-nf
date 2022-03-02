@@ -55,14 +55,14 @@ workflow {
 
     // Create genome segmentation file using iCount
     ICOUNT_SEGMENT (
-        FILTER_GTF.out.filtered_gtf,
+        FILTER_GTF.out.post_filtering_gtf,
         ch_fai
     )
 
 
     RESOLVE_UNANNOTATED(
         ICOUNT_SEGMENT.out.regions, // segment
-        FILTER_GTF.out.filtered_gtf, // gtf
+        FILTER_GTF.out.post_filtering_gtf, // gtf
         ch_fai, // fai
     )
 
