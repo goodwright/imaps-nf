@@ -21,7 +21,7 @@ process FILTER_GTF {
     path(gtf)
 
     output:
-    path "*.gtf", emit: filtered_gtf
+    path "*.gtf", emit: post_filtering_gtf
     
     script:
     template 'FilterGtf.py'
