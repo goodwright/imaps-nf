@@ -1,5 +1,5 @@
 {
-    "title": "Demultiplex and Analyse",
+    "title": "Primary Analysis",
     "description": "Analyses a demultiplxed reads file using the standard CLIP pipeline.",
     "type": "object",
     "definitions": {
@@ -13,7 +13,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
-                    "pattern": "fastq.gz",
+                    "pattern": "fq\\.gz|fastq\\.gz",
                     "imapsType": "demultiplexed",
                     "required": true,
                     "description": "Demultiplexed reads file."
