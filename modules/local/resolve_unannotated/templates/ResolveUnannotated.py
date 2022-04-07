@@ -131,7 +131,7 @@ def run(filtered_segment, unfiltered_segment, gtf_annotation, fai, outputdir, ge
 
 if __name__ == '__main__':
     # main()
-    args = "$args".strip().split()
+    args = "${task.ext.args}".strip().split()
     run(
         "$filtered_segmentation",
         "$unfiltered_segmentation",

@@ -27,6 +27,5 @@ process RESOLVE_UNANNOTATED {
     path "*.gtf", emit: annotated_gtf
     
     script:
-    def args = task.ext.args ?: ''
     template 'ResolveUnannotated.py'
 }
