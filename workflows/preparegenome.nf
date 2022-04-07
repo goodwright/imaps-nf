@@ -25,7 +25,6 @@ include {
     RESOLVE_UNANNOTATED;
     RESOLVE_UNANNOTATED as RESOLVE_UNANNOTATED_GENIC_OTHER
                                       } from '../modules/local/resolve_unannotated/main'
-include { RENAME                      } from '../modules/local/rename/main.nf'
 
 workflow {
 
@@ -70,15 +69,10 @@ workflow {
         ch_fai
     )
 
-    RENAME (
-        FILTERED_ICOUNT_SEGMENT.out.regions,
-        "filtered.regions.gtf.gz"
-    )
-
     // Resolve unannotated for iCount summary and other processes
     RESOLVE_UNANNOTATED (
         RAW_ICOUNT_SEGMENT.out.regions,      // filtered_segmentation
-        RENAME.out.renamed, // unfiltered_segmentation
+        FILTERED_ICOUNT_SEGMENT.out.regions, // unfiltered_segmentation
         FILTER_GTF.out.post_filtering_gtf,   // gtf
         ch_fai,                              // fai
     )
@@ -86,7 +80,7 @@ workflow {
     // Resolve unannotated for PEKA
     RESOLVE_UNANNOTATED_GENIC_OTHER (
         RAW_ICOUNT_SEGMENT.out.regions,      // filtered_segmentation
-        RENAME.out.renamed, // unfiltered_segmentation
+        FILTERED_ICOUNT_SEGMENT.out.regions, // unfiltered_segmentation
         FILTER_GTF.out.post_filtering_gtf,   // gtf
         ch_fai,                              // fai
     )

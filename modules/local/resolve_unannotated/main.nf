@@ -19,7 +19,7 @@ process RESOLVE_UNANNOTATED {
 
     input:
     path(filtered_segmentation)
-    path(unfiltered_segmentation)
+    path(unfiltered_segmentation), stageAs: "filtered.regions.gtf.gz"
     path(gtf)
     path(fai)
 
