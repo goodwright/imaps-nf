@@ -29,6 +29,8 @@ include { PARACLU_CONVERT } from '../modules/luslab/nf-core-modules/paraclu/conv
 include { PARACLU_PARACLU } from '../modules/luslab/nf-core-modules/paraclu/paraclu/main'    addParams( options: [:] )
 include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main'    addParams( options: [:] )
 
+include { CLIP_QC } from '../modules/local/clip_qc/main.nf' addParams( options: [:] )
+
 workflow {
     // If running straight from command line, will need to construct the
     // [meta, reads] pair channel first
@@ -169,4 +171,19 @@ workflow PRIMARY_ANALYSIS {
         genome_fai,
     )
     
+    CLIP_QC (
+        BOWTIE_ALIGN.out.log.collect(),
+        STAR_ALIGN.out.log_final.collect(),
+        [],
+        GET_CROSSLINKS.out.crosslinkBed.collect(),
+        ICOUNT_PEAKS.out.peaks.collect(),
+        PARACLU_CONVERT.out.peaks.collect(),
+        CLIPPY.out.peaks.collect()
+    )
+
+    emit:
+        trimgalore_log       = TRIMGALORE.out.log
+        bowtie_align_log     = BOWTIE_ALIGN.out.log
+        star_align_log_final = STAR_ALIGN.out.log_final
+        clip_qc_log          = CLIP_QC.out.log
 }
