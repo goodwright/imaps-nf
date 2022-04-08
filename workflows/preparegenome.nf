@@ -71,16 +71,16 @@ workflow {
 
     // Resolve unannotated for iCount summary and other processes
     RESOLVE_UNANNOTATED (
-        RAW_ICOUNT_SEGMENT.out.regions,      // filtered_segmentation
-        FILTERED_ICOUNT_SEGMENT.out.regions, // unfiltered_segmentation
+        FILTERED_ICOUNT_SEGMENT.out.regions, // filtered_segmentation
+        RAW_ICOUNT_SEGMENT.out.regions,      // unfiltered_segmentation
         FILTER_GTF.out.post_filtering_gtf,   // gtf
         ch_fai,                              // fai
     )
 
     // Resolve unannotated for PEKA
     RESOLVE_UNANNOTATED_GENIC_OTHER (
-        RAW_ICOUNT_SEGMENT.out.regions,      // filtered_segmentation
-        FILTERED_ICOUNT_SEGMENT.out.regions, // unfiltered_segmentation
+        FILTERED_ICOUNT_SEGMENT.out.regions, // filtered_segmentation
+        RAW_ICOUNT_SEGMENT.out.regions,      // unfiltered_segmentation
         FILTER_GTF.out.post_filtering_gtf,   // gtf
         ch_fai,                              // fai
     )
