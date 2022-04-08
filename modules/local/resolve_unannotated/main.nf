@@ -4,7 +4,7 @@ params.options = [:]
 options        = initOptions(params.options)
 
 process RESOLVE_UNANNOTATED {
-    tag "Resolving $segment"
+    tag "Resolving $filtered_segmentation and $unfiltered_segmentation"
     label "process_medium"
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
@@ -18,7 +18,8 @@ process RESOLVE_UNANNOTATED {
     }
 
     input:
-    path(segment)
+    path(filtered_segmentation)
+    path(unfiltered_segmentation), stageAs: "filtered.regions.gtf.gz"
     path(gtf)
     path(fai)
 
