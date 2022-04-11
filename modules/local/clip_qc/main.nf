@@ -4,7 +4,7 @@ params.options = [:]
 options        = initOptions(params.options)
 
 process CLIP_QC {
-    tag "Resolving $segment"
+    tag "Performing QC"
     label "process_low"
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
@@ -20,7 +20,6 @@ process CLIP_QC {
     input:
     path("premap/*")
     path("mapped/*")
-    path("dedup/*")
     path("xlinks/*")
     path("icount/*")
     path("paraclu/*")

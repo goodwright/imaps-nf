@@ -22,17 +22,19 @@ workflow {
         ch_genome
     )
 
-    Channel
-        .concat(
-            DEMULTIPLEX.out.fastqc_html,
-            DEMULTIPLEX.out.fastqc_zip,
-            PRIMARY_ANALYSIS.out.trimgalore_log,
-            PRIMARY_ANALYSIS.out.bowtie_align_log,
-            PRIMARY_ANALYSIS.out.star_align_log_final,
-            PRIMARY_ANALYSIS.out.clip_qc_log
-        )
-        .view()
-
-    // MULTIQC ()
+    MULTIQC (
+        Channel
+            .empty()
+            .concat(
+                DEMULTIPLEX.out.fastqc_html.map{ vec -> vec[1] },
+                DEMULTIPLEX.out.fastqc_zip.map{ vec -> vec[1] },
+                PRIMARY_ANALYSIS.out.trimgalore_log.map{ vec -> vec[1] },
+                PRIMARY_ANALYSIS.out.bowtie_align_log.map{ vec -> vec[1] },
+                PRIMARY_ANALYSIS.out.star_align_log_final.map{ vec -> vec[1] },
+                PRIMARY_ANALYSIS.out.clip_qc_log,
+                Channel.fromPath("./conf/multiqc_config.yaml")
+            )
+            .collect()
+    )
 
 }

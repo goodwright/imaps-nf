@@ -170,15 +170,14 @@ workflow PRIMARY_ANALYSIS {
         genome_gtf,
         genome_fai,
     )
-    
+
     CLIP_QC (
-        BOWTIE_ALIGN.out.log.collect(),
-        STAR_ALIGN.out.log_final.collect(),
-        [],
-        GET_CROSSLINKS.out.crosslinkBed.collect(),
-        ICOUNT_PEAKS.out.peaks.collect(),
-        PARACLU_CONVERT.out.peaks.collect(),
-        CLIPPY.out.peaks.collect()
+        BOWTIE_ALIGN.out.log.map{ vec -> vec[1] }.collect(),
+        STAR_ALIGN.out.log_final.map{ vec -> vec[1] }.collect(),
+        GET_CROSSLINKS.out.crosslinkBed.map{ vec -> vec[1] }.collect(),
+        ICOUNT_PEAKS.out.peaks.map{ vec -> vec[1] }.collect(),
+        PARACLU_CONVERT.out.peaks.map{ vec -> vec[1] }.collect(),
+        CLIPPY.out.peaks.map{ vec -> vec[1] }.collect()
     )
 
     emit:

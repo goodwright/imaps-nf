@@ -1,10 +1,16 @@
 process MULTIQC {
     label 'process_medium'
 
-    conda (params.enable_conda ? 'bioconda::multiqc=1.12' : null)
+    // This breaks the custom config stuff Nobby did TODO: make it work
+    // conda (params.enable_conda ? 'bioconda::multiqc=1.12' : null)
+    // container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    //     'https://depot.galaxyproject.org/singularity/multiqc:1.12--pyhdfd78af_0' :
+    //     'quay.io/biocontainers/multiqc:1.12--pyhdfd78af_0' }"
+
+    conda (params.enable_conda ? 'bioconda::multiqc=1.9' : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/multiqc:1.12--pyhdfd78af_0' :
-        'quay.io/biocontainers/multiqc:1.12--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/multiqc:1.9--py_1' :
+        'quay.io/biocontainers/multiqc:1.9--py_1' }"
 
     input:
     path multiqc_files
