@@ -4,7 +4,7 @@ nextflow.enable.dsl=2
 
 include { DEMULTIPLEX } from '../subworkflows/demultiplex'
 include { PRIMARY_ANALYSIS } from '../subworkflows/primaryanalysis'
-include { MULTIQC } from '../modules/nf-core/modules/multiqc/main.nf'
+include { MULTIQC } from '../modules/local/multiqc/main.nf'
 
 workflow {
 
