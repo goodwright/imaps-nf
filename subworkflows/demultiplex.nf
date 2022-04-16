@@ -2,10 +2,10 @@
 
 nextflow.enable.dsl=2
 
-include { ULTRAPLEX } from '../modules/luslab/nf-core-modules/ultraplex/main'    addParams( options: [:] )
-include { CSV_TO_BARCODE } from '../modules/local/csv_to_barcode/main'    addParams( options: [:] )
-include { XLSX_TO_CSV } from '../modules/local/xlsx_to_csv/main'    addParams( options: [:] )
-include { FASTQC } from '../modules/nf-core/modules/fastqc/main' addParams( options: [:] )
+include { ULTRAPLEX } from '../modules/luslab/nf-core-modules/ultraplex/main'
+include { CSV_TO_BARCODE } from '../modules/local/csv_to_barcode/main'
+include { XLSX_TO_CSV } from '../modules/local/xlsx_to_csv/main'
+include { FASTQC } from '../modules/nf-core/modules/fastqc/main'
 
 workflow {
     DEMULTIPLEX ( params.csv, params.multiplexed_fastq )
@@ -74,7 +74,7 @@ workflow DEMULTIPLEX {
     .set { ch_reads_with_meta }
 
     // Run FASTQC on each of the meta-reads pairs
-    FASTQC ( ch_reads_with_meta )
+    //FASTQC ( ch_reads_with_meta )
 
     emit:
       ch_reads_with_meta
@@ -89,7 +89,7 @@ def create_fastq_channel(LinkedHashMap row) {
     */
 
     def meta = [:]
-    meta.id           = row.entrySet().iterator().next().getValue() // This is janky and means sample id always has to come 1st
+    meta.id           = row.entrySet().iterator().next().getValue()
     meta.single_end   = true
     meta.species      = row.Species
     return meta
