@@ -1,6 +1,6 @@
 {
-    "name": "goodwright/imapsnf",
-    "homePage": "https://github.com/nf-core/rnaseq",
+    "name": "goodwright/imaps-nf",
+    "homePage": "https://github.com/goodwright/imaps-nf",
     "repos": {
         "luslab/nf-core-modules": {
             "clippy": {
@@ -10,9 +10,6 @@
                 "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
             },
             "crosslinks/normcoverage": {
-                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
-            },
-            "icount/peaks": {
                 "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
             },
             "icount/segment": {
