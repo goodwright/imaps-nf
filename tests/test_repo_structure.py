@@ -3,9 +3,10 @@ import json
 from pathlib import Path
 from unittest import TestCase
 
-class RepoModuleTests(TestCase):
-
+class RepoTest(TestCase):
     longMessage = False
+
+class RepoModuleTests(RepoTest):
 
     def load_modules(self):
         with open("modules.json") as f:
@@ -67,4 +68,18 @@ class RepoModuleTests(TestCase):
                     module_name, repo,
                     f"The {module_name} module could not be found in "
                     f"modules.json under {repo_name}"
+                )
+
+
+
+class LocalModuleTests(RepoTest):
+
+    def test_main_files(self):
+        """Every local module should have a valid main.nf file."""
+        
+        for directory in os.listdir(Path("modules/local")):
+            if "." not in directory:
+                self.assertIn(
+                    "main.nf", os.listdir(Path(f"modules/local/{directory}")),
+                    msg=f"{directory} doesn't have a main.nf file"
                 )
