@@ -28,7 +28,8 @@ jobs:
           rm -r install
       - name: Install dependencies
         run: |
-          python install nextflow
+          python -m pip install --upgrade pip
+          pip install nextflow
       - name: Test
         run: |
           python -m unittest discover tests
