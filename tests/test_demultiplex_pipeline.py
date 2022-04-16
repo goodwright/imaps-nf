@@ -16,7 +16,7 @@ class DemultiplexRunTests(TestCase):
             "csv": "assets/TEST_ANNOTATION.csv",
             "multiplexed_fastq": "assets/SmB_multiplexed.fq.gz"
         }, profile=["iMaps", "local"])
-        self.assertEqual(execution.status, "OK")
+        self.assertEqual(execution.status, "OK", msg=execution.stderr)
         self.assertEqual(len(execution.process_executions), 4)
     
 
@@ -25,5 +25,5 @@ class DemultiplexRunTests(TestCase):
             "csv": os.path.abspath("assets/TEST_ANNOTATION.xlsx"),
             "multiplexed_fastq": "assets/SmB_multiplexed.fq.gz"
         }, profile=["iMaps", "local"])
-        self.assertEqual(execution.status, "OK")
+        self.assertEqual(execution.status, "OK", msg=execution.stderr)
         self.assertEqual(len(execution.process_executions), 5)
