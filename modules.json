@@ -15,6 +15,9 @@
             "icount/segment": {
                 "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
             },
+            "icount/sigxls": {
+                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+            },
             "paraclu/convert": {
                 "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
             },
