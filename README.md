@@ -1,5 +1,7 @@
 # imaps-nf
 
+![](https://github.com/goodwright/imaps-nf/actions/workflows/main.yml/badge.svg)
+
 This repository contains the Nextflow workflows, subworkflows and modules which
 are used in [iMaps](https://imaps.goodwright.com). They are primarily concerned
 with CLIP analysis.

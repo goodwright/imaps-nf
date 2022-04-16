@@ -39,7 +39,6 @@ class RepoModuleTests(TestCase):
                 )
                 
     
-
     def test_modules_exist(self):
         """Every module mentioned in modules.json should be in modules/"""
 
