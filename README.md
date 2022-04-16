@@ -129,6 +129,55 @@ which it expects multiple files.
 There are output channels for unmapped reads, a BAM alignment file, and a
 version text file.
 
+## Style Guide
+
+### Processes/Modules
+
+Local modules should contain only the process definition, and only set directives for `tag`, `label` and `container` - other directives can be set in config.
+
+All local modules should be accompanied by a descriptive `meta.yml`, which contains the same fields as standard nf-core yaml files.
+
+All local modules should obtain any command line arguments from the `ext.args` directive, set in config.
+
+All local modules should use named outputs, including a `versions.yml` file that follows current nf-core conventions.
+
+Non-local modules should match the root level `modules.json`, including the hash.
+
+### Workflows/subworkflows
+
+`addParams` should not be used - process-specific params should be set in config.
+
+Comments should be used very liberally, ideally before each process call. It is often quite unintutiive what a channel definition (for example) is doing, and comments are enormously helplful.
+
+All variables representing channels should use the `ch_` prefix.
+
+### Conf
+
+The directives and params passed to particular processes should be defined in `modules.conf`. This includes `publishDir` and `ext.args`.
+
+Resource management should be handled using the current nf-core convention:
+
+- Processes define their own labels indicating whether they require low, medium or high resources.
+- The `base.config` should set the `cpus` etc. directives for these labels.
+- This should be sensitive to a `max_cpus` etc. param which can override these directives.
+
+Each pipeline should have its own config file, which imports the base config. Often this will be all it needs, unless its processes use settings different from the defaults set globally.
+
+### Tests
+
+Each pipeline should have its own test suite, checking that the pipeline runs, and that the outputs it produces are sensible.
+
+Test files for these should go in the `assets` folder.
+
+A `test` profile should be maintained that allows the pipelines to run with default params and low resource usage on any device.
+
+The structure and adherence to rules in this document should also be tested.
+
+Tests will run via GitHub actions on every push.
+
+### Docs
+
+In addition to any documentation on iMaps docs websites, the README should contain an overview of all workflows and subworkflows available.
 
 
 ## Common issues
