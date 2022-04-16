@@ -12,9 +12,11 @@ process XLSX_TO_CSV {
 
     script:
     """
-    pip install openpyxl
+    #!/usr/bin/env python3
 
-    python -c "import pandas as pd; data = pd.read_excel('$xlsx', engine='openpyxl'); data.to_csv('$xlsx' + '.csv', index=False)"
+    import pandas as pd
 
+    data = pd.read_excel('$xlsx', engine='openpyxl')
+    data.to_csv('$xlsx' + '.csv', index=False)
     """
 }
