@@ -1,0 +1,28 @@
+{
+    "title": "Bowtie Build",
+    "description": "Builds a Bowtie genome index.",
+    "type": "object",
+    "definitions": {
+        "demux_options": {
+            "title": "File options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Files needed for running.",
+            "properties": {
+                "fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "fn|fa|fasta",
+                    "required": true,
+                    "description": "A genome FASTA file."
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/demux_options"
+        }
+    ]
+}
