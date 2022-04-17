@@ -13,7 +13,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
-                    "pattern": "fn|fa|fasta",
+                    "pattern": "fn$|fa$|fasta$",
                     "required": true,
                     "description": "A genome FASTA file."
                 }
