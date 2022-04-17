@@ -3,7 +3,7 @@ from pathlib import Path
 from unittest import TestCase
 import nextflow
 
-class FastqcRunTests(TestCase):
+class IcountSegmentRunTests(TestCase):
 
     def setUp(self):
         self.pipeline = nextflow.Pipeline(
