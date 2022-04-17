@@ -138,7 +138,7 @@ class WorkflowTests(RepoTest):
     def test_config_files(self):
         """Every workflow should have an associated config file."""
 
-        for directory in ["workflows", "subworkflows"]:
+        for directory in ["workflows", "subworkflows", "subworkflows/modules"]:
             files = os.listdir(directory)
             for f in files:
                 if f.endswith(".nf"):
@@ -151,7 +151,7 @@ class WorkflowTests(RepoTest):
     def test_schema_files(self):
         """Every workflow should have a valid associated schema file."""
 
-        for directory in ["workflows", "subworkflows"]:
+        for directory in ["workflows", "subworkflows/modules"]:
             files = os.listdir(directory)
             for f in files:
                 if f.endswith(".nf"):
@@ -185,7 +185,7 @@ class WorkflowTests(RepoTest):
     
 
     def test_no_add_params(self):
-        for directory in ["workflows", "subworkflows"]:
+        for directory in ["workflows", "subworkflows/modules"]:
             files = os.listdir(directory)
             for f in files:
                 if f.endswith(".nf") and f not in self.TEMP_EXEMPT:
