@@ -2,15 +2,16 @@
 
 nextflow.enable.dsl=2
 
-include { TRIMGALORE } from '../modules/nf-core/modules/trimgalore/main'  addParams( options: [:] )
-include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'    addParams( save_unaligned: true, options: [args:"-v 2 -m 1 --norc --best --strata"] )
-include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'    addParams( options: [args:"--readFilesCommand zcat --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM"] )
+include { TRIMGALORE } from '../modules/nf-core/modules/trimgalore/main'
+include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'
+include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'
 
 workflow {
     // If running straight from command line, will need to construct the
     // [meta, reads] pair channel first
     reads = [[
-        id: params.fastq.split("/")[-1].replace(".gz", "").replace(".fastq", "").replace("ultraplex_demux_", ""),
+        id: params.fastq.split("/")[-1].replace(".gz", "")
+            .replace(".fastq", "").replace("ultraplex_demux_", ""),
         single_end: true
     ], file(params.fastq)]
 
@@ -55,6 +56,9 @@ workflow NCRNA_ANALYSIS {
     STAR_ALIGN (
         BOWTIE_ALIGN.out.fastq,
         star_index,
-        genome_gtf
+        genome_gtf,
+        false,                   // star_ignore_sjdbgtf
+        "",                      // seq_platform
+        ""                       // seq_center
     )    
 }
