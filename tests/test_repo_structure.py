@@ -6,6 +6,8 @@ from unittest import TestCase
 class RepoTest(TestCase):
     longMessage = False
 
+
+
 class RepoModuleTests(RepoTest):
 
     def load_modules(self):
@@ -76,10 +78,81 @@ class LocalModuleTests(RepoTest):
 
     def test_main_files(self):
         """Every local module should have a valid main.nf file."""
-        
+
         for directory in os.listdir(Path("modules/local")):
             if "." not in directory:
                 self.assertIn(
                     "main.nf", os.listdir(Path(f"modules/local/{directory}")),
                     msg=f"{directory} doesn't have a main.nf file"
                 )
+
+
+
+class WorkflowTests(RepoTest):
+
+    TEMP_EXEMPT = [
+        "ncrna.nf",
+        "demuxandanalyse.nf",
+        "primaryanalysis.nf",
+        "primaryanalysis.nf"
+    ]
+
+    def test_config_files(self):
+        """Every workflow should have an associated config file."""
+
+        for directory in ["workflows", "subworkflows"]:
+            files = os.listdir(directory)
+            for f in files:
+                if f.endswith(".nf"):
+                    self.assertIn(
+                        f"{f[:-3]}.config", files,
+                        msg=f"{f} doesn't have an associated config file"
+                    )
+    
+
+    def test_schema_files(self):
+        """Every workflow should have a valid associated schema file."""
+
+        for directory in ["workflows", "subworkflows"]:
+            files = os.listdir(directory)
+            for f in files:
+                if f.endswith(".nf"):
+                    filename = f"{f[:-3]}.json"
+                    self.assertIn(
+                        filename, files,
+                        msg=f"{f} doesn't have an associated schema file"
+                    )
+                    with open(Path(f"{directory}/{filename}")) as f:
+                        schema = json.load(f)
+                    self.assertIn(
+                        "description", schema,
+                        msg=f"{filename} is missing a description"
+                    )
+                    self.assertIn(
+                        "definitions", schema,
+                        msg=f"{filename} is missing a definitions section"
+                    )
+                    for name, section in schema["definitions"].items():
+                        for key in ["title", "description", "properties"]:
+                            self.assertIn(
+                                key, section,
+                                msg=f"The {name} section of {filename} is missing {key}"
+                            )
+                        for prop_name, property in schema["definitions"][name]["properties"].items():
+                            for key in ["type", "format", "required", "description"]:
+                                self.assertIn(
+                                    key, property,
+                                    msg=f"The {prop_name} propery in the {name} section of {filename} is missing {key}"
+                                )
+    
+
+    def test_no_add_params(self):
+        for directory in ["workflows", "subworkflows"]:
+            files = os.listdir(directory)
+            for f in files:
+                if f.endswith(".nf") and f not in self.TEMP_EXEMPT:
+                    with open(Path(f"{directory}/{f}")) as fp:
+                        self.assertNotIn(
+                            "addParams", fp.read(),
+                            f"{f} is using addParams - params should be set in modules.conf"
+                        )
