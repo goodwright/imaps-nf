@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from unittest import TestCase
 import nextflow
 
@@ -22,7 +23,7 @@ class DemultiplexRunTests(TestCase):
 
     def test_can_run_pipeline_with_xlsx(self):
         execution = self.pipeline.run(params={
-            "annotation": os.path.abspath("assets/TEST_ANNOTATION.xlsx"),
+            "annotation": os.path.abspath(Path("assets/TEST_ANNOTATION.xlsx")),
             "multiplexed_fastq": "assets/SmB_multiplexed.fq.gz"
         }, profile=["iMaps", "local"])
         self.assertEqual(execution.status, "OK", msg=execution.stdout)
