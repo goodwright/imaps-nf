@@ -36,16 +36,16 @@
                 "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
             },
             "bowtie/build": {
-                "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "fastqc": {
                 "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
             },
             "gunzip": {
-                "git_sha": "906577873b66253b0d244871bfec2eeeaff73053"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "samtools/faidx": {
-                "git_sha": "906577873b66253b0d244871bfec2eeeaff73053"
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             },
             "samtools/index": {
                 "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
@@ -54,7 +54,7 @@
                 "git_sha": "5de3f2c50e063bda30316342b6606b485a12e38c"
             },
             "star/genomegenerate": {
-                "git_sha": "f43778b0e641a9643ae73fe1f2fe2d5bb81edffc"
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             },
             "trimgalore": {
                 "git_sha": "c5235a983d454787fa0c3247b02086969217163b"

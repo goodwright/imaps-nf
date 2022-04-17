@@ -1,13 +1,5 @@
 #!/usr/bin/env nextflow
 
-/* 
-PREPARE GENOME WORKFLOW
-Steps:
-1) Index the genome using STAR module
-2) Prepare genome segmentation file using iCount
-3) Identify coding isoforms with longest CDS per gene.
-*/
-
 nextflow.enable.dsl=2
 
 include { GUNZIP as DNA_GUNZIP        } from '../modules/nf-core/modules/gunzip/main'

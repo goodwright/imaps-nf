@@ -132,7 +132,6 @@ class WorkflowTests(RepoTest):
         "ncrna.nf",
         "demuxandanalyse.nf",
         "primaryanalysis.nf",
-        "primaryanalysis.nf"
     ]
 
     def test_config_files(self):
