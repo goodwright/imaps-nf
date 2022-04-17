@@ -5,3 +5,4 @@ results
 .nextflow.log*
 rmnf.sh
 *.pyc
+__pycache__

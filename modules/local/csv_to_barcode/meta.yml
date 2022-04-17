@@ -1,0 +1,26 @@
+name: csv_to_barcode
+description: |
+  Converts CSV describing samples and creats a barcodes spreadsheet that can be
+  read by Ultraplex.
+tools:
+  - pandas:
+      description: |
+        Flexible and powerful data analysis / manipulation library for Python,
+        providing labeled data structures similar to R data.frame objects,
+        statistical functions, and much more.
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence: ["BSD-3"]
+input:
+  - annotation:
+      type: file
+      description: A samples CSV annotation file.
+output:
+  - csv:
+      type: file
+      description: Barcodes file.
+      pattern: "*.csv"
+authors:
+  - "@CharlotteAnne"
+  - "@alexharston"
+  - "@samirelanduk"

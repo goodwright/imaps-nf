@@ -1,5 +1,6 @@
 import os
 import json
+import yaml
 from pathlib import Path
 from unittest import TestCase
 
@@ -76,6 +77,17 @@ class RepoModuleTests(RepoTest):
 
 class LocalModuleTests(RepoTest):
 
+    TEMP_EXEMPT = [
+        "filter_gtf",
+        "filter_transcriptome_bam",
+        "find_longest_transcript",
+        "get_crosslinks",
+        "icount_peaks",
+        "icount_rnamaps",
+        "icount_summary",
+        "resolve_unannotated",
+    ]
+
     def test_main_files(self):
         """Every local module should have a valid main.nf file."""
 
@@ -85,6 +97,32 @@ class LocalModuleTests(RepoTest):
                     "main.nf", os.listdir(Path(f"modules/local/{directory}")),
                     msg=f"{directory} doesn't have a main.nf file"
                 )
+    
+
+    def test_meta_files(self):
+        """Every local module should have a valid meta.yml file."""
+
+        for directory in os.listdir(Path("modules/local")):
+            if "." not in directory and directory not in self.TEMP_EXEMPT:
+                self.assertIn(
+                    "meta.yml", os.listdir(Path(f"modules/local/{directory}")),
+                    msg=f"{directory} doesn't have a meta.yml file"
+                )
+                with open(f"modules/local/{directory}/meta.yml") as f:
+                    meta = yaml.safe_load(f)
+                    for key in ["name", "description", "input", "output"]:
+                        self.assertIn(
+                            key, meta,
+                            msg=f"{directory}'s meta.yml is missing {key}"
+                        )
+                    for key in ["input", "output"]:
+                        for property in meta[key]:
+                            property_name = list(property.keys())[0]
+                            for field in ["type", "description"]:
+                                self.assertIn(
+                                    field, property[property_name],
+                                    msg=f"{property_name} in {directory}'s meta.yml {key} is missing {field}"
+                                )
 
 
 
