@@ -2,19 +2,6 @@
 
 import pandas as pd
 import csv
-# import argparse
-
-# def cli():
-#     parser = argparse.ArgumentParser(description='Filter genomic annotation from GENCODE or ENSEMBL in GTF format by tag \"basic\" and transcript_support_level.'\
-#     ' These flags are currently (20220223) annotated for Homo sapiens and Mus musculus organisms.')
-#     required = parser.add_argument_group('required arguments')
-#     required.add_argument('-a', '--annotation', type=str, required=True,
-#                         help='Annotation file from GENCODE or ENSEMBL in GTF format.')
-#     required.add_argument('-o', '--outputdir', type=str, required=True,
-#                         help='Path to output folder.', default='.')
-#     args = parser.parse_args()
-#     print(args)
-#     return(args.annotation, args.outputdir)
 
 def filter_gff(gtf_file, outputdir):
     # Parse gtf file into pandas dataframe.
@@ -61,10 +48,6 @@ def filter_gff(gtf_file, outputdir):
         print('No tag \"basic\". Returning input annotation as output. Exiting.')
     annotation.to_csv(f"{outputdir}/post_filtering.{gtf_file.split('/')[-1]}", header=None, index=None, sep='\t', quoting=csv.QUOTE_NONE)
 
-# def main():
-#     (gtf_file, outputdir) = cli()
-#     filter_gff(gtf_file, outputdir)
 
 if __name__ == '__main__':
-    # main()
     filter_gff("$gtf", "./") 

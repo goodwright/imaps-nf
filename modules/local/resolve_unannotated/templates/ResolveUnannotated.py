@@ -5,25 +5,6 @@ import pybedtools as pbt
 import csv
 from plumbum.cmd import sort
 import tempfile
-# import argparse
-
-# def cli():
-#     parser = argparse.ArgumentParser(description='Annotate genomic regions that are unnanotated in genomic iCount segmentation.')
-#     required = parser.add_argument_group('required arguments')
-#     required.add_argument('-fseg', '--filtered_segmentation', type=str, required=True,
-#                         help='iCount genome level segmentation in GTF format i.e "regions.gtf.gz", produced from filtered genomic annotation.')
-#     required.add_argument('-useg', '--unfiltered_segmentation', type=str, required=True,
-#                         help='iCount genome level segmentation in GTF format i.e "regions.gtf.gz", produced from raw genomic annotation.')
-#     required.add_argument('-a', '--annotation', type=str, required=True,
-#                         help='Raw annotation file from GENCODE or ENSEMBL in GTF format.')
-#     required.add_argument('-fai', '--fasta_index', type=str, required=True,
-#                         help='Fasta index file generated with samtools.')
-#     required.add_argument('-o', '--outputdir', type=str, required=True,
-#                         help='Path to output folder.', default='.')
-#     parser.add_argument('-go', '--genic_other', action='store_true')
-#     args = parser.parse_args()
-#     print(args)
-#     return(args.filtered_segmentation, args.unfiltered_segmentation, args.annotation, args.fasta_index, args.outputdir, args.genic_other)
 
 def ReadGtf(segmentation):
     df_segment = pd.read_csv(segmentation,
@@ -125,12 +106,7 @@ def run(filtered_segment, unfiltered_segment, gtf_annotation, fai, outputdir, ge
     print(f'Saved the segment as {outfile}')
     return 0
 
-# def main():
-#     (filtered_segmentation, unfiltered_segmentation, gtf_annotation, fai, outputdir, genic_other) = cli()
-#     run(filtered_segmentation, unfiltered_segmentation, gtf_annotation, fai, outputdir, genic_other)
-
 if __name__ == '__main__':
-    # main()
     args = "${task.ext.args}".strip().split()
     run(
         "$filtered_segmentation",

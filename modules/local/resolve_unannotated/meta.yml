@@ -1,0 +1,49 @@
+name: resolve_unannotated
+description: |
+  Annotates genome segments that are not annotated by iCount segmentation.
+
+  When performing iCount segmentation on GTF annotation, the whole genome is
+  split into the following genomic regions: CDS, UTR3, UTR5, ncRNA, intron,
+  intergenic.
+
+  If the segmentation is performed on filtered genomic annotation, some regions
+  remain unnanotated.
+
+  This is due to the fact that the annotation on a "gene" level covers all
+  transcripts related to this gene, including transcripts with low
+  transcript_support_level, which were removed by filtering. As a result, we get
+  unannotated regions, which are covered by a gene, but lack transcripts that
+  are required for segmentation.
+
+  This module finds unannotated regions in the iCount genomic segment
+  (regions.gtf), annotates them according to the corresponding gene, and adds
+  them to the original segment under the feature "genic_other".
+tools:
+  - pandas:
+      description: |
+        Flexible and powerful data analysis / manipulation library for Python,
+        providing labeled data structures similar to R data.frame objects,
+        statistical functions, and much more.
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence: ["BSD-3"]
+input:
+  - filtered_segmentation:
+      type: file
+      description: TODO
+  - unfiltered_segmentation:
+      type: file
+      description: TODO
+  - gtf:
+      type: file
+      description: TODO
+  - fai:
+      type: file
+      description: TODO
+output:
+  - annotated_gtf:
+      type: file
+      description: TODO
+      pattern: "*.gtf"
+authors:
+  - "@marc-jones"

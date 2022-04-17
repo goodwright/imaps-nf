@@ -78,14 +78,11 @@ class RepoModuleTests(RepoTest):
 class LocalModuleTests(RepoTest):
 
     TEMP_EXEMPT = [
-        "filter_gtf",
         "filter_transcriptome_bam",
-        "find_longest_transcript",
         "get_crosslinks",
         "icount_peaks",
         "icount_rnamaps",
         "icount_summary",
-        "resolve_unannotated",
     ]
 
     def test_main_files(self):
