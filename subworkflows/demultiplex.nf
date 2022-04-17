@@ -8,21 +8,21 @@ include { XLSX_TO_CSV } from '../modules/local/xlsx_to_csv/main'
 include { FASTQC } from '../modules/nf-core/modules/fastqc/main'
 
 workflow {
-    DEMULTIPLEX ( params.csv, params.multiplexed_fastq )
+    DEMULTIPLEX ( params.annotation, params.multiplexed_fastq )
 }
 
 workflow DEMULTIPLEX {
 
     take:
-        csv
+        annotation
         multiplexed_fastq
     
     main:
     // Create channel and load the CSV file into it
-    if (params.csv.matches(".*xlsx")) {
-        ch_csv = XLSX_TO_CSV ( params.csv ).csv
+    if (params.annotation.matches(".*xlsx")) {
+        ch_csv = XLSX_TO_CSV ( params.annotation ).csv
     } else {
-        ch_csv = Channel.fromPath(csv)
+        ch_csv = Channel.fromPath(annotation)
     }
 
     // Create channel and load the multiplexed reads file into it

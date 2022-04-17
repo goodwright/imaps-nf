@@ -13,7 +13,7 @@ class DemultiplexRunTests(TestCase):
 
     def test_can_run_pipeline_with_csv(self):
         execution = self.pipeline.run(params={
-            "csv": "assets/TEST_ANNOTATION.csv",
+            "annotation": "assets/TEST_ANNOTATION.csv",
             "multiplexed_fastq": "assets/SmB_multiplexed.fq.gz"
         }, profile=["iMaps", "local"])
         self.assertEqual(execution.status, "OK", msg=execution.stdout)
@@ -22,7 +22,7 @@ class DemultiplexRunTests(TestCase):
 
     def test_can_run_pipeline_with_xlsx(self):
         execution = self.pipeline.run(params={
-            "csv": os.path.abspath("assets/TEST_ANNOTATION.xlsx"),
+            "annotation": os.path.abspath("assets/TEST_ANNOTATION.xlsx"),
             "multiplexed_fastq": "assets/SmB_multiplexed.fq.gz"
         }, profile=["iMaps", "local"])
         self.assertEqual(execution.status, "OK", msg=execution.stdout)
