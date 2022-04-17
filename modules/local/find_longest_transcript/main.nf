@@ -1,4 +1,4 @@
-process LONGEST_TRANSCRIPT {
+process FIND_LONGEST_TRANSCRIPT {
     tag "$gtf"
     label "process_medium"
     container "quay.io/biocontainers/gawk:5.1.0"
