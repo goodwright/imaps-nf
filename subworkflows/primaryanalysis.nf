@@ -59,8 +59,8 @@ workflow PRIMARY_ANALYSIS {
     star_index = genome.map{ folder -> file(folder + "/STAR_GENOMEGENERATE/star")}
     genome_gtf = genome.map{ folder -> file(folder + "/FILTER_GTF/*.gtf")}
     genome_fai = genome.map{ folder -> file(folder + "/SAMTOOLS_FAIDX/*.fa.fai")}
-    longest_transcript = genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.txt")}
-    longest_transcript_index = genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.fa.fai")}
+    longest_transcript = genome.map{ folder -> file(folder + "/FIND_LONGEST_TRANSCRIPT/*.txt")}
+    longest_transcript_index = genome.map{ folder -> file(folder + "/FIND_LONGEST_TRANSCRIPT/*.fa.fai")}
     segmentation_gtf = genome.map{ folder -> file(folder + "/RAW_ICOUNT_SEGMENT/*segmentation*")}
     regions_gtf = genome.map{ folder -> file(folder + "/RAW_ICOUNT_SEGMENT/*regions*")}
 
@@ -69,71 +69,66 @@ workflow PRIMARY_ANALYSIS {
 
     // Run Bowtie Align on each of the reads, with the provided genome index
     // files as reference
-    BOWTIE_ALIGN (
-        TRIMGALORE.out.reads,
-        bowtie_index
-    )
+    BOWTIE_ALIGN ( TRIMGALORE.out.reads, bowtie_index )
 
     // Run STAR Align on the reads which didn't match above
-    STAR_ALIGN (
-        BOWTIE_ALIGN.out.fastq,
-        star_index,
-        genome_gtf,
-        false,
-        "",
-        ""
-    )
+    STAR_ALIGN ( BOWTIE_ALIGN.out.fastq, star_index, genome_gtf, false, "", "" )
 
-    // Preparing crosslinks from genomic mapping
+
+    // Get TOME crosslinks
+    FILTER_TRANSCRIPTS ( STAR_ALIGN.out.bam_transcript, longest_transcript )
+
+    TOME_STAR_SAMTOOLS_INDEX ( FILTER_TRANSCRIPTS.out.filtered_bam )
+    tome_ch_umi_input = FILTER_TRANSCRIPTS.out.filtered_bam.combine(TOME_STAR_SAMTOOLS_INDEX.out.bai, by: 0)
+    TOME_UMITOOLS_DEDUP ( tome_ch_umi_input )
+
+    TOME_UMITOOLS_SAMTOOLS_INDEX ( TOME_UMITOOLS_DEDUP.out.bam )
+    tome_ch_xl_input = TOME_UMITOOLS_DEDUP.out.bam.combine(TOME_UMITOOLS_SAMTOOLS_INDEX.out.bai, by: 0)
+    TOME_GET_CROSSLINKS ( tome_ch_xl_input, longest_transcript_index )
+
+    TOME_CROSSLINKS_COVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed )
+    TOME_CROSSLINKS_NORMCOVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed )
+
+
+    // Get crosslinks
     STAR_SAMTOOLS_INDEX ( STAR_ALIGN.out.bam_sorted )
     ch_umi_input = STAR_ALIGN.out.bam_sorted.combine(STAR_SAMTOOLS_INDEX.out.bai, by: 0)
-
-    //UMI-TOOLS
     UMITOOLS_DEDUP ( ch_umi_input )
 
-    //SAMTOOLS INDEX the deduped BAM
     UMITOOLS_SAMTOOLS_INDEX ( UMITOOLS_DEDUP.out.bam )
-
     ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by: 0)
+    GET_CROSSLINKS ( ch_xl_input, genome_fai )
 
-    //Get crosslinks
-    GET_CROSSLINKS (
-        ch_xl_input,
-        genome_fai
-    )
-
-    // Get coverage and normalized coverage
     CROSSLINKS_COVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
     CROSSLINKS_NORMCOVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
 
 
-    // Preparing crosslinks from transcriptome maping
-    FILTER_TRANSCRIPTS ( 
-        STAR_ALIGN.out.bam_transcript, 
-        longest_transcript
-    )
+    // CLIPPY Peak Calling
+    CLIPPY ( GET_CROSSLINKS.out.crosslinkBed, genome_gtf, genome_fai )
 
-    TOME_STAR_SAMTOOLS_INDEX ( FILTER_TRANSCRIPTS.out.filtered_bam )
 
-    tome_ch_umi_input = FILTER_TRANSCRIPTS.out.filtered_bam.combine(TOME_STAR_SAMTOOLS_INDEX.out.bai, by: 0)
+    // Paraclu Peak Calling
+    PARACLU_PARACLU ( GET_CROSSLINKS.out.crosslinkBed )
+    PARACLU_CUT ( PARACLU_PARACLU.out.sigxls )
+    PARACLU_CONVERT ( PARACLU_CUT.out.peaks )
 
-    //UMI-TOOLS
-    TOME_UMITOOLS_DEDUP ( tome_ch_umi_input )
 
-    //SAMTOOLS INDEX the deduped BAM
-    TOME_UMITOOLS_SAMTOOLS_INDEX ( TOME_UMITOOLS_DEDUP.out.bam )
+    // iCount
+    ICOUNT_SUMMARY ( GET_CROSSLINKS.out.crosslinkBed, regions_gtf )
+    ICOUNT_RNAMAPS ( GET_CROSSLINKS.out.crosslinkBed, regions_gtf )
+    ICOUNT_SIGXLS ( GET_CROSSLINKS.out.crosslinkBed, segmentation_gtf )
 
-    tome_ch_xl_input = TOME_UMITOOLS_DEDUP.out.bam.combine(TOME_UMITOOLS_SAMTOOLS_INDEX.out.bai, by: 0)
+    ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigxls, by: 0)
+    ICOUNT_PEAKS ( ch_icount_peaks )
 
-    //Get crosslinks
-    TOME_GET_CROSSLINKS (
-        tome_ch_xl_input,
-        longest_transcript_index,
-    )
 
-    // Get coverage and normalized coverage
-    TOME_CROSSLINKS_COVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed )
-    TOME_CROSSLINKS_NORMCOVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed )
+
+
+    /* 
+
+
+    
+
 
     // Peak calling, summary statistics, RNA-maps and PEKA
     
@@ -149,10 +144,7 @@ workflow PRIMARY_ANALYSIS {
         regions_gtf
     )
 
-    // Run peak callers - starting with Paraclu
-    PARACLU_PARACLU ( GET_CROSSLINKS.out.crosslinkBed )
-    PARACLU_CUT ( PARACLU_PARACLU.out.sigxls )
-    PARACLU_CONVERT ( PARACLU_CUT.out.peaks )
+    
 
     //ICOUNT SIGXLS
     ICOUNT_SIGXLS (
@@ -170,6 +162,6 @@ workflow PRIMARY_ANALYSIS {
         GET_CROSSLINKS.out.crosslinkBed,
         genome_gtf,
         genome_fai,
-    )
+    ) */
     
 }
