@@ -1,0 +1,38 @@
+name: icount_rnamaps
+description: TODO
+keywords:
+  - iCLIP
+tools:
+  - icount:
+      description: Computational pipeline for analysis of iCLIP data
+      homepage: https://icount.readthedocs.io/en/latest/
+      documentation: https://icount.readthedocs.io/en/latest/
+      licence: ['MIT']
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - bed:
+      type: file
+      description: BED file of crosslinks
+  - segmentation:
+      type: file
+      description: TODO
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - rnamaps:
+      type: file
+      description: TODO
+      pattern: "rnamaps*"
+  - version:
+      type: file
+      description: File containing software version
+      pattern: "*.{version.txt}"
+authors:
+  - "@marc-jones"

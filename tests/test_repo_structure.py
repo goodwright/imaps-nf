@@ -78,11 +78,7 @@ class RepoModuleTests(RepoTest):
 class LocalModuleTests(RepoTest):
 
     TEMP_EXEMPT = [
-        "filter_transcriptome_bam",
-        "get_crosslinks",
-        "icount_peaks",
-        "icount_rnamaps",
-        "icount_summary",
+
     ]
 
     def test_main_files(self):

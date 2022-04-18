@@ -1,0 +1,38 @@
+name: icount_peaks
+description: Runs iCount peaks on a BED file of crosslinks
+keywords:
+  - iCLIP
+tools:
+  - icount:
+      description: Computational pipeline for analysis of iCLIP data
+      homepage: https://icount.readthedocs.io/en/latest/
+      documentation: https://icount.readthedocs.io/en/latest/
+      licence: ['MIT']
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - bed:
+      type: file
+      description: BED file of crosslinks
+  - sigxls:
+      type: file
+      description: TODO
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - peaks:
+      type: file
+      description: Crosslinks deemed significant by iCount
+      pattern: "*.{bed.gz}"
+  - version:
+      type: file
+      description: File containing software version
+      pattern: "*.{version.txt}"
+authors:
+  - "@marc-jones"
