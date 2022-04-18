@@ -120,48 +120,5 @@ workflow PRIMARY_ANALYSIS {
 
     ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigxls, by: 0)
     ICOUNT_PEAKS ( ch_icount_peaks )
-
-
-
-
-    /* 
-
-
-    
-
-
-    // Peak calling, summary statistics, RNA-maps and PEKA
-    
-    //iCount summary
-    ICOUNT_SUMMARY (
-        GET_CROSSLINKS.out.crosslinkBed,
-        regions_gtf
-    )
-
-    //iCount RNA-maps
-    ICOUNT_RNAMAPS (
-        GET_CROSSLINKS.out.crosslinkBed,
-        regions_gtf
-    )
-
-    
-
-    //ICOUNT SIGXLS
-    ICOUNT_SIGXLS (
-        GET_CROSSLINKS.out.crosslinkBed,
-        segmentation_gtf,
-    )
-
-    ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigxls, by: 0)
-
-    //ICOUNT PEAKS
-    ICOUNT_PEAKS ( ch_icount_peaks )
-
-    //CLIPPY
-    CLIPPY (
-        GET_CROSSLINKS.out.crosslinkBed,
-        genome_gtf,
-        genome_fai,
-    ) */
     
 }
