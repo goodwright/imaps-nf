@@ -2,32 +2,32 @@
 
 nextflow.enable.dsl=2
 
-include { TRIMGALORE } from '../modules/nf-core/modules/trimgalore/main'  addParams( options: [:] )
-include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'    addParams( save_unaligned: true, options: [args:"-v 2 -m 1 --norc --best --strata"] )
-include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'    addParams( options: [args:"--readFilesCommand zcat --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM"] )
-include { UMITOOLS_DEDUP } from '../modules/nf-core/modules/umitools/dedup/main'    addParams( options: [args:"--umi-separator='rbc:'"] )
-include { SAMTOOLS_INDEX as STAR_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'    addParams( options: [:] )
-include { SAMTOOLS_INDEX as UMITOOLS_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'    addParams( options: [:] )
-include { GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'    addParams( options: [:] )
-include { CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/coverage/main'    addParams( options: [:] )
-include { CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'    addParams( options: [:] )
+include { TRIMGALORE } from '../modules/nf-core/modules/trimgalore/main'
+include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'
+include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'
+include { UMITOOLS_DEDUP } from '../modules/nf-core/modules/umitools/dedup/main'
+include { SAMTOOLS_INDEX as STAR_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
+include { SAMTOOLS_INDEX as UMITOOLS_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
+include { GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'
+include { CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/coverage/main'
+include { CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'
 
-include { FILTER_TRANSCRIPTS } from '../modules/local/filter_transcriptome_bam/main'    addParams( options: [:] )
-include { UMITOOLS_DEDUP as TOME_UMITOOLS_DEDUP } from '../modules/nf-core/modules/umitools/dedup/main'    addParams( options: [args:"--umi-separator='rbc:'"] )
-include { SAMTOOLS_INDEX as TOME_STAR_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'    addParams( options: [:] )
-include { SAMTOOLS_INDEX as TOME_UMITOOLS_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'    addParams( options: [:] )
-include { GET_CROSSLINKS as TOME_GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'    addParams( options: [:] )
-include { CROSSLINKS_COVERAGE as TOME_CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/coverage/main'    addParams( options: [:] )
-include { CROSSLINKS_NORMCOVERAGE as TOME_CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'    addParams( options: [:] )
+include { FILTER_TRANSCRIPTS } from '../modules/local/filter_transcriptome_bam/main'
+include { UMITOOLS_DEDUP as TOME_UMITOOLS_DEDUP } from '../modules/nf-core/modules/umitools/dedup/main'
+include { SAMTOOLS_INDEX as TOME_STAR_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'
+include { SAMTOOLS_INDEX as TOME_UMITOOLS_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'
+include { GET_CROSSLINKS as TOME_GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'
+include { CROSSLINKS_COVERAGE as TOME_CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/coverage/main'
+include { CROSSLINKS_NORMCOVERAGE as TOME_CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'
 
-include { ICOUNT_SIGXLS } from '../modules/luslab/nf-core-modules/icount/sigxls/main'    addParams( options: [:] )
-include { ICOUNT_SUMMARY } from '../modules/local/icount_summary/main'    addParams( options: [:] )
-include { ICOUNT_RNAMAPS } from '../modules/local/icount_rnamaps/main'    addParams( options: [:] )
-include { ICOUNT_PEAKS } from '../modules/local/icount_peaks/main'    addParams( options: [:] )
-include { CLIPPY } from '../modules/luslab/nf-core-modules/clippy/main'    addParams( options: [:] )
-include { PARACLU_CONVERT } from '../modules/luslab/nf-core-modules/paraclu/convert/main'    addParams( options: [:] )
-include { PARACLU_PARACLU } from '../modules/luslab/nf-core-modules/paraclu/paraclu/main'    addParams( options: [:] )
-include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main'    addParams( options: [:] )
+include { ICOUNT_SIGXLS } from '../modules/luslab/nf-core-modules/icount/sigxls/main'
+include { ICOUNT_SUMMARY } from '../modules/local/icount_summary/main'
+include { ICOUNT_RNAMAPS } from '../modules/local/icount_rnamaps/main'
+include { ICOUNT_PEAKS } from '../modules/local/icount_peaks/main'
+include { CLIPPY } from '../modules/luslab/nf-core-modules/clippy/main'
+include { PARACLU_CONVERT } from '../modules/luslab/nf-core-modules/paraclu/convert/main'
+include { PARACLU_PARACLU } from '../modules/luslab/nf-core-modules/paraclu/paraclu/main'
+include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main'
 
 workflow {
     // If running straight from command line, will need to construct the

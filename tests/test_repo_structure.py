@@ -125,12 +125,6 @@ class LocalModuleTests(RepoTest):
 
 class WorkflowTests(RepoTest):
 
-    TEMP_EXEMPT = [
-        "ncrna.nf",
-        "demuxandanalyse.nf",
-        "primaryanalysis.nf",
-    ]
-
     def test_config_files(self):
         """Every workflow should have an associated config file."""
 
@@ -184,7 +178,7 @@ class WorkflowTests(RepoTest):
         for directory in ["workflows", "subworkflows/modules"]:
             files = os.listdir(directory)
             for f in files:
-                if f.endswith(".nf") and f not in self.TEMP_EXEMPT:
+                if f.endswith(".nf"):
                     with open(Path(f"{directory}/{f}")) as fp:
                         self.assertNotIn(
                             "addParams", fp.read(),
