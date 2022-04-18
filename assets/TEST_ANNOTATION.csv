@@ -1,3 +1,3 @@
 ﻿Sample Name,Collection Name,Scientist,PI,Method,Pipeline,Protocol Document (optional),Protein,Cell or Tissue,Condition (optional),Species,Comments (optional),5' Barcode,3' Barcode (optional),3' Adapter Sequence,3' Adapter Name (Optional),Sequencer,Purification Method (Antibody),RT Primer (optional),5'Index (Optional),3' Index (Optional)
 iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_4,Testing,sam,Jernej,iCLIP,Primary Analysis,,DRD4,BMDM,NSsiRNA,Hs,,NNNGGCGNN,,AGATCGGAAGAGCGGTTCAG,,Illumina,Y,,,
-iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5,Test1,alex,Jernej,iCLIP,Primary Analysis,,DRD4,BMDM,NSsiRNA,Hs,,NNNTTGTNN,,AGATCGGAAGAGCGGTTCAG,,Illumina,Y,,,
+iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5,Test1,alex,Jernej,iCLIP,Non-Coding RNA Analysis,,DRD4,BMDM,NSsiRNA,Hs,,NNNTTGTNN,,AGATCGGAAGAGCGGTTCAG,,Illumina,Y,,,

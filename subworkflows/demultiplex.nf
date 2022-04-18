@@ -92,5 +92,6 @@ def create_fastq_channel(LinkedHashMap row) {
     meta.id           = row.entrySet().iterator().next().getValue()
     meta.single_end   = true
     meta.species      = row.Species
+    meta.pipeline      = row.Pipeline
     return meta
 }
