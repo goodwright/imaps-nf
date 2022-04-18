@@ -78,7 +78,10 @@ workflow PRIMARY_ANALYSIS {
     STAR_ALIGN (
         BOWTIE_ALIGN.out.fastq,
         star_index,
-        genome_gtf
+        genome_gtf,
+        false,
+        "",
+        ""
     )
 
     // Preparing crosslinks from genomic mapping

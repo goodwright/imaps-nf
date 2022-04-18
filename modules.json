@@ -48,7 +48,7 @@
                 "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             },
             "samtools/index": {
-                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             },
             "star/align": {
                 "git_sha": "1dddf1ce9443e3d93853d86e7a7aab52e5b4d614"
@@ -60,7 +60,7 @@
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "umitools/dedup": {
-                "git_sha": "2ade120249b92e382f964bd75701befa2c2dc75d"
+                "git_sha": "f425aa3cea10015fe9b345b9d6dcc2336b53155f"
             }
         }
     }
