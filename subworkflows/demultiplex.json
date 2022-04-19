@@ -1,6 +1,6 @@
 {
     "title": "Demultiplex",
-    "description": "Demultiplexes a reads file into individual reads files.",
+    "description": "Demultiplexes a reads file into individual reads files, using Ultraplex. FastQC will be run on all the demultiplexed reads file produced, but otherwise no additional analysis will be performed on them.",
     "type": "object",
     "definitions": {
         "demux_options": {

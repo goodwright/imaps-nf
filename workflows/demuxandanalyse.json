@@ -1,6 +1,6 @@
 {
     "title": "Demultiplex and Analyse",
-    "description": "Demultiplexes a reads file into individual reads files, and analyses each one in parallel.",
+    "description": "Demultiplexes a reads file into individual reads files, and analyses each one in parallel. The post-demultiplexing workflow used is determined by the value of the 'Pipeline' column in the provided annotation sheet.",
     "type": "object",
     "definitions": {
         "demux_options": {
