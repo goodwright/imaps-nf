@@ -59,11 +59,11 @@ on it.
 
 Local modules should contain only the process definition, and only set directives for `tag`, `label` and `container` - other directives can be set in config.
 
-All local modules should be accompanied by a descriptive `meta.yml`, which contains the same fields as standard nf-core yaml files.
+All modules should be accompanied by a descriptive `meta.yml`, which contains the same fields as standard nf-core yaml files.
 
-All local modules should obtain any command line arguments from the `ext.args` directive, set in config.
+All modules should obtain any command line arguments from the `ext.args` directive, set in config.
 
-All local modules should use named outputs, including a `versions.yml` file that follows current nf-core conventions.
+All modules should use named outputs, including a `versions.yml` file that follows current nf-core conventions.
 
 Non-local modules should match the root level `modules.json`.
 
@@ -74,6 +74,8 @@ Non-local modules should match the root level `modules.json`.
 Comments should be used very liberally, ideally before each process call. It is often quite unintutiive what a channel definition (for example) is doing, and comments are enormously helplful.
 
 All variables representing channels should use the `ch_` prefix.
+
+Subworkflows that just wrap a single module should be kept in the `modules` subdirectory of `subworkflows`.
 
 ### Conf
 
