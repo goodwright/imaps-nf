@@ -6,3 +6,4 @@ results
 rmnf.sh
 *.pyc
 __pycache__
+schema.png
