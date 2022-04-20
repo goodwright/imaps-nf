@@ -27,6 +27,9 @@
             "paraclu/paraclu": {
                 "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
             },
+            "peka": {
+                "git_sha": "525fd42c783857fd806669f4569f859fecddaa67"
+            },
             "ultraplex": {
                 "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
             }
