@@ -62,7 +62,7 @@ workflow PRIMARY_ANALYSIS {
     longest_transcript = genome.map{ folder -> file(folder + "/FIND_LONGEST_TRANSCRIPT/*.txt")}
     longest_transcript_index = genome.map{ folder -> file(folder + "/FIND_LONGEST_TRANSCRIPT/*.fa.fai")}
     segmentation_gtf = genome.map{ folder -> file(folder + "/RAW_ICOUNT_SEGMENT/*segmentation*")}
-    regions_gtf = genome.map{ folder -> file(folder + "/RAW_ICOUNT_SEGMENT/*regions*")}
+    regions_gtf = genome.map{ folder -> file(folder + "/RESOLVE_UNANNOTATED/*regions*")}
 
     // Start things off with TrimGalore
     TRIMGALORE ( reads )

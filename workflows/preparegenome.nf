@@ -62,15 +62,14 @@ workflow {
     // Run iCount-Segment on filtered GTF
     FILTERED_ICOUNT_SEGMENT ( ch_post_filter_gtf, ch_fai )
 
-
-
-    // These two processes are likely getting the wrong inputs currently
+    // Run Resolve Unannotated, once without genic_other flag, once with
     RESOLVE_UNANNOTATED (
         FILTERED_ICOUNT_SEGMENT.out.regions, // filtered_segmentation
         RAW_ICOUNT_SEGMENT.out.regions,      // unfiltered_segmentation
         ch_post_filter_gtf,                  // gtf
         ch_fai,                              // fai
     )
+    
     RESOLVE_UNANNOTATED_GENIC_OTHER (
         FILTERED_ICOUNT_SEGMENT.out.regions, // filtered_segmentation
         RAW_ICOUNT_SEGMENT.out.regions,      // unfiltered_segmentation
