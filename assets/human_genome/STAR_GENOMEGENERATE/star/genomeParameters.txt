@@ -1,4 +1,4 @@
-### /usr/local/bin/STAR   --runMode genomeGenerate      --runThreadN 2   --genomeDir star/   --genomeFastaFiles homosapien-hg37-chr21.fa      --genomeSAindexNbases 12   --limitGenomeGenerateRAM 6342450944   --sjdbGTFfile gencode.v35.chr21.gtf
+### STAR   --runMode genomeGenerate      --runThreadN 2   --genomeDir star/   --genomeFastaFiles homosapien-hg37-chr21.fa      --genomeSAindexNbases 12   --limitGenomeGenerateRAM 6342450944   --sjdbGTFfile gencode.v35.chr21.gtf
 ### GstrandBit 32
 versionGenome	2.7.4a
 genomeType	Full
