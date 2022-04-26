@@ -15,6 +15,6 @@ class PrimaryAnalysisRunTests(TestCase):
         execution = self.pipeline.run(params={
             "fastq": "assets/ultraplex_demux_iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.fastq.gz",
             "Hs_genome": "assets/human_genome",
-        }, profile=["iMaps", "local"])
+        }, profile=["iMaps", "local", "test"])
         self.assertEqual(execution.status, "OK", msg=execution.stdout)
         self.assertEqual(len(execution.process_executions), 24)
