@@ -17,4 +17,4 @@ class PrimaryAnalysisRunTests(TestCase):
             "Hs_genome": "assets/human_genome",
         }, profile=["iMaps", "local", "test"])
         self.assertEqual(execution.status, "OK", msg=execution.stdout)
-        self.assertEqual(len(execution.process_executions), 24)
+        self.assertEqual(len(execution.process_executions), 25)
