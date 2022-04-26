@@ -4,34 +4,34 @@
     "repos": {
         "luslab/nf-core-modules": {
             "clippy": {
-                "git_sha": "d5ff5f3a1fb38c8b32f78ae83caaa4bc024771cd"
+                "git_sha": "58121729abc288747008dea3e55aec42b34cdc65"
             },
             "crosslinks/coverage": {
-                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+                "git_sha": "04cc5fb77c20afef7993e10227157894a5680d8e"
             },
             "crosslinks/normcoverage": {
-                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+                "git_sha": "04cc5fb77c20afef7993e10227157894a5680d8e"
             },
             "icount/segment": {
-                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+                "git_sha": "a13bab29e83f5459591bd0cec8b76cb2a9eac6ac"
             },
             "icount/sigxls": {
-                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+                "git_sha": "a13bab29e83f5459591bd0cec8b76cb2a9eac6ac"
             },
             "paraclu/convert": {
-                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+                "git_sha": "3de1783a14f036b43e594fd3843c10a76d7508ae"
             },
             "paraclu/cut": {
-                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+                "git_sha": "3de1783a14f036b43e594fd3843c10a76d7508ae"
             },
             "paraclu/paraclu": {
-                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+                "git_sha": "3de1783a14f036b43e594fd3843c10a76d7508ae"
             },
             "peka": {
-                "git_sha": "525fd42c783857fd806669f4569f859fecddaa67"
+                "git_sha": "fda53d620f75b1a18aa94a7c53f54023ceacedfb"
             },
             "ultraplex": {
-                "git_sha": "e812fb2cf3b05049d2276faf1ee635cae57aaa26"
+                "git_sha": "08ccc80f5959b258d6677cafb4de24f77b2e19c3"
             }
         },
         "nf-core/modules": {

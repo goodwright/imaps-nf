@@ -1,5 +1,5 @@
 name: icount_segment
-description: Formats a GTF file for use with iCount peaks
+description: Formats a GTF file for use with iCount sigxls
 keywords:
   - iCLIP
 tools:
@@ -25,7 +25,7 @@ input:
 output:
   - gtf:
       type: file
-      description: Segmented GTF file for use with iCount peaks
+      description: Segmented GTF file for use with iCount sigxls
       pattern: "*.{gtf}"
   - version:
       type: file

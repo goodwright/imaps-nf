@@ -1,23 +1,13 @@
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process PEKA {
     tag "$meta.id"
     label "low_cores"
     label "low_mem"
     label "regular_queue"
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "bioconda::peka=0.1.6" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/peka:0.1.6--pyhdfd78af_0"
-    } else {
-        container "quay.io/biocontainers/peka:0.1.6--pyhdfd78af_0"
-    }
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/peka:0.1.6--pyhdfd78af_0' :
+        'quay.io/biocontainers/peka:0.1.6--pyhdfd78af_0' }"
 
     input:
     tuple val(meta), path(peaks)
@@ -27,14 +17,16 @@ process PEKA {
     path(gtf)
 
     output:
-    tuple val(meta), path("*mer_cluster_distribution*"), emit: cluster
-    tuple val(meta), path("*mer_distribution*"),         emit: distribution
-    tuple val(meta), path("*.pdf"),                      emit: pdf
-    path "*.version.txt",                                emit: version
+    tuple val(meta), path("*mer_cluster_distribution*"), emit: cluster,      optional: true
+    tuple val(meta), path("*mer_distribution*"),         emit: distribution, optional: true
+    tuple val(meta), path("*.pdf"),                      emit: pdf,          optional: true
+    path "versions.yml",                                 emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
-    def software = getSoftwareName(task.process)
-    def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def args = task.ext.args ?: ''
     """
     # If the modification date and time of the fai is before the fasta then
     # there will be an error. Touching the file first avoids that.
@@ -46,7 +38,10 @@ process PEKA {
         -g $genome \
         -gi $fai \
         -r $gtf \
-        $options.args
-    echo "0.1.6" > ${software}.version.txt
+        $args
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        peka: 0.1.6
+    END_VERSIONS
     """
 }

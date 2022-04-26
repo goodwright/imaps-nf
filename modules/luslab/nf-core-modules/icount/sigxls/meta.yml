@@ -1,4 +1,4 @@
-name: icount_peaks
+name: icount_sigxls
 description: Runs iCount peaks on a BED file of crosslinks
 keywords:
   - iCLIP
