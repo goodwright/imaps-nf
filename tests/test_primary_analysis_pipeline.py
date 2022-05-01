@@ -24,6 +24,12 @@ class PrimaryAnalysisRunTests(TestCase):
     def test_can_run_pipeline_with_genome_that_has_no_gzip(self):
         try:
             shutil.copytree("assets/human_genome", "assets/human_genome_no_gzip")
+            os.mkdir("assets/human_genome_no_gzip/inputs")
+            os.mkdir("assets/human_genome_no_gzip/inputs/fasta")
+            shutil.copy(
+                "assets/human_genome_no_gzip/DNA_GUNZIP/homosapien-hg37-chr21.fa",
+                "assets/human_genome_no_gzip/inputs/fasta/homosapien-hg37-chr21.fa"
+            )
             shutil.rmtree("assets/human_genome_no_gzip/DNA_GUNZIP")
             execution = self.pipeline.run(params={
                 "fastq": "assets/ultraplex_demux_iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.fastq.gz",
