@@ -57,7 +57,7 @@ workflow {
     ch_fai_with_meta.map { it -> it[1] }.set { ch_fai }
 
     // Index the genome using STAR module
-    STAR_GENOMEGENERATE ( ch_fasta, params.gtf )
+    STAR_GENOMEGENERATE ( fasta ? fasta : ch_fasta, params.gtf )
 
     // Run iCount-Segment on raw GTF
     RAW_ICOUNT_SEGMENT ( params.gtf, ch_fai )
