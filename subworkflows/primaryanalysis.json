@@ -19,6 +19,21 @@
                     "description": "Demultiplexed reads file."
                 }
             }
+        },
+        "custom_arguments": {
+            "title": "Custom Arguments",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Custom arguments for specific processes.",
+            "properties": {
+                "fastq": {
+                    "type": "string",
+                    "format": "text",
+                    "required": false,
+                    "default": "rbc",
+                    "description": "Separaror used in UMI-tools Dedup."
+                }
+            }
         }
     },
     "allOf": [

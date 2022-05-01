@@ -19,6 +19,18 @@ class PrimaryAnalysisRunTests(TestCase):
         }, profile=["iMaps", "local", "test"])
         self.assertEqual(execution.status, "OK", msg=execution.stdout)
         self.assertEqual(len(execution.process_executions), 25)
+
+        # Default UMI Separator is rbc
+        for proc in execution.process_executions:
+            if "UMITOOLS_DEDUP" in proc.process:
+                p1, p2 = proc.hash.split("/")
+                subdirs = os.listdir(os.path.join("work", p1))
+                subdir = [d for d in subdirs if d.startswith(p2)][0]
+                with open(os.path.join("work", p1, subdir, ".command.log")) as f:
+                    self.assertIn(
+                        "--umi-separator=rbc:", f.read(),
+                        "Default umi-separator was not 'rbc'"
+                    )
     
 
     def test_can_run_pipeline_with_genome_that_has_no_gzip(self):
@@ -40,3 +52,23 @@ class PrimaryAnalysisRunTests(TestCase):
         finally:
             if os.path.exists("assets/human_genome_no_gzip"):
                 shutil.rmtree("assets/human_genome_no_gzip")
+    
+
+    def test_can_run_pipeline_with_rbc_param(self):
+        execution = self.pipeline.run(params={
+            "fastq": "assets/ultraplex_demux_iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.fastq.gz",
+            "Hs_genome": "assets/human_genome",
+            "umi_separator": "xyz"
+        }, profile=["iMaps", "local", "test"])
+        
+        # Custom UMI Separator is xyz
+        for proc in execution.process_executions:
+            if "UMITOOLS_DEDUP" in proc.process:
+                p1, p2 = proc.hash.split("/")
+                subdirs = os.listdir(os.path.join("work", p1))
+                subdir = [d for d in subdirs if d.startswith(p2)][0]
+                with open(os.path.join("work", p1, subdir, ".command.log")) as f:
+                    self.assertIn(
+                        "--umi-separator=xyz:", f.read(),
+                        msg="Custom umi-separator was not 'xyz'"
+                    )
