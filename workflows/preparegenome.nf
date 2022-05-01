@@ -44,13 +44,13 @@ workflow {
     if (params.fasta.matches(".*gz")) {
         DNA_GUNZIP ( [[:], file(params.fasta)] )
         ch_fasta_with_meta = DNA_GUNZIP.out.gunzip
-        ch_fasta_with_meta.map { it -> it[1]}.set { ch_fasta }
+        ch_fasta_with_meta.map { it -> it[1] }.set { ch_fasta }
     } else {
         ch_fasta = file(params.fasta)
     }
 
     // Create a FAI genome index using samtools
-    ch_fai_with_meta = SAMTOOLS_FAIDX ( ch_fasta_with_meta ).fai
+    ch_fai_with_meta = SAMTOOLS_FAIDX ( [[:], ch_fasta] ).fai
     ch_fai_with_meta.map { it -> it[1]}.set { ch_fai }
 
     // Index the genome using STAR module
