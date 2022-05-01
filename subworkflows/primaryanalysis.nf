@@ -56,6 +56,10 @@ workflow PRIMARY_ANALYSIS {
 
     main:
 
+    fasta = genome.map{ folder -> (
+        file(folder + "/DNA_GUNZIP/*.fa") ?
+        file(folder + "/DNA_GUNZIP/*.fa") : file(folder + "/inputs/fasta/*.fa")
+    ) }
     bowtie_index = genome.map{ folder -> file(folder + "/BOWTIE_BUILD/bowtie")}
     star_index = genome.map{ folder -> file(folder + "/STAR_GENOMEGENERATE/star")}
     genome_gtf = genome.map{ folder -> file(folder + "/FILTER_GTF/*.gtf")}
@@ -123,18 +127,11 @@ workflow PRIMARY_ANALYSIS {
     ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigxls, by: 0)
     ICOUNT_PEAKS ( ch_icount_peaks )
 
-    // If genome is compressed, uncompress it
-    if (params.fasta.matches(".*gz")) {
-        ch_fasta = genome.map{ folder -> file(folder + "/DNA_GUNZIP/*.fa")}
-    } else {
-        ch_fasta = file(params.fasta)
-    }
-
     // PEKA
     PEKA (
         CLIPPY.out.peaks,
         GET_CROSSLINKS.out.crosslinkBed,
-        ch_fasta,
+        fasta,
         genome_fai,
         genic_other_regions_gtf
     )
