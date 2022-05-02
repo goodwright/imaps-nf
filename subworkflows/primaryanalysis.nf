@@ -28,6 +28,7 @@ include { CLIPPY } from '../modules/luslab/nf-core-modules/clippy/main'
 include { PARACLU_CONVERT } from '../modules/luslab/nf-core-modules/paraclu/convert/main'
 include { PARACLU_PARACLU } from '../modules/luslab/nf-core-modules/paraclu/paraclu/main'
 include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main'
+include { PEKA } from '../modules/luslab/nf-core-modules/peka/main'
 
 workflow {
     // If running straight from command line, will need to construct the
@@ -55,6 +56,10 @@ workflow PRIMARY_ANALYSIS {
 
     main:
 
+    fasta = genome.map{ folder -> (
+        file(folder + "/DNA_GUNZIP/*.fa") ?
+        file(folder + "/DNA_GUNZIP/*.fa") : file(folder + "/inputs/fasta/*.fa")
+    ) }
     bowtie_index = genome.map{ folder -> file(folder + "/BOWTIE_BUILD/bowtie")}
     star_index = genome.map{ folder -> file(folder + "/STAR_GENOMEGENERATE/star")}
     genome_gtf = genome.map{ folder -> file(folder + "/FILTER_GTF/*.gtf")}
@@ -63,6 +68,7 @@ workflow PRIMARY_ANALYSIS {
     longest_transcript_index = genome.map{ folder -> file(folder + "/FIND_LONGEST_TRANSCRIPT/*.fa.fai")}
     segmentation_gtf = genome.map{ folder -> file(folder + "/RAW_ICOUNT_SEGMENT/*segmentation*")}
     regions_gtf = genome.map{ folder -> file(folder + "/RESOLVE_UNANNOTATED/*regions*")}
+    genic_other_regions_gtf = genome.map{ folder -> file(folder + "/RESOLVE_UNANNOTATED_GENIC_OTHER/*regions*")}
 
     // Start things off with TrimGalore
     TRIMGALORE ( reads )
@@ -120,5 +126,13 @@ workflow PRIMARY_ANALYSIS {
 
     ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigxls, by: 0)
     ICOUNT_PEAKS ( ch_icount_peaks )
-    
+
+    // PEKA
+    PEKA (
+        CLIPPY.out.peaks,
+        GET_CROSSLINKS.out.crosslinkBed,
+        fasta,
+        genome_fai,
+        genic_other_regions_gtf
+    )
 }

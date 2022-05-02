@@ -17,5 +17,5 @@ class DemultiplexAndAnalyseRunTests(TestCase):
             "annotation": "assets/TEST_ANNOTATION.csv",
             "multiplexed_fastq": "assets/SmB_multiplexed.fq.gz",
             "Hs_genome": "assets/human_genome"
-        }, profile=["iMaps", "local"])
+        }, profile=["iMaps", "local", "test"])
         self.assertEqual(execution.status, "OK", msg=execution.stdout)

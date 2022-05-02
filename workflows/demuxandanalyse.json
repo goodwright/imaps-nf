@@ -28,6 +28,21 @@
                     "description": "A multiplexed reads file containing reads from multiple experiments, distinguishable by barcode sequence."
                 }
             }
+        },
+        "custom_arguments": {
+            "title": "Custom Arguments",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Custom arguments for specific processes.",
+            "properties": {
+                "umi_separator": {
+                    "type": "string",
+                    "format": "text",
+                    "required": false,
+                    "default": "rbc",
+                    "description": "Separator used in UMI-tools Dedup."
+                }
+            }
         }
     },
     "allOf": [

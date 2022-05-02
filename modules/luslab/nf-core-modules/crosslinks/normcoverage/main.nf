@@ -1,35 +1,27 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-params.options = [:]
-options        = initOptions(params.options)
-
 process CROSSLINKS_NORMCOVERAGE {
     tag "$meta.id"
     label "low_cores"
     label "low_mem"
     label "regular_queue"
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "conda-forge::sed=4.7" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://containers.biocontainers.pro/s3/SingImgsRepo/biocontainers/v1.2.0_cv1/biocontainers_v1.2.0_cv1.img"
-    } else {
-        container "biocontainers/biocontainers:v1.2.0_cv1"
-    }
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://containers.biocontainers.pro/s3/SingImgsRepo/biocontainers/v1.2.0_cv1/biocontainers_v1.2.0_cv1.img' :
+        'biocontainers/biocontainers:v1.2.0_cv1' }"
 
     input:
     tuple val(meta), path(crosslinks)
 
     output:
-    tuple val(meta), path("*.bedgraph.gz"), emit: bedgraph
-    path "*.version.txt",                   emit: version
+    tuple val(meta), path("$prefix*.bedgraph.gz"), emit: bedgraph
+    path "versions.yml",                           emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
-    def software = getSoftwareName(task.process)
-    def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
-
+    def args = task.ext.args ?: ''
+    prefix   = task.ext.prefix ?: "${meta.id}"
     """
     TOTAL=`gunzip -c $crosslinks | awk 'BEGIN {total=0} {total=total+\$5} END {print total}'`
 
@@ -39,6 +31,9 @@ process CROSSLINKS_NORMCOVERAGE {
         sort -k1,1 -k2,2n | \
         gzip > ${prefix}.norm.bedgraph.gz
 
-    echo \$(awk --version 2>&1) | sed 's/^.*awk version //' > ${software}.version.txt
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gunzip: \$(echo \$(gunzip --version 2>&1) | sed 's/^.*(gzip) //; s/ Copyright.*\$//')
+    END_VERSIONS
     """
 }
