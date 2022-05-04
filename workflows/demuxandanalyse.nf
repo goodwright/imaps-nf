@@ -13,9 +13,9 @@ workflow {
         params.multiplexed_fastq
     )
 
-    // Run Primary Analysis
+    // Run Primary CLIP Analysis
     DEMULTIPLEX.out
-    .filter{pair -> pair[0].pipeline == "Primary Analysis"}
+    .filter{pair -> pair[0].pipeline == "Primary CLIP Analysis"}
     .set{ ch_primary_clip_analysis_reads }
 
     PRIMARY_CLIP_ANALYSIS (
