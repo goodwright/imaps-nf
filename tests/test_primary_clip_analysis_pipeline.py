@@ -3,12 +3,12 @@ import shutil
 from unittest import TestCase
 import nextflow
 
-class PrimaryAnalysisRunTests(TestCase):
+class PrimaryClipAnalysisRunTests(TestCase):
 
     def setUp(self):
         self.pipeline = nextflow.Pipeline(
-            "subworkflows/primaryanalysis.nf",
-            config="subworkflows/primaryanalysis.config"
+            "subworkflows/primaryclipanalysis.nf",
+            config="subworkflows/primaryclipanalysis.config"
         )
     
 

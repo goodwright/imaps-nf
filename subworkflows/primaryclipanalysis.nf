@@ -42,13 +42,13 @@ workflow {
     genomeParamName = params.keySet().find{k -> k.endsWith("_genome")}
 
     // Now just pass that along with the rest of params
-    PRIMARY_ANALYSIS (
+    PRIMARY_CLIP_ANALYSIS (
         reads,
         Channel.from(params[genomeParamName])
     )
 }
 
-workflow PRIMARY_ANALYSIS {
+workflow PRIMARY_CLIP_ANALYSIS {
 
     take:
         reads

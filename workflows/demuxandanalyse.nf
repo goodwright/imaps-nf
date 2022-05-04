@@ -3,7 +3,7 @@
 nextflow.enable.dsl=2
 
 include { DEMULTIPLEX } from '../subworkflows/demultiplex'
-include { PRIMARY_ANALYSIS } from '../subworkflows/primaryanalysis'
+include { PRIMARY_CLIP_ANALYSIS } from '../subworkflows/primaryclipanalysis'
 include { NCRNA_ANALYSIS } from '../subworkflows/ncrna'
 
 workflow {
@@ -16,11 +16,11 @@ workflow {
     // Run Primary Analysis
     DEMULTIPLEX.out
     .filter{pair -> pair[0].pipeline == "Primary Analysis"}
-    .set{ ch_primary_analysis_reads }
+    .set{ ch_primary_clip_analysis_reads }
 
-    PRIMARY_ANALYSIS (
-        ch_primary_analysis_reads, // [meta, reads] pairs
-        ch_primary_analysis_reads.map{pair -> params[pair[0].species + "_genome"]}
+    PRIMARY_CLIP_ANALYSIS (
+        ch_primary_clip_analysis_reads, // [meta, reads] pairs
+        ch_primary_clip_analysis_reads.map{pair -> params[pair[0].species + "_genome"]}
     )
 
     // Run Non-Coding RNA Analysis

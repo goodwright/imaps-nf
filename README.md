@@ -37,8 +37,8 @@ Specifically, it will generate:
 ### Demultiplex and Analyse
 
 Uses the Demultiplex subworkflow to split a multiplexed reads file into its
-component sample reads files, then performs the Primary Analysis subworkflow on
-each downstream reads file.
+component sample reads files, then performs the Primary CLIP Analysis
+subworkflow on each downstream reads file.
 
 ## Subworkflows
 
@@ -48,7 +48,7 @@ Takes a multiplexed reads file, and a CSV file describing the different samples
 it contains, and demultiplexes them using Ultraplex. The reads files produced
 are then quality checked with FASTQC.
 
-### Primary Analysis
+### Primary CLIP Analysis
 
 Takes a demultiplexed reads file and performs the primary CLIP analysis workflow
 on it.

@@ -1,5 +1,5 @@
 {
-    "title": "Primary Analysis",
+    "title": "Primary CLIP Analysis",
     "description": "Analyses a single demultiplxed reads file using the standard CLIP pipeline.",
     "type": "object",
     "definitions": {
