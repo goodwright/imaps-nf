@@ -24,15 +24,101 @@ resource allowance limits.
 
 ### Prepare Genome
 
-Generates descriptive files and indexes for a particular genome, starting from
-the raw genome in FASTA format, and an accompanying annotation GTF file.
+#### Inputs
 
-Specifically, it will generate:
+**Genome FASTA** - a FASTA file containing the DNA sequence of the entire genome. This can be gzipped. Different chromosomes should be their own sequence.
 
-- a STAR index directory using STAR.
-- a FAI index file describing the sequences/chromosomes within the genome.
-- segmentation and regions annotation files using `iCount segment`.
-- longest transcript information.
+**Genome Annotation** - a GTF file containing the official, exhaustive annotation of the provided genome FASTA.
+
+**smRNA FASTA** - a FASTA file listing all the small RNA genes, such as tRNAs.
+
+#### Processes
+
+##### DNA_GUNZIP
+
+If the genome FASTA file is gzipped, this process will uncompress it with gunzip and output the raw FASTA file.
+
+##### RNA_GUNZIP
+
+If the smRNA FASTA file is gzipped, this process will uncompress it with gunzip and output the raw FASTA file.
+
+##### STAR_GENOMEGENERATE
+
+Takes the raw genome and its annotation GTF and builds a STAR genome index - a compressed binary representation of the genome that STAR can align reads to.
+
+##### BOWTIE_BUILD
+
+Takes the raw smRNA FASTA and builds a Bowtie genome index - a compressed binary representation of the smRNA that Bowtie can align reads to.
+
+##### SAMTOOLS_FAIDX
+
+Creates a FAI genome index of the raw genome file - a small reference file which gives the start positions of the sequences (chromosomes in this case) within it so that they can be accessed quickly and memory-efficiently.
+
+
+
+##### FIND_LONGEST_TRANSCRIPT
+
+Searches through the GTF annotation and, for each gene, identifies the longest protein coding transcript. This is output as a TXT file where each line contains an ENSEMBL gene ID, the ENSEMBL transcript ID of the transcript from this gene which is the longest, and the length of that longest transcript.
+
+Genes can have multiple transcripts (each of which may be split into multiple exons) so knowing which transcript is the 'representative' one to use is useful in transcriptomics analysis of the genome later.
+
+An index file is also produced giving the locations of these genes in the genome FASTA.
+
+##### FILTER_GTF
+
+In the attributes column of a GTF file, one of the attributes is 'tag', and often annotators will tag some lines as 'basic' meaning that it is a representative transcript for a particular gene. It is often useful to only use these representative transcripts, so this process will filter a GTF to keep only gene lines, and other lines tagged as basic. It only does this if the 'basic' tag is used in the GTF file.
+
+Transcripts also sometimes have a 'TSL' - transcript support level - which can be 1 (high confidence) or above (decreasing confidence). For genes whose transcripts have these identifiers, this process will further filter the transcripts such that only TSL1 and TSL2 are kept.
+
+##### RAW_ICOUNT_SEGMENT/FILTERED_ICOUNT_SEGMENT
+
+iCount segment is a tool which takes a GTF annotation file, and produces two modified versions of it that iCount needs for its downstream analysis - a 'segmentation' GTF file and a 'regions' GTF file.
+
+A segmentation file essentially 'fills in' certain unannotated portions of the genome. It creates GTF records for intergenic regions, and ensures that every section of transcripts have an annotation (mostly by adding records for introns). Records that were previously just called 'exons' will be given a more detailed name.
+
+A regions file is a flat representation of the genome that gives every nucleotide one and only one 'region'.
+
+
+Initial GTF:
+```
+              |-----------gene1(G1)-----------|
+              |--------transcript1(A)---------|
+              |-exon--|         |----exon-----|
+                       |------------------gene2(G2)--------------------|
+                       |-----------------transcript2(B)----------------|
+                       |-exon--|        |----exon----|          |-exon-|
+```
+
+Transcript-wise segmentation:
+```
+|-intergenic-|
+              |-----------gene1(G1)-----------|
+              |--------transcript1(A)---------|
+              |-UTR5--||-intron||-----CDS-----|
+                       |------------------gene2(G2)--------------------|
+                       |-----------------transcript2(B)----------------|
+                       |-UTR5--||intron||-----CDS----||-intron-||-UTR3-|
+                                                                        |-intergenic-|
+```
+
+Ggenome-wise segmentation into regions:
+
+```
+|-intergenic-||--UTR5-||--UTR5-||-----CDS-----||-CDS-||-intron-||-UTR3-||-intergenic-|
+```
+
+This is performed twice - one on the initial GTF, once on the filtered GTF.
+
+
+##### RESOLVE_UNANNOTATED/RESOLVE_UNANNOTATED_GENIC_OTHER
+
+When performing iCount segmentation on GTF annotation, the whole genome is split into the following genomic regions: CDS, UTR3, UTR5, ncRNA, intron, intergenic.
+
+If the segmentation is performed on filtered genomic annotation, some regions remain unnanotated. This is due to the fact that the annotation on a "gene" level covers all transcripts related to this gene, including transcripts with low transcript_support_level, which were removed by filtering. As a result, we get unannotated regions, which are covered by a gene, but lack transcripts that are required for segmentation.
+
+This process finds unannotated regions in the iCount genomic segment (regions.gtf), annotates them according to the corresponding gene, and adds them to the original segment under the feature "genic_other" (if `--genic_other` is provided) or else with the missing transcript segment.
+
+This process is run twice, once with `--genic_other`, once without.
 
 ### Demultiplex and Analyse
 
