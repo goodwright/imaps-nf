@@ -26,11 +26,11 @@ resource allowance limits.
 
 #### Inputs
 
-**Genome FASTA** - a FASTA file containing the DNA sequence of the entire genome. This can be gzipped. Different chromosomes should be their own sequence.
+Genome FASTA - a FASTA file containing the DNA sequence of the entire genome. This can be gzipped. Different chromosomes should be their own sequence.
 
-**Genome Annotation** - a GTF file containing the official, exhaustive annotation of the provided genome FASTA.
+Genome Annotation - a GTF file containing the official, exhaustive annotation of the provided genome FASTA.
 
-**smRNA FASTA** - a FASTA file listing all the small RNA genes, such as tRNAs.
+smRNA FASTA - a FASTA file listing all the small RNA genes, such as tRNAs.
 
 #### Processes
 
