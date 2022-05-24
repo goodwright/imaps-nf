@@ -8,57 +8,34 @@ include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'
 
 workflow {
     // If running straight from command line, will need to construct the
-    // [meta, reads] pair channel first
-    reads = [[
-        id: params.fastq.split("/")[-1].replace(".gz", "")
-            .replace(".fastq", "").replace("ultraplex_demux_", ""),
-        single_end: true
-    ], file(params.fastq)]
+    // [meta, reads, genome_name] triplet channel first
 
-    // What is the genome param called?
     genomeParamName = params.keySet().find{k -> k.endsWith("_genome")}
+    species = genomeParamName.substring(0, 2)
+    reads = [[
+        id: params.fastq.split("/")[-1].replace(".gz", "").replace(".fastq", "").replace("ultraplex_demux_", ""),
+        species: species,
+        single_end: true
+    ], file(params.fastq), genomeParamName]
 
-    // Now just pass that along with the rest of params
+    // Now just pass that along
     NCRNA_ANALYSIS (
-        reads,
-        Channel.from(params[genomeParamName])
+        Channel.from([reads])
     )
 }
 
 workflow NCRNA_ANALYSIS {
 
     take:
+        // The input channel brings in tuples of
+        // [reads_meta, reads_file, genome_location]
         reads
-        genome
 
     main:
 
-    bowtie_index = genome.map{ folder -> file(folder + "/BOWTIE_BUILD/bowtie")}
-    star_index = genome.map{ folder -> file(folder + "/STAR_GENOMEGENERATE/star")}
-    genome_gtf = genome.map{ folder -> file(folder + "/FILTER_GTF/*.gtf")}
-    genome_fai = genome.map{ folder -> file(folder + "/SAMTOOLS_FAIDX/*.fa.fai")}
-    longest_transcript = genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.txt")}
-    longest_transcript_index = genome.map{ folder -> file(folder + "/LONGEST_TRANSCRIPT/*.fa.fai")}
-    segmentation_gtf = genome.map{ folder -> file(folder + "/RAW_ICOUNT_SEGMENT/*segmentation*")}
-    regions_gtf = genome.map{ folder -> file(folder + "/RAW_ICOUNT_SEGMENT/*regions*")}
+    // Create channel just for reads and its meta data
+    reads.map{triplet -> [triplet[0], triplet[1]]}.set{ ch_reads }
 
-    // Start things off with TrimGalore
-    TRIMGALORE ( reads )
-
-    // Run Bowtie Align on each of the reads, with the provided genome index
-    // files as reference
-    BOWTIE_ALIGN (
-        TRIMGALORE.out.reads,
-        bowtie_index
-    )
-
-    // Run STAR Align on the reads which didn't match above
-    STAR_ALIGN (
-        BOWTIE_ALIGN.out.fastq,
-        star_index,
-        genome_gtf,
-        false,                   // star_ignore_sjdbgtf
-        "",                      // seq_platform
-        ""                       // seq_center
-    )    
+    // Trim the adapters of everything that comes out of ch_reads
+    TRIMGALORE ( ch_reads )
 }

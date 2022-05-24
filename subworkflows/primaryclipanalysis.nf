@@ -32,66 +32,117 @@ include { PEKA } from '../modules/luslab/nf-core-modules/peka/main'
 
 workflow {
     // If running straight from command line, will need to construct the
-    // [meta, reads] pair channel first
+    // [meta, reads, genome_name] triplet channel first
+
+    genomeParamName = params.keySet().find{k -> k.endsWith("_genome")}
+    species = genomeParamName.substring(0, 2)
     reads = [[
         id: params.fastq.split("/")[-1].replace(".gz", "").replace(".fastq", "").replace("ultraplex_demux_", ""),
+        species: species,
         single_end: true
-    ], file(params.fastq)]
+    ], file(params.fastq), genomeParamName]
 
-    // What is the genome param called?
-    genomeParamName = params.keySet().find{k -> k.endsWith("_genome")}
-
-    // Now just pass that along with the rest of params
+    // Now just pass that along
     PRIMARY_CLIP_ANALYSIS (
-        reads,
-        Channel.from(params[genomeParamName])
+        Channel.from([reads])
     )
 }
 
 workflow PRIMARY_CLIP_ANALYSIS {
 
     take:
+        // The input channel brings in tuples of
+        // [reads_meta, reads_file, genome_location]
         reads
-        genome
 
     main:
 
-    fasta = genome.map{ folder -> (
-        file(folder + "/DNA_GUNZIP/*.fa") ?
-        file(folder + "/DNA_GUNZIP/*.fa") : file(folder + "/inputs/fasta/*.fa")
-    ) }
-    bowtie_index = genome.map{ folder -> file(folder + "/BOWTIE_BUILD/bowtie")}
-    star_index = genome.map{ folder -> file(folder + "/STAR_GENOMEGENERATE/star")}
-    genome_gtf = genome.map{ folder -> file(folder + "/FILTER_GTF/*.gtf")}
-    genome_fai = genome.map{ folder -> file(folder + "/SAMTOOLS_FAIDX/*.fa.fai")}
-    longest_transcript = genome.map{ folder -> file(folder + "/FIND_LONGEST_TRANSCRIPT/*.txt")}
-    longest_transcript_index = genome.map{ folder -> file(folder + "/FIND_LONGEST_TRANSCRIPT/*.fa.fai")}
-    segmentation_gtf = genome.map{ folder -> file(folder + "/RAW_ICOUNT_SEGMENT/*segmentation*")}
-    regions_gtf = genome.map{ folder -> file(folder + "/RESOLVE_UNANNOTATED/*regions*")}
-    genic_other_regions_gtf = genome.map{ folder -> file(folder + "/RESOLVE_UNANNOTATED_GENIC_OTHER/*regions*")}
+    // Create channel just for reads and its meta data
+    reads.map{triplet -> [triplet[0], triplet[1]]}.set{ ch_reads }
 
-    // Start things off with TrimGalore
-    TRIMGALORE ( reads )
+    // Trim the adapters of everything that comes out of ch_reads
+    TRIMGALORE ( ch_reads )
 
-    // Run Bowtie Align on each of the reads, with the provided genome index
-    // files as reference
-    BOWTIE_ALIGN ( TRIMGALORE.out.reads, bowtie_index )
+    // Create a channel which outputs [reads_meta, bowtie_index] pairs
+    reads.map{triplet -> [
+        triplet[0], file(triplet[2] + "/BOWTIE_BUILD/bowtie")
+    ]}.set{ ch_bowtie }
 
-    // Run STAR Align on the reads which didn't match above
-    STAR_ALIGN ( BOWTIE_ALIGN.out.fastq, star_index, genome_gtf, false, "", "" )
+    // Create a channel which creates
+    // [reads_meta, trimmed_reads, bowtie_index] triplets
+    TRIMGALORE.out.reads.join(ch_bowtie).set { ch_reads_with_bowtie_index }
 
+    // Multi-map channel into named outputs
+    ch_reads_with_bowtie_index.multiMap { triplet ->
+        trimgalore: [triplet[0], triplet[1]]
+        bowtie: triplet[2]
+    }.set { ch_bowtie_input }
+
+    // Align reads to associated genome bowtie index
+    BOWTIE_ALIGN ( ch_bowtie_input.trimgalore, ch_bowtie_input.bowtie )
+
+    // Create a channel which outputs [reads_meta, star_index] pairs
+    reads.map{triplet -> [
+        triplet[0], file(triplet[2] + "/STAR_GENOMEGENERATE/star")
+    ]}.set{ ch_star }
+
+    // Create a channel which outputs [reads_meta, star_index] pairs
+    reads.map{triplet -> [
+        triplet[0], file(triplet[2] + "/FILTER_GTF/*.gtf")
+    ]}.set{ ch_gtf }
+
+    // Create a channel which creates
+    // [reads_meta, bowtie_output, star_index, gtf] tuples
+    BOWTIE_ALIGN.out.fastq.join( ch_star ).join( ch_gtf ).set{ ch_reads_with_star_index }
+
+    // Multi-map channel into named outputs
+    ch_reads_with_star_index.multiMap { tuple ->
+        bowtie: [tuple[0], tuple[1]]
+        star: tuple[2]
+        gtf: tuple[3]
+    }.set { ch_star_input }
+
+    // Align reads to associated genome STAR index
+    STAR_ALIGN (
+        ch_star_input.bowtie, ch_star_input.star, ch_star_input.gtf,
+        false, "", ""
+    )
+
+    // Create a channel which outputs [reads_meta, transcript_txt] pairs
+    reads.map{triplet -> [
+        triplet[0], file(triplet[2] + "/FIND_LONGEST_TRANSCRIPT/*.txt")
+    ]}.set{ ch_longest_transcript }
+
+    // Create a channel which creates
+    // [reads_meta, star_transcripts, transcript_txt] triplets
+    STAR_ALIGN.out.bam_transcript
+    .join( ch_longest_transcript )
+    .set{ ch_star_transcripts_with_longest }
+
+    // Multi-map channel into named outputs
+    ch_star_transcripts_with_longest.multiMap { triplet ->
+        star: [triplet[0], triplet[1]]
+        transcripts: triplet[2]
+    }.set { ch_filter_input }
+
+    // Filter transcripts
+    FILTER_TRANSCRIPTS ( ch_filter_input.star, ch_filter_input.transcripts )
 
     // Get TOME crosslinks
-    FILTER_TRANSCRIPTS ( STAR_ALIGN.out.bam_transcript, longest_transcript )
-
     TOME_STAR_SAMTOOLS_INDEX ( FILTER_TRANSCRIPTS.out.filtered_bam )
     tome_ch_umi_input = FILTER_TRANSCRIPTS.out.filtered_bam.combine(TOME_STAR_SAMTOOLS_INDEX.out.bai, by: 0)
     TOME_UMITOOLS_DEDUP ( tome_ch_umi_input )
-
     TOME_UMITOOLS_SAMTOOLS_INDEX ( TOME_UMITOOLS_DEDUP.out.bam )
+    reads.map{triplet -> [
+        triplet[0], file(triplet[2] + "/FIND_LONGEST_TRANSCRIPT/*.fa.fai")
+    ]}.set{ ch_longest_transcript_index }
     tome_ch_xl_input = TOME_UMITOOLS_DEDUP.out.bam.combine(TOME_UMITOOLS_SAMTOOLS_INDEX.out.bai, by: 0)
-    TOME_GET_CROSSLINKS ( tome_ch_xl_input, longest_transcript_index )
-
+    tome_ch_xl_input.join( ch_longest_transcript_index ).set{ tome_with_index }
+    tome_with_index.multiMap { tuple ->
+        bam: [tuple[0], tuple[1], tuple[2]]
+        transcript: tuple[3]
+    }.set { ch_tome_input }
+    TOME_GET_CROSSLINKS ( ch_tome_input.bam, ch_tome_input.transcript )
     TOME_CROSSLINKS_COVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed )
     TOME_CROSSLINKS_NORMCOVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed )
 
@@ -100,39 +151,88 @@ workflow PRIMARY_CLIP_ANALYSIS {
     STAR_SAMTOOLS_INDEX ( STAR_ALIGN.out.bam_sorted )
     ch_umi_input = STAR_ALIGN.out.bam_sorted.combine(STAR_SAMTOOLS_INDEX.out.bai, by: 0)
     UMITOOLS_DEDUP ( ch_umi_input )
-
     UMITOOLS_SAMTOOLS_INDEX ( UMITOOLS_DEDUP.out.bam )
+    reads.map{triplet -> [
+        triplet[0], file(triplet[2] + "/SAMTOOLS_FAIDX/*.fa.fai")
+    ]}.set{ ch_genome_fa }
     ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by: 0)
-    GET_CROSSLINKS ( ch_xl_input, genome_fai )
-
+    ch_xl_input.join( ch_genome_fa ).set{ ch_with_index }
+    ch_with_index.multiMap { tuple ->
+        bam: [tuple[0], tuple[1], tuple[2]]
+        transcript: tuple[3]
+    }.set { ch_xl_input }
+    GET_CROSSLINKS ( ch_xl_input.bam, ch_xl_input.transcript )
     CROSSLINKS_COVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
     CROSSLINKS_NORMCOVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
 
-
     // CLIPPY Peak Calling
-    CLIPPY ( GET_CROSSLINKS.out.crosslinkBed, genome_gtf, genome_fai )
-
+    GET_CROSSLINKS.out.crosslinkBed.join( ch_gtf ).join( ch_genome_fa ).set{ ch_crosslinks }
+    ch_crosslinks.multiMap { tuple ->
+        crosslinks: [tuple[0], tuple[1]]
+        gtf: tuple[2]
+        fa: tuple[3]
+    }.set { ch_clippy_input }
+    CLIPPY ( ch_clippy_input.crosslinks,  ch_clippy_input.gtf,  ch_clippy_input.fa )
 
     // Paraclu Peak Calling
     PARACLU_PARACLU ( GET_CROSSLINKS.out.crosslinkBed )
     PARACLU_CUT ( PARACLU_PARACLU.out.sigxls )
     PARACLU_CONVERT ( PARACLU_CUT.out.peaks )
 
-
     // iCount
-    ICOUNT_SUMMARY ( GET_CROSSLINKS.out.crosslinkBed, regions_gtf )
-    ICOUNT_RNAMAPS ( GET_CROSSLINKS.out.crosslinkBed, regions_gtf )
-    ICOUNT_SIGXLS ( GET_CROSSLINKS.out.crosslinkBed, segmentation_gtf )
-
+    reads.map{triplet -> [
+        triplet[0], file(triplet[2] + "/RAW_ICOUNT_SEGMENT/*segmentation*")
+    ]}.set{ ch_segmentation }
+    reads.map{triplet -> [
+        triplet[0], file(triplet[2] + "/RESOLVE_UNANNOTATED/*regions*")
+    ]}.set{ ch_regions }
+    reads.map{triplet -> [
+        triplet[0], file(triplet[2] + "/RESOLVE_UNANNOTATED_GENIC_OTHER/*regions*")
+    ]}.set{ ch_regions_genic_other }
+    GET_CROSSLINKS.out.crosslinkBed
+    .join( ch_regions )
+    .set{ ch_crosslinks_with_regions }
+    GET_CROSSLINKS.out.crosslinkBed
+    .join( ch_segmentation )
+    .set{ ch_crosslinks_with_segmentation }
+    ch_crosslinks_with_regions.multiMap { triplet ->
+        crosslinks: [triplet[0], triplet[1]]
+        regions: triplet[2]
+    }.set { ch_regions_input }
+    ch_crosslinks_with_segmentation.multiMap { triplet ->
+        crosslinks: [triplet[0], triplet[1]]
+        segmentation: triplet[2]
+    }.set { ch_segmentation_input }
+    ICOUNT_SUMMARY ( ch_regions_input.crosslinks, ch_regions_input.regions )
+    ICOUNT_RNAMAPS ( ch_regions_input.crosslinks, ch_regions_input.regions )
+    ICOUNT_SIGXLS ( ch_segmentation_input.crosslinks, ch_segmentation_input.segmentation )
     ch_icount_peaks = GET_CROSSLINKS.out.crosslinkBed.combine(ICOUNT_SIGXLS.out.sigxls, by: 0)
     ICOUNT_PEAKS ( ch_icount_peaks )
 
     // PEKA
+    reads.map{triplet -> [
+        triplet[0],
+        file(triplet[2] + "/DNA_GUNZIP/*.fa") ?
+        file(triplet[2] + "/DNA_GUNZIP/*.fa") : file(triplet[2] + "/inputs/fasta/*.fa")
+    ]}.set{ ch_fasta }
+    CLIPPY.out.peaks
+    .join(GET_CROSSLINKS.out.crosslinkBed)
+    .join(ch_fasta)
+    .join(ch_genome_fa)
+    .join(ch_regions_genic_other)
+    .set{ ch_peka_joins }
+    ch_peka_joins.multiMap { tuple ->
+        peaks: [tuple[0], tuple[1]]
+        crosslinks: [tuple[0], tuple[2]]
+        fasta: tuple[3]
+        fai: tuple[4]
+        regions: tuple[5]
+    }.set { ch_peka_input }
     PEKA (
-        CLIPPY.out.peaks,
-        GET_CROSSLINKS.out.crosslinkBed,
-        fasta,
-        genome_fai,
-        genic_other_regions_gtf
+        ch_peka_input.peaks,
+        ch_peka_input.crosslinks,
+        ch_peka_input.fasta,
+        ch_peka_input.fai,
+        ch_peka_input.regions,
     )
 }
