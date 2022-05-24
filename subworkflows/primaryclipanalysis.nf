@@ -40,7 +40,7 @@ workflow {
         id: params.fastq.split("/")[-1].replace(".gz", "").replace(".fastq", "").replace("ultraplex_demux_", ""),
         species: species,
         single_end: true
-    ], file(params.fastq), genomeParamName]
+    ], file(params.fastq), params[genomeParamName]]
 
     // Now just pass that along
     PRIMARY_CLIP_ANALYSIS (
