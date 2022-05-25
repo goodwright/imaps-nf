@@ -5,7 +5,9 @@ nextflow.enable.dsl=2
 include { TRIMGALORE } from '../modules/nf-core/modules/trimgalore/main'
 include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'
 include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'
-include { UMITOOLS_DEDUP } from '../modules/nf-core/modules/umitools/dedup/main'
+include { DU } from '../modules/local/du/main'
+include { GET_UMI_LENGTH } from '../modules/local/get_umi_length/main'
+include { UMITOOLS_DEDUP } from '../modules/local/umitools/dedup/main'
 include { SAMTOOLS_INDEX as STAR_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
 include { SAMTOOLS_INDEX as UMITOOLS_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
 include { GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'
@@ -13,7 +15,9 @@ include { CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslin
 include { CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'
 
 include { FILTER_TRANSCRIPTS } from '../modules/local/filter_transcriptome_bam/main'
-include { UMITOOLS_DEDUP as TOME_UMITOOLS_DEDUP } from '../modules/nf-core/modules/umitools/dedup/main'
+include { DU as TOME_DU } from '../modules/local/du/main'
+include { GET_UMI_LENGTH as TOME_GET_UMI_LENGTH } from '../modules/local/get_umi_length/main'
+include { UMITOOLS_DEDUP as TOME_UMITOOLS_DEDUP } from '../modules/local/umitools/dedup/main'
 include { SAMTOOLS_INDEX as TOME_STAR_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'
 include { SAMTOOLS_INDEX as TOME_UMITOOLS_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'
 include { GET_CROSSLINKS as TOME_GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'
@@ -29,6 +33,15 @@ include { PARACLU_CONVERT } from '../modules/luslab/nf-core-modules/paraclu/conv
 include { PARACLU_PARACLU } from '../modules/luslab/nf-core-modules/paraclu/paraclu/main'
 include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main'
 include { PEKA } from '../modules/luslab/nf-core-modules/peka/main'
+
+// Closure to annotate UMITools Input
+annotate_umitools_input = { it ->
+    if (it[3].toInteger() > params.max_kilobytes &
+        it[4].toInteger() > params.max_umi_length) {
+        it[0]["low_memory"] = true
+    }
+    return [it[0], it[1], it[2]]
+}
 
 workflow {
     // If running straight from command line, will need to construct the
@@ -131,7 +144,17 @@ workflow PRIMARY_CLIP_ANALYSIS {
     // Get TOME crosslinks
     TOME_STAR_SAMTOOLS_INDEX ( FILTER_TRANSCRIPTS.out.filtered_bam )
     tome_ch_umi_input = FILTER_TRANSCRIPTS.out.filtered_bam.combine(TOME_STAR_SAMTOOLS_INDEX.out.bai, by: 0)
-    TOME_UMITOOLS_DEDUP ( tome_ch_umi_input )
+
+    // Determine if UMITools needs to be run in "low_memory" mode
+    TOME_DU ( tome_ch_umi_input )
+    TOME_GET_UMI_LENGTH ( tome_ch_umi_input )
+    tome_ch_umi_input
+        .join( TOME_DU.out.size )
+        .join( TOME_GET_UMI_LENGTH.out.length )
+        .map( annotate_umitools_input )
+        .set{ tome_ch_umi_input_annotated }
+
+    TOME_UMITOOLS_DEDUP ( tome_ch_umi_input_annotated )
     TOME_UMITOOLS_SAMTOOLS_INDEX ( TOME_UMITOOLS_DEDUP.out.bam )
     reads.map{triplet -> [
         triplet[0], file(triplet[2] + "/FIND_LONGEST_TRANSCRIPT/*.fa.fai")
@@ -150,7 +173,19 @@ workflow PRIMARY_CLIP_ANALYSIS {
     // Get crosslinks
     STAR_SAMTOOLS_INDEX ( STAR_ALIGN.out.bam_sorted )
     ch_umi_input = STAR_ALIGN.out.bam_sorted.combine(STAR_SAMTOOLS_INDEX.out.bai, by: 0)
-    UMITOOLS_DEDUP ( ch_umi_input )
+
+    // Determine if UMITools needs to be run in "low_memory" mode
+    DU ( ch_umi_input )
+    GET_UMI_LENGTH ( ch_umi_input )
+    ch_umi_input
+        .join( DU.out.size )
+        .join( GET_UMI_LENGTH.out.length )
+        .map( annotate_umitools_input )
+        .set{ ch_umi_input_annotated }
+
+    ch_umi_input_annotated.view()
+
+    UMITOOLS_DEDUP ( ch_umi_input_annotated )
     UMITOOLS_SAMTOOLS_INDEX ( UMITOOLS_DEDUP.out.bam )
     reads.map{triplet -> [
         triplet[0], file(triplet[2] + "/SAMTOOLS_FAIDX/*.fa.fai")

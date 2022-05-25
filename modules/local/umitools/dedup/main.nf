@@ -24,6 +24,7 @@ process UMITOOLS_DEDUP {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def paired = meta.single_end ? "" : "--paired"
+    def low_mem = meta.low_memory ? "--method unique" : ""
     """
     umi_tools \\
         dedup \\
@@ -31,6 +32,7 @@ process UMITOOLS_DEDUP {
         -S ${prefix}.bam \\
         --output-stats $prefix \\
         $paired \\
+        $low_mem \\
         $args
 
     cat <<-END_VERSIONS > versions.yml
