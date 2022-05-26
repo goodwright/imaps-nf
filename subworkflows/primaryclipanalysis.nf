@@ -170,9 +170,9 @@ workflow PRIMARY_CLIP_ANALYSIS {
     ch_crosslinks.multiMap { tuple ->
         crosslinks: [tuple[0], tuple[1]]
         gtf: tuple[2]
-        fa: tuple[3]
+        fai: tuple[3]
     }.set { ch_clippy_input }
-    CLIPPY ( ch_clippy_input.crosslinks,  ch_clippy_input.gtf,  ch_clippy_input.fa )
+    CLIPPY ( ch_clippy_input.crosslinks,  ch_clippy_input.gtf,  ch_clippy_input.fai )
 
     // Paraclu Peak Calling
     PARACLU_PARACLU ( GET_CROSSLINKS.out.crosslinkBed )
