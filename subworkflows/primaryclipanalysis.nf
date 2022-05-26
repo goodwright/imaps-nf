@@ -183,20 +183,31 @@ workflow PRIMARY_CLIP_ANALYSIS {
         .map( annotate_umitools_input )
         .set{ ch_umi_input_annotated }
 
-    ch_umi_input_annotated.view()
-
     UMITOOLS_DEDUP ( ch_umi_input_annotated )
-    UMITOOLS_SAMTOOLS_INDEX ( UMITOOLS_DEDUP.out.bam )
+
+    UMITOOLS_DEDUP.out.bam
+        .map{ it -> [it[0].findAll{key, val -> key != "low_memory"}, it[1]] }
+        .set{ ch_umitools_bam }
+
+    UMITOOLS_DEDUP.out.bam
+        .map{ it -> [it[0].findAll{key, val -> key != "low_memory"}, it[0]] }
+        .set{ ch_meta_conversion }
+
+    UMITOOLS_SAMTOOLS_INDEX ( ch_umitools_bam )
+
     reads.map{triplet -> [
         triplet[0], file(triplet[2] + "/SAMTOOLS_FAIDX/*.fa.fai")
     ]}.set{ ch_genome_fa }
-    ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by: 0)
+
+    ch_xl_input = ch_umitools_bam.join(UMITOOLS_SAMTOOLS_INDEX.out.bai)
+
     ch_xl_input.join( ch_genome_fa ).set{ ch_with_index }
+
     ch_with_index.multiMap { tuple ->
         bam: [tuple[0], tuple[1], tuple[2]]
-        transcript: tuple[3]
+        fai: tuple[3]
     }.set { ch_xl_input }
-    GET_CROSSLINKS ( ch_xl_input.bam, ch_xl_input.transcript )
+    GET_CROSSLINKS ( ch_xl_input.bam, ch_xl_input.fai )
     CROSSLINKS_COVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
     CROSSLINKS_NORMCOVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
 
