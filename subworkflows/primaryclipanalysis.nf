@@ -154,9 +154,9 @@ workflow PRIMARY_CLIP_ANALYSIS {
     UMITOOLS_SAMTOOLS_INDEX ( UMITOOLS_DEDUP.out.bam )
     reads.map{triplet -> [
         triplet[0], file(triplet[2] + "/SAMTOOLS_FAIDX/*.fa.fai")
-    ]}.set{ ch_genome_fa }
+    ]}.set{ ch_genome_fai }
     ch_xl_input = UMITOOLS_DEDUP.out.bam.combine(UMITOOLS_SAMTOOLS_INDEX.out.bai, by: 0)
-    ch_xl_input.join( ch_genome_fa ).set{ ch_with_index }
+    ch_xl_input.join( ch_genome_fai ).set{ ch_with_index }
     ch_with_index.multiMap { tuple ->
         bam: [tuple[0], tuple[1], tuple[2]]
         transcript: tuple[3]
@@ -166,7 +166,7 @@ workflow PRIMARY_CLIP_ANALYSIS {
     CROSSLINKS_NORMCOVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
 
     // CLIPPY Peak Calling
-    GET_CROSSLINKS.out.crosslinkBed.join( ch_gtf ).join( ch_genome_fa ).set{ ch_crosslinks }
+    GET_CROSSLINKS.out.crosslinkBed.join( ch_gtf ).join( ch_genome_fai ).set{ ch_crosslinks }
     ch_crosslinks.multiMap { tuple ->
         crosslinks: [tuple[0], tuple[1]]
         gtf: tuple[2]
@@ -218,7 +218,7 @@ workflow PRIMARY_CLIP_ANALYSIS {
     CLIPPY.out.peaks
     .join(GET_CROSSLINKS.out.crosslinkBed)
     .join(ch_fasta)
-    .join(ch_genome_fa)
+    .join(ch_genome_fai)
     .join(ch_regions_genic_other)
     .set{ ch_peka_joins }
     ch_peka_joins.multiMap { tuple ->
