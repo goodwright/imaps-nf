@@ -8,7 +8,7 @@ process DU {
     container "biocontainers/biocontainers:v1.2.0_cv1"
 
     input:
-    tuple val(meta), path(input_file), path(bai)
+    tuple val(meta), path(input_file)
 
     output:
     tuple val(meta), stdout, emit: size

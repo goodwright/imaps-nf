@@ -7,7 +7,7 @@ include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'
 include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'
 include { DU } from '../modules/local/du/main'
 include { GET_UMI_LENGTH } from '../modules/local/get_umi_length/main'
-include { UMITOOLS_DEDUP } from '../modules/local/umitools/dedup/main'
+include { UMITOOLS_DEDUP } from '../modules/local/umitools_dedup/main'
 include { SAMTOOLS_INDEX as STAR_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
 include { SAMTOOLS_INDEX as UMITOOLS_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
 include { GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'
@@ -17,7 +17,7 @@ include { CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/cros
 include { FILTER_TRANSCRIPTS } from '../modules/local/filter_transcriptome_bam/main'
 include { DU as TOME_DU } from '../modules/local/du/main'
 include { GET_UMI_LENGTH as TOME_GET_UMI_LENGTH } from '../modules/local/get_umi_length/main'
-include { UMITOOLS_DEDUP as TOME_UMITOOLS_DEDUP } from '../modules/local/umitools/dedup/main'
+include { UMITOOLS_DEDUP as TOME_UMITOOLS_DEDUP } from '../modules/local/umitools_dedup/main'
 include { SAMTOOLS_INDEX as TOME_STAR_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'
 include { SAMTOOLS_INDEX as TOME_UMITOOLS_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'
 include { GET_CROSSLINKS as TOME_GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'
@@ -148,7 +148,7 @@ workflow PRIMARY_CLIP_ANALYSIS {
         .set{ tome_ch_umi_input }
 
     // Determine if UMITools needs to be run in "low_memory" mode
-    TOME_DU ( tome_ch_umi_input )
+    TOME_DU ( tome_ch_umi_input.map{it -> it[0, 1]} )
     TOME_GET_UMI_LENGTH ( tome_ch_umi_input )
     tome_ch_umi_input
         .join( TOME_DU.out.size )
@@ -180,7 +180,7 @@ workflow PRIMARY_CLIP_ANALYSIS {
     ch_umi_input = STAR_ALIGN.out.bam_sorted.combine(STAR_SAMTOOLS_INDEX.out.bai, by: 0)
 
     // Determine if UMITools needs to be run in "low_memory" mode
-    DU ( ch_umi_input )
+    DU ( ch_umi_input.map{it -> it[0, 1]} )
     GET_UMI_LENGTH ( ch_umi_input )
     ch_umi_input
         .join( DU.out.size )
