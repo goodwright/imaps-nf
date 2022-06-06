@@ -4,7 +4,7 @@
     "repos": {
         "luslab/nf-core-modules": {
             "clippy": {
-                "git_sha": "58121729abc288747008dea3e55aec42b34cdc65"
+                "git_sha": "b7638d3f3769c93b9ff343dd697068edcec79d5f"
             },
             "crosslinks/coverage": {
                 "git_sha": "04cc5fb77c20afef7993e10227157894a5680d8e"
@@ -61,9 +61,6 @@
             },
             "trimgalore": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-            },
-            "umitools/dedup": {
-                "git_sha": "f425aa3cea10015fe9b345b9d6dcc2336b53155f"
             }
         }
     }
