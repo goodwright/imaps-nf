@@ -3,11 +3,11 @@
     "description": "FastQC gives general quality metrics about your reads. It provides information about the quality score distribution across your reads, the per base sequence content (%A/C/G/T).",
     "type": "object",
     "definitions": {
-        "file_options": {
-            "title": "File Options",
+        "reads_options": {
+            "title": "Reads Options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
-            "description": "Files needed for processing of the reads file.",
+            "description": "Settings for the FASTQ reads file.",
             "properties": {
                 "fastq": {
                     "type": "string",
@@ -17,6 +17,14 @@
                     "imapsType": "demultiplexed",
                     "required": true,
                     "description": "A FASTQ reads file."
+                },
+                "single_end": {
+                    "type": "string",
+                    "format": "boolean",
+                    "mimetype": "text/plain",
+                    "required": false,
+                    "default": "true",
+                    "description": "Should FASTQC be run in single-end mode?."
                 }
             }
         }
