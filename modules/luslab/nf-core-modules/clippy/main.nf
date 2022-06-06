@@ -1,16 +1,13 @@
 process CLIPPY {
     tag "$meta.id"
     label "avg_cores"
-    label "high_mem"
+    label "avg_mem"
     label "regular_queue"
 
-    // A dependency issue in Dash (https://github.com/plotly/dash/issues/1992)
-    // means we have to specify a version for werkzeug. This should be fixed in
-    // the bioconda recipe in the future.
-    conda (params.enable_conda ? "bioconda::clippy=1.3.3 conda-forge::werkzeug=2.0.0" : null)
+    conda (params.enable_conda ? "bioconda::clippy=1.4.1" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/clippy:1.3.3--pyhdfd78af_0' :
-        'quay.io/biocontainers/clippy:1.3.3--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/clippy:1.4.1--pyhdfd78af_1' :
+        'quay.io/biocontainers/clippy:1.4.1--pyhdfd78af_1' }"
 
     input:
     tuple val(meta), path(crosslinks)
@@ -18,9 +15,10 @@ process CLIPPY {
     path(fai)
 
     output:
-    tuple val(meta), path("*_Peaks.bed.gz"),   emit: peaks
-    tuple val(meta), path("*_Summits.bed.gz"), emit: summits
-    path "versions.yml",                       emit: versions
+    tuple val(meta), path("*_Peaks.bed.gz"),           emit: peaks
+    tuple val(meta), path("*_Summits.bed.gz"),         emit: summits
+    tuple val(meta), path("*_intergenic_regions.gtf"), emit: intergenic_gtf, optional: true
+    path "versions.yml",                               emit: versions
 
     when:
     task.ext.when == null || task.ext.when
