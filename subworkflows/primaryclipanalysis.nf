@@ -221,13 +221,13 @@ workflow PRIMARY_CLIP_ANALYSIS {
     CROSSLINKS_NORMCOVERAGE ( GET_CROSSLINKS.out.crosslinkBed )
 
     // CLIPPY Peak Calling
-    GET_CROSSLINKS.out.crosslinkBed.join( ch_gtf ).join( ch_genome_fa ).set{ ch_crosslinks }
+    GET_CROSSLINKS.out.crosslinkBed.join( ch_gtf ).join( ch_genome_fai ).set{ ch_crosslinks }
     ch_crosslinks.multiMap { tuple ->
         crosslinks: [tuple[0], tuple[1]]
         gtf: tuple[2]
-        fa: tuple[3]
+        fai: tuple[3]
     }.set { ch_clippy_input }
-    CLIPPY ( ch_clippy_input.crosslinks,  ch_clippy_input.gtf,  ch_clippy_input.fa )
+    CLIPPY ( ch_clippy_input.crosslinks,  ch_clippy_input.gtf,  ch_clippy_input.fai )
 
     // Paraclu Peak Calling
     PARACLU_PARACLU ( GET_CROSSLINKS.out.crosslinkBed )
@@ -273,7 +273,7 @@ workflow PRIMARY_CLIP_ANALYSIS {
     CLIPPY.out.peaks
     .join(GET_CROSSLINKS.out.crosslinkBed)
     .join(ch_fasta)
-    .join(ch_genome_fa)
+    .join(ch_genome_fai)
     .join(ch_regions_genic_other)
     .set{ ch_peka_joins }
     ch_peka_joins.multiMap { tuple ->
