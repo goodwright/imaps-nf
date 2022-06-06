@@ -13,10 +13,10 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/plain",
-                    "pattern": "fq\\.gz|fastq\\.gz",
+                    "pattern": "fq\\.gz|fastq\\.gz|fq|fastq",
                     "imapsType": "demultiplexed",
                     "required": true,
-                    "description": "Demultiplexed reads file."
+                    "description": "A FASTQ reads file."
                 }
             }
         }

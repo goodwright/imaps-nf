@@ -2,7 +2,7 @@
 
 nextflow.enable.dsl=2
 
-include { FASTQC } from '../../modules/nf-core/modules/fastqc/main'
+include { FASTQC } from "../../modules/nf-core/modules/fastqc/main";
 
 workflow {
 
