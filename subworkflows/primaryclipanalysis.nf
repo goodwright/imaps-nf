@@ -206,11 +206,11 @@ workflow PRIMARY_CLIP_ANALYSIS {
 
     reads.map{triplet -> [
         triplet[0], file(triplet[2] + "/SAMTOOLS_FAIDX/*.fa.fai")
-    ]}.set{ ch_genome_fa }
+    ]}.set{ ch_genome_fai }
 
     ch_xl_input = ch_umitools_bam.join(UMITOOLS_SAMTOOLS_INDEX.out.bai)
 
-    ch_xl_input.join( ch_genome_fa ).set{ ch_with_index }
+    ch_xl_input.join( ch_genome_fai ).set{ ch_with_index }
 
     ch_with_index.multiMap { tuple ->
         bam: [tuple[0], tuple[1], tuple[2]]
