@@ -78,43 +78,43 @@ mapping_df.loc[:, ["exp", "smrna_reads", "genome_reads", "unmapped_reads"]].to_c
     "mapping.tsv", sep="\\t", index=False
 )
 
-# # ==========
-# # Deduplication
-# # ==========
+# ==========
+# Deduplication
+# ==========
 
-# dedup_logs = sorted(['dedup/' + f for f in os.listdir('dedup') if f.endswith('.log')])
-# dedup = dict((key, []) for key in ['exp', 'input_reads', 'output_reads', 'mean_umis', 'ratio'])
+dedup_logs = sorted(['dedup/' + f for f in os.listdir('dedup') if f.endswith('.log')])
+dedup = dict((key, []) for key in ['exp', 'input_reads', 'output_reads', 'mean_umis', 'ratio'])
 
-# for dedup_log in dedup_logs:
+for dedup_log in dedup_logs:
 
-#     with open(dedup_log, 'r') as logfile:
+    with open(dedup_log, 'r') as logfile:
 
-#         exp = re.sub('.log', '', os.path.basename(dedup_log))
+        exp = re.sub('.log', '', os.path.basename(dedup_log))
 
-#         lines = logfile.readlines()
+        lines = logfile.readlines()
 
-#         input_reads = [i for i in lines if 'INFO Reads: Input Reads:' in i]
-#         input_reads = int(re.findall(r'\\d+', input_reads[0])[-1])
+        input_reads = [i for i in lines if 'INFO Reads: Input Reads:' in i]
+        input_reads = int(re.findall(r'\\d+', input_reads[0])[-1])
 
-#         output_reads = [i for i in lines if 'Number of reads out:' in i]
-#         output_reads = int(re.findall(r'\\d+', output_reads[0])[-1])
+        output_reads = [i for i in lines if 'Number of reads out:' in i]
+        output_reads = int(re.findall(r'\\d+', output_reads[0])[-1])
 
-#         mean_umis = [i for i in lines if 'Mean number of unique UMIs per position:' in i]
-#         mean_umis = float(re.findall(r'\\d+', mean_umis[0])[-1])
+        mean_umis = [i for i in lines if 'Mean number of unique UMIs per position:' in i]
+        mean_umis = float(re.findall(r'\\d+', mean_umis[0])[-1])
 
-#         dedup['exp'].append(exp)
-#         dedup['input_reads'].append(input_reads)
-#         dedup['output_reads'].append(output_reads)
-#         dedup['mean_umis'].append(mean_umis)
-#         dedup['ratio'].append(round(input_reads/output_reads, 2))
+        dedup['exp'].append(exp)
+        dedup['input_reads'].append(input_reads)
+        dedup['output_reads'].append(output_reads)
+        dedup['mean_umis'].append(mean_umis)
+        dedup['ratio'].append(round(input_reads/output_reads, 2))
 
-# dedup_df = pd.DataFrame(dedup)
-# dedup_df.to_csv('dedup_metrics.tsv', sep = '\\t', index = False)
+dedup_df = pd.DataFrame(dedup)
+dedup_df.to_csv('dedup_metrics.tsv', sep = '\\t', index = False)
 
-# # Subset for MultiQC plots
-# dedup_df.loc[:, ['exp', 'input_reads', 'output_reads']].to_csv('dedup_reads.tsv', sep = '\\t', index = False)
-# dedup_df.loc[:, ['exp', 'mean_umis']].to_csv('dedup_mean_umis.tsv', sep = '\\t', index = False)
-# dedup_df.loc[:, ['exp', 'ratio']].to_csv('dedup_ratio.tsv', sep = '\\t', index = False)
+# Subset for MultiQC plots
+dedup_df.loc[:, ['exp', 'input_reads', 'output_reads']].to_csv('dedup_reads.tsv', sep = '\\t', index = False)
+dedup_df.loc[:, ['exp', 'mean_umis']].to_csv('dedup_mean_umis.tsv', sep = '\\t', index = False)
+dedup_df.loc[:, ['exp', 'ratio']].to_csv('dedup_ratio.tsv', sep = '\\t', index = False)
 
 # ==========
 # Crosslinks

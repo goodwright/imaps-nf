@@ -14,6 +14,7 @@ process CLIP_QC {
     input:
     path("premap/*")
     path("mapped/*")
+    path("dedup/*")
     path("xlinks/*")
     path("icount/*")
     path("paraclu/*")

@@ -296,6 +296,7 @@ workflow PRIMARY_CLIP_ANALYSIS {
     CLIP_QC (
         BOWTIE_ALIGN.out.log.map{ vec -> vec[1] }.collect(),
         STAR_ALIGN.out.log_final.map{ vec -> vec[1] }.collect(),
+        UMITOOLS_DEDUP.out.log.map{ vec -> vec[1] }.collect(),
         GET_CROSSLINKS.out.crosslinkBed.map{ vec -> vec[1] }.collect(),
         ICOUNT_PEAKS.out.peaks.map{ vec -> vec[1] }.collect(),
         PARACLU_CONVERT.out.peaks.map{ vec -> vec[1] }.collect(),

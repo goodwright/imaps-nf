@@ -29,6 +29,42 @@ custom_data:
         section_name: 'Mapping'
         description: 'The mapping metrics for each experiment'
         plot_type: 'bargraph'
+    dedup_reads:
+        parent_id: dedup
+        parent_name: 'Deduplication'
+        file_format: 'tsv'
+        section_name: 'Reads'
+        description: 'The number of reads before and after PCR deduplication for each experiment'
+        plot_type: 'bargraph'
+        pconfig:
+            ylab: 'Count'
+            stacking: False
+            cpswitch: False
+            tt_percentages: False
+    dedup_ratio:
+        parent_id: dedup
+        parent_name: 'Deduplication'
+        file_format: 'tsv'
+        section_name: 'Ratio'
+        description: 'The PCR deduplication ratio for each experiment'
+        plot_type: 'bargraph'
+        pconfig:
+            ylab: 'Ratio'
+            stacking: False
+            cpswitch: False
+            tt_percentages: False
+    dedup_mean_umis:
+        parent_id: dedup
+        parent_name: 'Deduplication'
+        file_format: 'tsv'
+        section_name: 'Mean UMIs'
+        description: 'Mean number of unique UMIs per position for each experiment'
+        plot_type: 'bargraph'
+        pconfig:
+            ylab: 'Mean number'
+            stacking: False
+            cpswitch: False
+            tt_percentages: False
     crosslinks_counts:
         parent_id: crosslinks
         parent_name: 'Crosslinks'
@@ -111,6 +147,12 @@ custom_data:
 sp:
     mapping:
         fn: 'mapping.tsv'
+    dedup_reads:
+        fn: 'dedup_reads.tsv'
+    dedup_ratio:
+        fn: 'dedup_ratio.tsv'
+    dedup_mean_umis:
+        fn: 'dedup_mean_umis.tsv'
     crosslinks_counts:
         fn: 'xlinks_counts.tsv'
     crosslinks_ratio:
@@ -126,6 +168,7 @@ sp:
 
 module_order:
     - mapping
+    - dedup
     - crosslinks
     - fastqc
     - cutadapt

@@ -48,6 +48,10 @@ output:
       type: file
       description: Tabulates the counts for unique combinations of UMI and position.
       pattern: "*per_position.tsv"
+  - log:
+      type: file
+      description: Log file
+      pattern: "*.log"
   - versions:
       type: file
       description: File containing software versions
