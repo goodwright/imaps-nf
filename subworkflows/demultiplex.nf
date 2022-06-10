@@ -90,7 +90,7 @@ def create_fastq_channel(LinkedHashMap row) {
 
     def meta = [:]
     meta.id           = row.entrySet().iterator().next().getValue()
-    meta.single_end   = true
+    meta.single_end   = params.fastqc_single_end
     meta.species      = row.Species
     meta.pipeline      = row.Pipeline
     return meta

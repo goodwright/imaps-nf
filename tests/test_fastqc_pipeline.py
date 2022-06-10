@@ -18,8 +18,7 @@ class FastqcRunTests(PipelineTest):
                 "assets/ultraplex_demux_iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.fastq.gz"
             ),
         }, profile=["iMaps", "local"], location="testlocation")
-        self.check_execution_ok(execution)
-        self.assertEqual(len(execution.process_executions), 1)
+        self.check_execution_ok(execution, 1)
         self.check_results("fastqc", [
             "iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5_fastqc.zip",
             "iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5_fastqc.html"
