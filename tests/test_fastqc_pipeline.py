@@ -18,13 +18,12 @@ class FastqcRunTests(PipelineTest):
                 "assets/ultraplex_demux_iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5.fastq.gz"
             ),
         }, profile=["iMaps", "local"], location="testlocation")
-        self.assertEqual(execution.status, "OK", msg=execution.stdout)
-        self.assertNotIn("WARN: ", execution.stdout, msg=execution.stdout)
+        self.check_execution_ok(execution)
         self.assertEqual(len(execution.process_executions), 1)
-        self.assertEqual(set(os.listdir("testlocation/results/fastqc")), {
+        self.check_results("fastqc", [
             "iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5_fastqc.zip",
             "iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5_fastqc.html"
-        })
+        ])
     
 
     def test_can_run_pipeline_single_end(self):
@@ -34,13 +33,11 @@ class FastqcRunTests(PipelineTest):
             ),
             "single_end": "true"
         }, profile=["iMaps", "local"], location="testlocation")
-        self.assertEqual(execution.status, "OK", msg=execution.stdout)
-        self.assertNotIn("WARN: ", execution.stdout, msg=execution.stdout)
-        self.assertEqual(len(execution.process_executions), 1)
-        self.assertEqual(set(os.listdir("testlocation/results/fastqc")), {
+        self.check_execution_ok(execution, 1)
+        self.check_results("fastqc", [
             "iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5_fastqc.zip",
             "iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5_fastqc.html"
-        })
+        ])
     
 
     def test_can_run_pipeline_paired_end(self):
@@ -50,10 +47,8 @@ class FastqcRunTests(PipelineTest):
             ),
             "single_end": "false"
         }, profile=["iMaps", "local"], location="testlocation")
-        self.assertEqual(execution.status, "OK", msg=execution.stdout)
-        self.assertNotIn("WARN: ", execution.stdout, msg=execution.stdout)
-        self.assertEqual(len(execution.process_executions), 1)
-        self.assertEqual(set(os.listdir("testlocation/results/fastqc")), {
+        self.check_execution_ok(execution, 1)
+        self.check_results("fastqc", [
             "iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5_1_fastqc.zip",
             "iCLIP_SmB_Cal51_NSsiRNA_20130808_LUc21_5_1_fastqc.html"
-        })
+        ])
