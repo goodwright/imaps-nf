@@ -77,7 +77,9 @@ workflow DEMULTIPLEX {
     FASTQC ( ch_reads_with_meta )
 
     emit:
-      ch_reads_with_meta
+        ch_reads_with_meta = ch_reads_with_meta
+        fastqc_html        = FASTQC.out.html
+        fastqc_zip         = FASTQC.out.zip
 
 }
 
