@@ -22,6 +22,13 @@ resource allowance limits.
 
 ## Workflows
 
+### Stand-alone Pipelines
+
+Some of the individual modules have simple workflow wrappers around them,
+allowing them to be run directly. This includes:
+
+- `fastqc.nf` - runs the FASTQC module, with a parameter for single-end mode.
+
 ### Prepare Genome
 
 #### Inputs
