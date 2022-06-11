@@ -8,7 +8,11 @@ include { XLSX_TO_CSV } from '../modules/local/xlsx_to_csv/main'
 include { FASTQC } from '../modules/nf-core/modules/fastqc/main'
 
 workflow {
-    DEMULTIPLEX ( params.annotation, params.multiplexed_fastq )
+    DEMULTIPLEX (
+        params.annotation,
+        params.multiplexed_fastq,
+        params.fastqc_single_end
+    )
 }
 
 workflow DEMULTIPLEX {
@@ -16,11 +20,13 @@ workflow DEMULTIPLEX {
     take:
         annotation
         multiplexed_fastq
+        fastqc_single_end
     
     main:
+
     // Create channel and load the CSV file into it
-    if (params.annotation.matches(".*xlsx")) {
-        ch_csv = XLSX_TO_CSV ( params.annotation ).csv
+    if (annotation.matches(".*xlsx")) {
+        ch_csv = XLSX_TO_CSV ( annotation ).csv
     } else {
         ch_csv = Channel.fromPath(annotation)
     }
@@ -44,21 +50,24 @@ workflow DEMULTIPLEX {
     // Ultraplex's fastq output channel produces a tuple containing:
     // (1) the meta object it was passed
     // (2) a list of produced fastq files
-    // Create a new channel with just the reads files loaded into it
+    // Create a new channel with just the reads files loaded into it, which are
+    // output one by one
     ULTRAPLEX.out.fastq
     .map { it -> it[1]}
-    .set { demultiplexed_reads }
+    .flatten()
+    .set { ch_demultiplexed_reads }
 
-    // Create channel which is loaded with a meta object for each row in the CSV
+    // Create channel for meta objects and pass meta objects from the CSV file
+    // into it one by one.
     ch_csv
     .splitCsv ( header: true, sep:',', strip:true)
-    .map { create_fastq_channel(it) }
-    .set { readsMeta }
+    .map { create_fastq_channel(it, fastqc_single_end) }
+    .set { ch_reads_meta }
 
     // For every file that comes out of demultiplexed_reads, map it to a tuple
     // where the first item is an ID (from the filename) and the second is the
     // reads file itself
-    demultiplexed_reads.flatten().map { it -> [
+    ch_demultiplexed_reads.map { it -> [
         "id":it.toString()
         .replaceAll(/.*ultraplex_demux_/,"")
         .replaceAll(/\.fastq\.gz/,""),
@@ -67,25 +76,25 @@ workflow DEMULTIPLEX {
 
     // Combine the above two channels to create a channel loaded with tuples of
     // [meta, fastq.gz], which is the form that FASTQC needs them
-    readsMeta
-    .flatten()
+    ch_reads_meta
     .cross(ch_reads_with_id)
     .map { meta, fastq -> [ meta, fastq.fastq ] }
     .set { ch_reads_with_meta }
+    ch_reads_with_meta.view()
 
     // Run FASTQC on each of the meta-reads pairs
     FASTQC ( ch_reads_with_meta )
 
     emit:
-        ch_reads_with_meta = ch_reads_with_meta
-        fastqc_html        = FASTQC.out.html
-        fastqc_zip         = FASTQC.out.zip
+        fastq       = ch_reads_with_meta
+        fastqc_html = FASTQC.out.html
+        fastqc_zip  = FASTQC.out.zip
 
 }
 
 
 
-def create_fastq_channel(LinkedHashMap row) {
+def create_fastq_channel(LinkedHashMap row, fastqc_single_end) {
     /** Takes a row from a samples CSV file and creates a meta object which
         describes it.
     */
