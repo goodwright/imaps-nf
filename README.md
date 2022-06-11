@@ -22,6 +22,12 @@ resource allowance limits.
 
 ## Workflows
 
+### Demultiplex
+
+A subworkflow which demultiplexes a multiplexed FASTQ reads file using barcodes
+in a provided spreadsheet, and performs basic quality checks on the produced
+reads using FASTQC. [Full documentation](docs/Demultiplex.md).
+
 ### Stand-alone Pipelines
 
 Some of the individual modules have simple workflow wrappers around them,

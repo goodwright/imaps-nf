@@ -80,7 +80,6 @@ workflow DEMULTIPLEX {
     .cross(ch_reads_with_id)
     .map { meta, fastq -> [ meta, fastq.fastq ] }
     .set { ch_reads_with_meta }
-    ch_reads_with_meta.view()
 
     // Run FASTQC on each of the meta-reads pairs
     FASTQC ( ch_reads_with_meta )
