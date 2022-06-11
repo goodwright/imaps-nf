@@ -1,6 +1,6 @@
 name: csv_to_barcode
 description: |
-  Converts CSV describing samples and creats a barcodes spreadsheet that can be
+  Converts CSV describing samples and creates a barcodes spreadsheet that can be
   read by Ultraplex.
 tools:
   - pandas:
