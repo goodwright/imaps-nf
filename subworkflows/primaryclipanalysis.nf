@@ -34,7 +34,7 @@ include { PARACLU_PARACLU } from '../modules/luslab/nf-core-modules/paraclu/para
 include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main'
 include { PEKA } from '../modules/luslab/nf-core-modules/peka/main'
 
-include { CLIP_QC } from '../modules/local/clip_qc/main.nf'
+include { CLIPQC } from '../modules/local/clipqc/main.nf'
 
 // Closure to annotate UMITools Input
 annotate_umitools_input = { it ->
@@ -293,7 +293,7 @@ workflow PRIMARY_CLIP_ANALYSIS {
         ch_peka_input.regions,
     )
 
-    CLIP_QC (
+    CLIPQC (
         BOWTIE_ALIGN.out.log.map{ vec -> vec[1] }.collect(),
         STAR_ALIGN.out.log_final.map{ vec -> vec[1] }.collect(),
         UMITOOLS_DEDUP.out.log.map{ vec -> vec[1] }.collect(),
@@ -307,5 +307,5 @@ workflow PRIMARY_CLIP_ANALYSIS {
         trimgalore_log       = TRIMGALORE.out.log
         bowtie_align_log     = BOWTIE_ALIGN.out.log
         star_align_log_final = STAR_ALIGN.out.log_final
-        clip_qc_log          = CLIP_QC.out.log
+        clipqc_log           = CLIPQC.out.log
 }

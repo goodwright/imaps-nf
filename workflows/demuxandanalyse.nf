@@ -43,7 +43,7 @@ workflow {
                 PRIMARY_CLIP_ANALYSIS.out.trimgalore_log.map{ vec -> vec[1] },
                 PRIMARY_CLIP_ANALYSIS.out.bowtie_align_log.map{ vec -> vec[1] },
                 PRIMARY_CLIP_ANALYSIS.out.star_align_log_final.map{ vec -> vec[1] },
-                PRIMARY_CLIP_ANALYSIS.out.clip_qc_log,
+                PRIMARY_CLIP_ANALYSIS.out.clipqc_log,
                 Channel.fromPath("./conf/multiqc_config.yaml")
             )
             .collect()

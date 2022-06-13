@@ -1,4 +1,4 @@
-process CLIP_QC {
+process CLIPQC {
     tag "Performing QC"
     label "min_cores"
     label "min_mem"
@@ -27,5 +27,5 @@ process CLIP_QC {
     task.ext.when == null || task.ext.when
 
     script:
-    template 'clip_qc.py'
+    template 'clipqc.py'
 }

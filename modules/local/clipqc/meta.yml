@@ -1,4 +1,4 @@
-name: clip_qc
+name: clipqc
 description: Generate CLIP-Seq specific statistics
 keywords:
   - QC
