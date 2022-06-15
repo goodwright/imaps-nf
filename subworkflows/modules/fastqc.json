@@ -17,14 +17,6 @@
                     "imapsType": "demultiplexed",
                     "required": true,
                     "description": "A FASTQ reads file."
-                },
-                "single_end": {
-                    "type": "string",
-                    "format": "boolean",
-                    "mimetype": "text/plain",
-                    "required": false,
-                    "default": "true",
-                    "description": "Should FASTQC be run in single-end mode?."
                 }
             }
         }

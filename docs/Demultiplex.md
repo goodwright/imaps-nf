@@ -9,10 +9,6 @@ Required files are:
 - `multiplexed_fastq` - a FASTQ file containing reads from multiple samples, each with a barcode sequence at the start.
 - `annotation` - a CSV or XLSX sheet of data, which needs at least a "Sample Name" column and a "5' Barcode" column.
 
-Optional parameters are:
-
-- `fastqc_single_end` - determines whether FASTQC runs in single end mode (`true`) or paired-end mode (`false`). Default is `true`.
-
 ## Processes
 
 ### `XLSX_TO_CSV`

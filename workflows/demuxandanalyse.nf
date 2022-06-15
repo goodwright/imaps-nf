@@ -10,8 +10,7 @@ workflow {
 
     DEMULTIPLEX (
         params.annotation,
-        params.multiplexed_fastq,
-        params.fastqc_single_end
+        params.multiplexed_fastq
     )
 
     // Run Primary CLIP Analysis
