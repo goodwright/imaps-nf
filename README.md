@@ -33,7 +33,7 @@ reads using FASTQC. [Full documentation](docs/Demultiplex.md).
 Some of the individual modules have simple workflow wrappers around them,
 allowing them to be run directly. This includes:
 
-- `fastqc.nf` - runs the FASTQC module, with a parameter for single-end mode.
+- `fastqc.nf` - runs the FASTQC module.
 
 ### Prepare Genome
 

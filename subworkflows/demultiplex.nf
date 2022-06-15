@@ -10,8 +10,7 @@ include { FASTQC } from '../modules/nf-core/modules/fastqc/main'
 workflow {
     DEMULTIPLEX (
         params.annotation,
-        params.multiplexed_fastq,
-        params.fastqc_single_end
+        params.multiplexed_fastq
     )
 }
 
@@ -20,7 +19,6 @@ workflow DEMULTIPLEX {
     take:
         annotation
         multiplexed_fastq
-        fastqc_single_end
     
     main:
 
@@ -61,7 +59,7 @@ workflow DEMULTIPLEX {
     // into it one by one.
     ch_csv
     .splitCsv ( header: true, sep:',', strip:true)
-    .map { create_fastq_channel(it, fastqc_single_end) }
+    .map { create_fastq_channel(it) }
     .set { ch_reads_meta }
 
     // For every file that comes out of demultiplexed_reads, map it to a tuple
@@ -93,14 +91,14 @@ workflow DEMULTIPLEX {
 
 
 
-def create_fastq_channel(LinkedHashMap row, fastqc_single_end) {
+def create_fastq_channel(LinkedHashMap row) {
     /** Takes a row from a samples CSV file and creates a meta object which
         describes it.
     */
 
     def meta = [:]
     meta.id           = row.entrySet().iterator().next().getValue()
-    meta.single_end   = params.fastqc_single_end
+    meta.single_end   = true
     meta.species      = row.Species
     meta.pipeline      = row.Pipeline
     return meta

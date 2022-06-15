@@ -7,12 +7,11 @@ include { FASTQC } from "../../modules/nf-core/modules/fastqc/main";
 workflow {
 
     // FASTQC module takes a [meta, reads] pair as its input. This creates that
-    // tuple, with the meta object taking the ID from the filename and the
-    // single_end boolean flag from params.
+    // tuple, with the meta object taking the ID from the filename.
     reads = [[
         id: params.fastq.split("/")[-1].replace(".gz", "")
             .replace(".fastq", "").replace("ultraplex_demux_", ""),
-        single_end: params.single_end
+        single_end: true
     ], file(params.fastq)]
 
     FASTQC ( reads )

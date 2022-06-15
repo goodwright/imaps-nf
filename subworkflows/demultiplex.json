@@ -28,22 +28,6 @@
                     "description": "A multiplexed reads file containing reads from multiple experiments, distinguishable by barcode sequence."
                 }
             }
-        },
-        "command_options": {
-            "title": "Optional arguments",
-            "type": "object",
-            "fa_icon": "fas fa-terminal",
-            "description": "Any custom settings to use.",
-            "properties": {
-                "fastqc_single_end": {
-                    "type": "string",
-                    "format": "boolean",
-                    "mimetype": "text/plain",
-                    "required": false,
-                    "default": "true",
-                    "description": "Should FASTQC be run in single-end mode?."
-                }
-            }
         }
     },
     "allOf": [
