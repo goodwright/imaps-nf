@@ -37,8 +37,8 @@ include { PEKA } from '../modules/luslab/nf-core-modules/peka/main'
 // Closure to annotate UMITools Input
 annotate_umitools_input = { it ->
     def meta = it[0].clone()
-    if (it[3].toInteger() > params.max_kilobytes &
-        it[4].toInteger() > params.max_umi_length) {
+    if (it[3].toInteger() >= params.max_kilobytes &
+        it[4].toInteger() >= params.max_umi_length) {
         meta["low_memory"] = true
     }
     return [meta, it[1], it[2]]
