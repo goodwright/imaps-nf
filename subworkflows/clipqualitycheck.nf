@@ -43,7 +43,7 @@ workflow CLIP_QUALITY_CHECK {
                 bowtie_align_log.map(strip_meta),
                 star_align_log_final.map(strip_meta),
                 CLIPQC.out.log,
-                Channel.fromPath("./conf/multiqc_config.yaml")
+                Channel.fromPath("$projectDir/../conf/multiqc/clip.yaml")
             )
             .collect()
     )
