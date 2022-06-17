@@ -1,0 +1,10 @@
+{
+    "title": "CLIP Quality Check",
+    "description": "Collects multiple CLIP output files and logs and generates a MultiQC report for assessing sample quality.",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "#/definitions/file_options"
+        }
+    ]
+}
