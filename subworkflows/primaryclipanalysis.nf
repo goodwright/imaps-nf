@@ -34,8 +34,6 @@ include { PARACLU_PARACLU } from '../modules/luslab/nf-core-modules/paraclu/para
 include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main'
 include { PEKA } from '../modules/luslab/nf-core-modules/peka/main'
 
-include { CLIPQC } from '../modules/local/clipqc/main.nf'
-
 // Closure to annotate UMITools Input
 annotate_umitools_input = { it ->
     def meta = it[0].clone()
@@ -293,19 +291,13 @@ workflow PRIMARY_CLIP_ANALYSIS {
         ch_peka_input.regions,
     )
 
-    CLIPQC (
-        BOWTIE_ALIGN.out.log.map{ vec -> vec[1] }.collect(),
-        STAR_ALIGN.out.log_final.map{ vec -> vec[1] }.collect(),
-        UMITOOLS_DEDUP.out.log.map{ vec -> vec[1] }.collect(),
-        GET_CROSSLINKS.out.crosslinkBed.map{ vec -> vec[1] }.collect(),
-        ICOUNT_PEAKS.out.peaks.map{ vec -> vec[1] }.collect(),
-        PARACLU_CONVERT.out.peaks.map{ vec -> vec[1] }.collect(),
-        CLIPPY.out.peaks.map{ vec -> vec[1] }.collect()
-    )
-
     emit:
         trimgalore_log       = TRIMGALORE.out.log
         bowtie_align_log     = BOWTIE_ALIGN.out.log
         star_align_log_final = STAR_ALIGN.out.log_final
-        clipqc_log           = CLIPQC.out.log
+        umitools_dedup_log   = UMITOOLS_DEDUP.out.log
+        crosslinks           = GET_CROSSLINKS.out.crosslinkBed
+        icount_peaks         = ICOUNT_PEAKS.out.peaks
+        paraclu_peaks        = PARACLU_CONVERT.out.peaks
+        clippy_peaks         = CLIPPY.out.peaks
 }
