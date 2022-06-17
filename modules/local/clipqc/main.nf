@@ -1,5 +1,4 @@
 process CLIPQC {
-    tag "Performing QC"
     label "min_cores"
     label "min_mem"
     label "regular_queue"
