@@ -1,6 +1,6 @@
 process UMITOOLS_DEDUP {
     tag "$meta.id"
-    label "process_medium"
+    label "process_high"
 
     conda (params.enable_conda ? "bioconda::umi_tools=1.1.2" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -12,9 +12,6 @@ process UMITOOLS_DEDUP {
 
     output:
     tuple val(meta), path("*.bam")             , emit: bam
-    tuple val(meta), path("*edit_distance.tsv"), emit: tsv_edit_distance
-    tuple val(meta), path("*per_umi.tsv")      , emit: tsv_per_umi
-    tuple val(meta), path("*per_position.tsv") , emit: tsv_umi_per_position
     path  "versions.yml"                       , emit: versions
 
     when:
@@ -24,15 +21,12 @@ process UMITOOLS_DEDUP {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def paired = meta.single_end ? "" : "--paired"
-    def low_mem = meta.low_memory ? "--method unique" : ""
     """
     umi_tools \\
         dedup \\
         -I $bam \\
         -S ${prefix}.bam \\
-        --output-stats $prefix \\
         $paired \\
-        $low_mem \\
         $args
 
     cat <<-END_VERSIONS > versions.yml
