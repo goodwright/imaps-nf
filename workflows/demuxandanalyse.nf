@@ -15,7 +15,7 @@ workflow {
     )
 
     // Run Primary CLIP Analysis
-    DEMULTIPLEX.out.ch_reads_with_meta
+    DEMULTIPLEX.out.fastq
     .filter{pair -> pair[0].pipeline == "Primary CLIP Analysis"}
     .map{pair -> [pair[0], pair[1], params[pair[0].species + "_genome"]]}
     .set{ ch_primary_clip_analysis_reads }
