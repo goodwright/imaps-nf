@@ -25,7 +25,7 @@ workflow {
     )
 
     // Run Non-Coding RNA Analysis
-    DEMULTIPLEX.out.ch_reads_with_meta
+    DEMULTIPLEX.out.fastq
     .filter{pair -> pair[0].pipeline == "Non-Coding RNA Analysis"}
     .map{pair -> [pair[0], pair[1], file(params[pair[0].species + "_genome"])]}
     .set{ ch_ncrna_reads }
