@@ -290,4 +290,14 @@ workflow PRIMARY_CLIP_ANALYSIS {
         ch_peka_input.fai,
         ch_peka_input.regions,
     )
+
+    emit:
+        trimgalore_log       = TRIMGALORE.out.log
+        bowtie_align_log     = BOWTIE_ALIGN.out.log
+        star_align_log_final = STAR_ALIGN.out.log_final
+        umitools_dedup_log   = UMITOOLS_DEDUP.out.log
+        crosslinks           = GET_CROSSLINKS.out.crosslinkBed
+        icount_peaks         = ICOUNT_PEAKS.out.peaks
+        paraclu_peaks        = PARACLU_CONVERT.out.peaks
+        clippy_peaks         = CLIPPY.out.peaks
 }

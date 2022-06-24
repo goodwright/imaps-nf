@@ -12,6 +12,7 @@ process UMITOOLS_DEDUP {
 
     output:
     tuple val(meta), path("*.bam")             , emit: bam
+    tuple val(meta), path("*.log")             , emit: log
     path  "versions.yml"                       , emit: versions
 
     when:
@@ -27,6 +28,7 @@ process UMITOOLS_DEDUP {
         dedup \\
         -I $bam \\
         -S ${prefix}.bam \\
+        --log=${prefix}.log \\
         $paired \\
         $low_mem \\
         $args
