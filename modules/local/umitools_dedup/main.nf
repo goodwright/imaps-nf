@@ -15,6 +15,7 @@ process UMITOOLS_DEDUP {
     tuple val(meta), path("*edit_distance.tsv"), emit: tsv_edit_distance
     tuple val(meta), path("*per_umi.tsv")      , emit: tsv_per_umi
     tuple val(meta), path("*per_position.tsv") , emit: tsv_umi_per_position
+    tuple val(meta), path("*.log")             , emit: log
     path  "versions.yml"                       , emit: versions
 
     when:
@@ -31,6 +32,7 @@ process UMITOOLS_DEDUP {
         -I $bam \\
         -S ${prefix}.bam \\
         --output-stats $prefix \\
+        --log=${prefix}.log \\
         $paired \\
         $low_mem \\
         $args

@@ -5,6 +5,7 @@ nextflow.enable.dsl=2
 include { DEMULTIPLEX } from '../subworkflows/demultiplex'
 include { PRIMARY_CLIP_ANALYSIS } from '../subworkflows/primaryclipanalysis'
 include { NCRNA_ANALYSIS } from '../subworkflows/ncrna'
+include { CLIP_QUALITY_CHECK } from '../subworkflows/clipqualitycheck'
 
 workflow {
 
@@ -31,6 +32,19 @@ workflow {
 
     NCRNA_ANALYSIS (
         ch_ncrna_reads, // [meta, reads, genome_name] triplets
+    )
+
+    CLIP_QUALITY_CHECK(
+        DEMULTIPLEX.out.fastqc_html,
+        DEMULTIPLEX.out.fastqc_zip,
+        PRIMARY_CLIP_ANALYSIS.out.trimgalore_log,
+        PRIMARY_CLIP_ANALYSIS.out.bowtie_align_log,
+        PRIMARY_CLIP_ANALYSIS.out.star_align_log_final,
+        PRIMARY_CLIP_ANALYSIS.out.umitools_dedup_log,
+        PRIMARY_CLIP_ANALYSIS.out.crosslinks,
+        PRIMARY_CLIP_ANALYSIS.out.icount_peaks,
+        PRIMARY_CLIP_ANALYSIS.out.paraclu_peaks,
+        PRIMARY_CLIP_ANALYSIS.out.clippy_peaks
     )
 
 }
