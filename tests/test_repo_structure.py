@@ -151,3 +151,15 @@ class PipelineFilesTests(RepoTest):
                 for property_name, property in category["properties"].items():
                     self.assertIn("type", property, msg=f"{name}.json {property_name} property has no type")
                     self.assertIn("description", property, msg=f"{name}.json {property_name} property has no description")
+    
+
+    def test_every_pipeline_has_docs_file(self):
+        pipeline_names = self.get_pipeline_names()
+        for name in pipeline_names:
+            self.assertIn(f"{name}.md", os.listdir("docs"), msg=f"{name}.nf has no docs file")
+        for name in pipeline_names:
+            with open(Path(f"docs/{name}.md")) as f:
+                markdown = f.read()
+            self.assertIn("## Inputs", markdown, msg=f"{name}.md has no Inputs section")
+            self.assertIn("## Processes", markdown, msg=f"{name}.md has no Processes section")
+            self.assertIn("## Outputs", markdown, msg=f"{name}.md has no Outputs section")
