@@ -1,0 +1,3 @@
+Sample Name,5' Barcode,3' Barcode (optional),3' Adapter Sequence,3' Adapter Name (Optional)
+Sample1,NNNGGCGNN,,AGATCGGAAGAGCGGTTCAG,
+Sample1,NNNTTGTNN,,AGATCGGAAGAGCGGTTCAG,

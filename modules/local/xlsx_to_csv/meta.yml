@@ -1,0 +1,22 @@
+name: xlsx_to_csv
+description: Converts an Excel spreadsheet to CSV
+tools:
+  - pandas:
+      description: |
+        Flexible and powerful data analysis / manipulation library for Python,
+        providing labeled data structures similar to R data.frame objects,
+        statistical functions, and much more.
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence: ["BSD-3"]
+input:
+  - xlsx:
+      type: file
+      description: An Excel spreadsheet in XLSX format.
+output:
+  - csv:
+      type: file
+      description: CSV file.
+      pattern: "*.csv"
+authors:
+  - "@samirelanduk"
