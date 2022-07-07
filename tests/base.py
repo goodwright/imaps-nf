@@ -27,4 +27,6 @@ class PipelineTest(TestCase):
         except IndexError:
             raise Exception(f"No process with name {name}")
         self.assertEqual(set(inputs), set(process.input_data(include_path=False)))
-        self.assertEqual(set(outputs), set(process.all_output_data(include_path=False)))
+        all_outputs = set(process.all_output_data(include_path=False))
+        for output in outputs:
+            self.assertIn(output, all_outputs)

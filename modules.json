@@ -1,0 +1,11 @@
+{
+    "name": "goodwright/flow-nf",
+    "homePage": "https://github.com/goodwright/flow-nf",
+    "repos": {
+        "luslab/nf-core-modules": {
+            "ultraplex": {
+                "git_sha": "08ccc80f5959b258d6677cafb4de24f77b2e19c3"
+            }
+        }
+    }
+}
