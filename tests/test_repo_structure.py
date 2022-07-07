@@ -1,7 +1,9 @@
 import os
+import re
 import json
 import yaml
 import glob
+import subprocess
 from pathlib import Path
 from unittest import TestCase
 
@@ -118,15 +120,15 @@ class LocalModuleTests(RepoTest):
 class PipelineFilesTests(RepoTest):
 
     def get_pipeline_names(self):
-        conf_names = [f[:-7] for f in os.listdir("conf") if f.endswith(".config")]
-        md_names = [f[:-3] for f in os.listdir("docs") if f.endswith(".md")]
-        schema_names = [f[:-5] for f in os.listdir("schema") if f.endswith(".json")]
-        possible_names = set(conf_names + md_names + schema_names)
+        """What are the pipelines that should be runnable by themselves?"""
+        
+        command = 'grep -r -i --include="*.nf" "workflow {" subworkflows'
+        stdout = subprocess.run(command, shell=True, stdout=subprocess.PIPE).stdout
+        subworkflow_names = [re.search(
+            r"\/([a-z_]+?)\.nf", line
+        )[1] for line in stdout.decode().splitlines()]
         workflow_names = [f[:-3] for f in os.listdir("workflows") if f.endswith(".nf")]
-        general_names = [f[:-3] for f in os.listdir("subworkflows") if f.endswith(".nf")]
-        module_names = [f[:-3] for f in os.listdir("subworkflows/modules") if f.endswith(".nf")]
-        pipeline_names = set(workflow_names + general_names + module_names)
-        return sorted(possible_names & pipeline_names)
+        return sorted(set(workflow_names + subworkflow_names))
 
 
     def test_every_pipeline_has_conf_file(self):
