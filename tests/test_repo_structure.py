@@ -121,7 +121,7 @@ class PipelineFilesTests(RepoTest):
 
     def get_pipeline_names(self):
         """What are the pipelines that should be runnable by themselves?"""
-        
+
         command = 'grep -r -i --include="*.nf" "workflow {" subworkflows'
         stdout = subprocess.run(command, shell=True, stdout=subprocess.PIPE).stdout
         subworkflow_names = [re.search(
@@ -135,3 +135,19 @@ class PipelineFilesTests(RepoTest):
         pipeline_names = self.get_pipeline_names()
         for name in pipeline_names:
             self.assertIn(f"{name}.config", os.listdir("conf"), msg=f"{name}.nf has no config file")
+    
+
+    def test_every_pipeline_has_schema_file(self):
+        pipeline_names = self.get_pipeline_names()
+        for name in pipeline_names:
+            self.assertIn(f"{name}.json", os.listdir("schema"), msg=f"{name}.nf has no schema file")
+        for name in pipeline_names:
+            with open(Path(f"schema/{name}.json")) as f:
+                schema = json.load(f)
+            for category_name, category in schema.items():
+                self.assertIn("name", category, msg=f"{name}.json {category_name} category has no name")
+                self.assertIn("description", category, msg=f"{name}.json {category_name} category has no description")
+                self.assertIn("properties", category, msg=f"{name}.json {category_name} category has no properties")
+                for property_name, property in category["properties"].items():
+                    self.assertIn("type", property, msg=f"{name}.json {property_name} property has no type")
+                    self.assertIn("description", property, msg=f"{name}.json {property_name} property has no description")
