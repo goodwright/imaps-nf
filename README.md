@@ -23,7 +23,7 @@ Every pipeline that is intended to be run stand-alone should have:
 1. A config file in `conf/`.
 2. A schema file in `schema/`.
 3. A test suite somewhere in `tests`.
-4. A markdown documentation file in `docs/`.
+4. A markdown documentation file in `docs/` (unless it is a module wrapper).
 
 ## Pipelines
 
@@ -36,6 +36,8 @@ Every pipeline that is intended to be run stand-alone should have:
 - `demultiplex.nf` - demultiplexes a FASTQ file into individual FASTQ files using Ultraplex.
 
 ### Modules
+
+- `faidx.nf` - creates a Samtools `.fai` genome index from a FASTA file.
 
 ## Config
 
@@ -67,6 +69,6 @@ There is also a test file that checks the structure of the repository itself, to
 
 ## Documentation
 
-Each runnable pipeline has a markdown file explaining in plain English what the pipeline is for, what its inputs are, the general flow of what it does, and what its key outputs are.
+Each runnable pipeline (except those which just wrap a single module) has a markdown file explaining in plain English what the pipeline is for, what its inputs are, the general flow of what it does, and what its key outputs are.
 
 This is in addition to the more cursory explanation in this README.
