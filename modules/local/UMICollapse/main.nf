@@ -20,12 +20,13 @@ process UMICOLLAPSE {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    ./umicollapse \\
+    java -jar /UMICollapse/umicollapse.jar \\
         bam \\
         -i $bam \\
         -o ${prefix}.bam \\
         $args
 
+    mv .command.log ${prefix}_UMICollapse.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
