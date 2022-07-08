@@ -1,0 +1,20 @@
+{
+    "file_options": {
+        "name": "File options",
+        "description": "Files needed to run the module.",
+        "properties": {
+            "fasta": {
+                "type": "file",
+                "pattern": "fa|fasta|fa\\.gz|fasta\\.gz",
+                "required": true,
+                "description": "A FASTA file to index."
+            },
+            "gtf": {
+                "type": "file",
+                "pattern": "gtf|gtf\\.gz",
+                "required": true,
+                "description": "A GTF annotation file."
+            }
+        }
+    }
+}
