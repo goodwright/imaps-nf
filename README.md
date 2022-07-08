@@ -38,6 +38,7 @@ Every pipeline that is intended to be run stand-alone should have:
 ### Modules
 
 - `faidx.nf` - creates a Samtools `.fai` genome index from a FASTA file.
+- `bowtie_build.nf` - creates a BOWTIE genome index from a FASTA file.
 
 ## Config
 
