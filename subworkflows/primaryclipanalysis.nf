@@ -7,9 +7,9 @@ include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'
 include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'
 include { DU } from '../modules/local/du/main'
 include { GET_UMI_LENGTH } from '../modules/local/get_umi_length/main'
-include { UMITOOLS_DEDUP } from '../modules/local/umitools_dedup/main'
+include { UMICOLLAPSE } from '../modules/local/UMICollapse/main'
 include { SAMTOOLS_INDEX as STAR_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
-include { SAMTOOLS_INDEX as UMITOOLS_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
+include { SAMTOOLS_INDEX as UMICOLLAPSE_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
 include { GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'
 include { CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/coverage/main'
 include { CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'
@@ -122,7 +122,7 @@ workflow PRIMARY_CLIP_ANALYSIS {
         false, "", ""
     )
 
-    // Create a channel which outputs [reads_meta, transcript_txt] pairs
+/*     // Create a channel which outputs [reads_meta, transcript_txt] pairs
     reads.map{triplet -> [
         triplet[0], file(triplet[2] + "/FIND_LONGEST_TRANSCRIPT/*.txt")
     ]}.set{ ch_longest_transcript }
@@ -141,8 +141,8 @@ workflow PRIMARY_CLIP_ANALYSIS {
 
     // Filter transcripts
     FILTER_TRANSCRIPTS ( ch_filter_input.star, ch_filter_input.transcripts )
-
-    // Get TOME crosslinks
+ */
+/*     // Get TOME crosslinks
     TOME_STAR_SAMTOOLS_INDEX ( FILTER_TRANSCRIPTS.out.filtered_bam )
     FILTER_TRANSCRIPTS.out.filtered_bam.join(TOME_STAR_SAMTOOLS_INDEX.out.bai)
         .set{ tome_ch_umi_input }
@@ -172,37 +172,16 @@ workflow PRIMARY_CLIP_ANALYSIS {
     }.set { ch_tome_input }
     TOME_GET_CROSSLINKS ( ch_tome_input.bam, ch_tome_input.transcript )
     TOME_CROSSLINKS_COVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed )
-    TOME_CROSSLINKS_NORMCOVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed )
+    TOME_CROSSLINKS_NORMCOVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed ) */
 
 
     // Get crosslinks
     STAR_SAMTOOLS_INDEX ( STAR_ALIGN.out.bam_sorted )
     ch_umi_input = STAR_ALIGN.out.bam_sorted.combine(STAR_SAMTOOLS_INDEX.out.bai, by: 0)
 
-    // Determine if UMITools needs to be run in "low_memory" mode
-    DU ( ch_umi_input.map{it -> it[0, 1]} )
-    GET_UMI_LENGTH ( ch_umi_input )
-    ch_umi_input
-        .join( DU.out.size )
-        .join( GET_UMI_LENGTH.out.length )
-        .map( annotate_umitools_input )
-        .set{ ch_umi_input_annotated }
+    UMICOLLAPSE ( ch_umi_input )
 
-    UMITOOLS_DEDUP ( ch_umi_input_annotated )
-
-    // Strip out the low_memory key from the meta value so that the later joins
-    // actually work
-    UMITOOLS_DEDUP.out.bam
-        .map{ it -> [it[0].findAll{key, val -> key != "low_memory"}, it[1]] }
-        .set{ ch_umitools_bam }
-    // Keep a channel for converting between meta with the low_memory key and
-    // without, in case in the future you want to keep track of which files were
-    // run as low mem
-    UMITOOLS_DEDUP.out.bam
-        .map{ it -> [it[0].findAll{key, val -> key != "low_memory"}, it[0]] }
-        .set{ ch_meta_conversion }
-
-    UMITOOLS_SAMTOOLS_INDEX ( ch_umitools_bam )
+ /*    UMICOLLAPSE_SAMTOOLS_INDEX ( ch_umitools_bam )
 
     reads.map{triplet -> [
         triplet[0], file(triplet[2] + "/SAMTOOLS_FAIDX/*.fa.fai")
@@ -300,4 +279,6 @@ workflow PRIMARY_CLIP_ANALYSIS {
         icount_peaks         = ICOUNT_PEAKS.out.peaks
         paraclu_peaks        = PARACLU_CONVERT.out.peaks
         clippy_peaks         = CLIPPY.out.peaks
+}
+ */
 }
