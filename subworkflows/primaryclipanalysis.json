@@ -31,7 +31,7 @@
                     "format": "text",
                     "required": false,
                     "default": "rbc",
-                    "description": "Separator used in UMI-tools Dedup."
+                    "description": "Separator used in UMICollapse."
                 }
             }
         }
