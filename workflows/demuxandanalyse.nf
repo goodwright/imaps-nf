@@ -40,7 +40,7 @@ workflow {
         PRIMARY_CLIP_ANALYSIS.out.trimgalore_log,
         PRIMARY_CLIP_ANALYSIS.out.bowtie_align_log,
         PRIMARY_CLIP_ANALYSIS.out.star_align_log_final,
-        PRIMARY_CLIP_ANALYSIS.out.umitools_dedup_log,
+        PRIMARY_CLIP_ANALYSIS.out.umicollapse_log,
         PRIMARY_CLIP_ANALYSIS.out.crosslinks,
         PRIMARY_CLIP_ANALYSIS.out.icount_peaks,
         PRIMARY_CLIP_ANALYSIS.out.paraclu_peaks,

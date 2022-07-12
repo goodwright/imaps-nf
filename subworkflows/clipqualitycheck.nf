@@ -15,7 +15,7 @@ workflow CLIP_QUALITY_CHECK {
         trimgalore_log
         bowtie_align_log
         star_align_log_final
-        umitools_dedup_log
+        umicollapse_log
         crosslinks
         icount_peaks
         paraclu_peaks
@@ -26,7 +26,7 @@ workflow CLIP_QUALITY_CHECK {
     CLIPQC (
         bowtie_align_log.map(strip_meta).collect(),
         star_align_log_final.map(strip_meta).collect(),
-        umitools_dedup_log.map(strip_meta).collect(),
+        umicollapse_log.map(strip_meta).collect(),
         crosslinks.map(strip_meta).collect(),
         icount_peaks.map(strip_meta).collect(),
         paraclu_peaks.map(strip_meta).collect(),
