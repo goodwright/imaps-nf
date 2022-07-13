@@ -57,3 +57,25 @@ class StarBuildTests(PipelineTest):
         }, profile=["docker"], location="testlocation")
         self.check_execution_ok(execution, 1)
         self.check_process(execution, "STAR_GENOMEGENERATE", ["genome.fasta", "genome.gtf"], ["star"])
+
+
+
+class FastqcTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/fastqc.nf",
+            config="conf/fastqc.config"
+        )
+
+
+    def test_can_run_fastqc(self):
+        execution = self.pipeline.run(params={
+            "fastq": os.path.abspath("assets/demultiplexed.fastq.gz"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "FASTQC", ["demultiplexed.fastq.gz"],
+            ["demultiplexed.fastq.gz_fastqc.html", "demultiplexed.fastq.gz_fastqc.zip"]
+        )
