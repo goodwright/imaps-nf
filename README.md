@@ -68,6 +68,26 @@ Each top-level pipeline will have a test file, testing that it can run with all 
 Similarly there is be a test file for the runnable subworkflows, the general purpose pipelines, and the standalone modules.
 
 There is also a test file that checks the structure of the repository itself, to ensure that the correct files are always in place.
+For tests around module pipelines, if the module is a local one it should have more in-depth tests checking that the files it produces are correct.
+
+The tests can be run with:
+
+```bash
+python -m unittest discover tests
+```
+
+You can run a particular test file:
+
+```bash
+python -m unittest tests.test_repo_structure
+```
+
+You can also run specific tests within those files:
+
+```bash
+python -m unittest tests.test_general_pipelines.DemultiplexTests
+python -m unittest tests.test_general_pipelines.DemultiplexTests.test_can_run_with_xlsx
+```
 
 ## Documentation
 
