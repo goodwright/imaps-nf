@@ -1,3 +1,2 @@
 SA* filter=lfs diff=lfs merge=lfs -text
-*.ebwt filter=lfs diff=lfs merge=lfs -text
 hs.GRCh38.chr21.fa filter=lfs diff=lfs merge=lfs -text

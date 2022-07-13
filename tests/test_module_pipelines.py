@@ -40,6 +40,29 @@ class BowtieBuildTests(PipelineTest):
 
 
 
+class BowtieAlignTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/bowtie_align.nf",
+            config="conf/bowtie_align.config"
+        )
+
+
+    def test_can_run_bowtie_align(self):
+        execution = self.pipeline.run(params={
+            "fastq": os.path.abspath("assets/demultiplexed.fastq.gz"),
+            "index": os.path.abspath("assets/bowtie"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "BOWTIE_ALIGN", ["demultiplexed.fastq.gz", "bowtie"],
+            ["demultiplexed.fastq.gz.bam", "demultiplexed.fastq.gz.unmapped.fastq.gz"]
+        )
+
+
+
 class StarBuildTests(PipelineTest):
 
     def setUp(self):
