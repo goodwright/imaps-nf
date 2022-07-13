@@ -1,0 +1,78 @@
+STAR version=2.7.10a
+STAR compilation time,server,dir=2022-01-14T18:50:00-05:00 :/home/dobin/data/STAR/STARcode/STAR.master/source
+STAR git: On branch master ; commit ae26add7ea1724f3281ec8abedb71bcff6a4ae73 ; diff files: CHANGES.md README.md RELEASEnotes.md doc/STARmanual.pdf extras/doc-latex/STARmanual.tex extras/doc-latex/convertParDefToLatexTable.awk extras/doc-latex/parametersDefault.tex extras/docker/Dockerfile source/VERSION 
+##### Command Line:
+STAR --runMode genomeGenerate --genomeDir star/ --genomeFastaFiles genome.fasta --sjdbGTFfile genome.gtf --runThreadN 1 --genomeSAindexNbases 8
+##### Initial USER parameters from Command Line:
+###### All USER parameters from Command Line:
+runMode                       genomeGenerate        ~RE-DEFINED
+genomeDir                     star/     ~RE-DEFINED
+genomeFastaFiles              genome.fasta        ~RE-DEFINED
+sjdbGTFfile                   genome.gtf     ~RE-DEFINED
+runThreadN                    1     ~RE-DEFINED
+genomeSAindexNbases           8     ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runMode                           genomeGenerate   
+runThreadN                        1
+genomeDir                         star/
+genomeFastaFiles                  genome.fasta   
+genomeSAindexNbases               8
+sjdbGTFfile                       genome.gtf
+
+-------------------------------
+##### Final effective command line:
+STAR   --runMode genomeGenerate      --runThreadN 1   --genomeDir star/   --genomeFastaFiles genome.fasta      --genomeSAindexNbases 8   --sjdbGTFfile genome.gtf
+----------------------------------------
+
+Number of fastq files for each mate = 1
+ParametersSolo: --soloCellFilterType CellRanger2.2 filtering parameters:  3000 0.99 10
+Finished loading and checking parameters
+--genomeDir directory exists and will be overwritten: star/
+Jul 13 16:17:01 ... starting to generate Genome files
+genome.fasta : chr # 0  "I" chrStart: 0
+Chromosome sequence lengths: 
+I	230218
+Genome sequence total length = 230218
+Genome size with padding = 262144
+Jul 13 16:17:01 ..... processing annotations GTF
+Processing pGe.sjdbGTFfile=genome.gtf, found:
+		124 transcripts
+		129 exons (non-collapsed)
+		5 collapsed junctions
+Total junctions: 5
+Jul 13 16:17:01 ..... finished GTF processing
+
+!!!!! WARNING: --genomeSAindexNbases 8 is too large for the genome size=230218, which may cause seg-fault at the mapping step. Re-run genome generation with recommended --genomeSAindexNbases 7
+Estimated genome size with padding and SJs: total=genome+SJ=201262144 = 262144 + 201000000
+GstrandBit=32
+Number of SA indices: 460436
+Jul 13 16:17:01 ... starting to sort Suffix Array. This may take a long time...
+Number of chunks: 1;   chunks size limit: 18599685304 bytes
+Jul 13 16:17:01 ... sorting Suffix Array chunks and saving them to disk...
+Writing 3683488 bytes into star//SA_0 ; empty space on disk = 106492383461376 bytes ... done
+Jul 13 16:17:01 ... loading chunks from disk, packing SA...
+Jul 13 16:17:02 ... finished generating suffix array
+Jul 13 16:17:02 ... generating Suffix Array index
+Jul 13 16:17:02 ... completed Suffix Array index
+Jul 13 16:17:02   Finished preparing junctions
+Jul 13 16:17:02 ..... inserting junctions into the genome indices
+Jul 13 16:17:02   Finished SA search: number of new junctions=5, old junctions=0
+Jul 13 16:17:02   Finished sorting SA indicesL nInd=2000
+Genome size with junctions=263149  262144   1005
+GstrandBit1=32   GstrandBit=32
+Jul 13 16:17:02   Finished inserting junction indices
+Jul 13 16:17:02   Finished SAi
+Jul 13 16:17:02 ..... finished inserting junctions into genome
+Jul 13 16:17:02 ... writing Genome to disk ...
+Writing 263149 bytes into star//Genome ; empty space on disk = 106492381364224 bytes ... done
+SA size in bytes: 1907552
+Jul 13 16:17:02 ... writing Suffix Array to disk ...
+Writing 1907552 bytes into star//SA ; empty space on disk = 106492313206784 bytes ... done
+Jul 13 16:17:02 ... writing SAindex to disk
+Writing 8 bytes into star//SAindex ; empty space on disk = 106491824570368 bytes ... done
+Writing 72 bytes into star//SAindex ; empty space on disk = 106491824570368 bytes ... done
+Writing 382291 bytes into star//SAindex ; empty space on disk = 106491824570368 bytes ... done
+Jul 13 16:17:02 ..... finished successfully
+DONE: Genome generation, EXITING

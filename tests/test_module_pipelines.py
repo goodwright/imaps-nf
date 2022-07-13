@@ -83,6 +83,30 @@ class StarBuildTests(PipelineTest):
 
 
 
+class StarAlignTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/star_align.nf",
+            config="conf/star_align.config"
+        )
+
+
+    def test_can_run_star_align(self):
+        execution = self.pipeline.run(params={
+            "fastq": os.path.abspath("assets/demultiplexed.fastq.gz"),
+            "index": os.path.abspath("assets/star"),
+            "gtf": os.path.abspath("assets/genome.gtf"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "STAR_ALIGN", ["demultiplexed.fastq.gz", "star", "genome.gtf"],
+            ["demultiplexed.fastq.gz.Aligned.sortedByCoord.out.bam", "demultiplexed.fastq.gz.Aligned.toTranscriptome.out.bam"]
+        )
+
+
+
 class FastqcTests(PipelineTest):
 
     def setUp(self):

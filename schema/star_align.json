@@ -1,0 +1,26 @@
+{
+    "file_options": {
+        "name": "File options",
+        "description": "Files needed to run the module.",
+        "properties": {
+            "fastqc": {
+                "type": "file",
+                "pattern": "fq\\.gz|fastq\\.gz",
+                "required": true,
+                "description": "A FASTQ file to align."
+            },
+            "index": {
+                "type": "directory",
+                "pattern": "",
+                "required": true,
+                "description": "A STAR index to align against."
+            },
+            "gtf": {
+                "type": "file",
+                "pattern": "gtf",
+                "required": true,
+                "description": "A GTF genome annotation for the alignment genome."
+            }
+        }
+    }
+}

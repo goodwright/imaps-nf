@@ -20,6 +20,9 @@
             "samtools/faidx": {
                 "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             },
+            "star/align": {
+                "git_sha": "fb6c7bca3d55c19a793372513395e3a567bdd7ba"
+            },
             "star/genomegenerate": {
                 "git_sha": "fb6c7bca3d55c19a793372513395e3a567bdd7ba"
             },
