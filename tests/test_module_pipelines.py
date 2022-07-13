@@ -79,3 +79,25 @@ class FastqcTests(PipelineTest):
             execution, "FASTQC", ["demultiplexed.fastq.gz"],
             ["demultiplexed.fastq.gz_fastqc.html", "demultiplexed.fastq.gz_fastqc.zip"]
         )
+
+
+
+class TrimgaloreTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/trimgalore.nf",
+            config="conf/trimgalore.config"
+        )
+
+
+    def test_can_run_trimgalore(self):
+        execution = self.pipeline.run(params={
+            "fastq": os.path.abspath("assets/demultiplexed.fastq.gz"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "TRIMGALORE", ["demultiplexed.fastq.gz"],
+            ["demultiplexed.fastq.gz_trimmed.fq.gz", "demultiplexed.fastq.gz.fastq.gz_trimming_report.txt"]
+        )

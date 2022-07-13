@@ -40,7 +40,8 @@ Every pipeline that is intended to be run stand-alone should have:
 - `faidx.nf` - creates a Samtools `.fai` genome index from a FASTA file.
 - `bowtie_build.nf` - creates a BOWTIE genome index from a FASTA file.
 - `star_build.nf` - creates a STAR genome index from a FASTA file and its GTF annotation.
-- `fastqc.nf` - performs basic Quality Control on a FASTQ reads file.
+- `fastqc.nf` - performs basic quality control on a FASTQ reads file.
+- `trimgalore.nf` - trims sequencing artifacts from a FASTQ reads file.
 
 ## Config
 
