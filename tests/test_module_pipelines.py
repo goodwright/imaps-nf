@@ -74,7 +74,7 @@ class StarBuildTests(PipelineTest):
         )
 
 
-    def test_can_run_bowtie_build(self):
+    def test_can_run_star_build(self):
         execution = self.pipeline.run(params={
             "fasta": os.path.abspath("assets/genome.fasta"),
             "gtf": os.path.abspath("assets/genome.gtf"),
@@ -164,25 +164,21 @@ class FilterGtfTests(PipelineTest):
 
     def test_can_run_filter_gtf(self):
         execution = self.pipeline.run(params={
+            "gtf": os.path.abspath("assets/genome.basic.gtf"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(execution, "FILTER_GTF", ["genome.basic.gtf"], ["post_filtering.genome.basic.gtf"])
+        with open(Path("testlocation/results/filter_gtf/post_filtering.genome.basic.gtf")) as f:
+            gtf_lines = f.read().splitlines()
+        self.assertEqual(len(gtf_lines), 298)
+    
+
+    def test_can_run_filter_gtf_without_basic_tags(self):
+        execution = self.pipeline.run(params={
             "gtf": os.path.abspath("assets/genome.gtf"),
         }, profile=["docker"], location="testlocation")
         self.check_execution_ok(execution, 1)
         self.check_process(execution, "FILTER_GTF", ["genome.gtf"], ["post_filtering.genome.gtf"])
         with open(Path("testlocation/results/filter_gtf/post_filtering.genome.gtf")) as f:
             gtf_lines = f.read().splitlines()
-        self.assertEqual(len(gtf_lines), 298)
-    
-
-    def test_can_run_filter_gtf_without_basic_tags(self):
-        with open(Path("assets/genome.gtf")) as f:
-            gtf = f.read()
-        with open(Path("testlocation/genome.gtf"), "w") as f:
-            f.write(gtf.replace("basic", "bassic"))
-        execution = self.pipeline.run(params={
-            "gtf": os.path.abspath("testlocation/genome.gtf"),
-        }, profile=["docker"], location="testlocation")
-        self.check_execution_ok(execution, 1)
-        self.check_process(execution, "FILTER_GTF", ["genome.gtf"], ["post_filtering.genome.gtf"])
-        with open(Path("testlocation/results/filter_gtf/post_filtering.genome.gtf")) as f:
-            gtf_lines = f.read().splitlines()
-        self.assertEqual(len(gtf_lines), 595)
+        self.assertEqual(len(gtf_lines), 600)
