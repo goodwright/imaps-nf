@@ -1,0 +1,37 @@
+name: filter_gtf
+description: |
+  Filters GENCODE or ENSEMBL genomic annotation in GTF format.
+  
+  Pre-filtering genomic annotation is crucial to ensure that accurate
+  genome-level segmentation is produced by iCount segment. When iCount
+  segmentation is applied to unfiltered annotation, this can result in introns
+  of protein-coding genes to be annotated as ncRNA and in shifting of CDSs and
+  UTRs to include low-confidence transcripts.
+
+  No filtering is done on gene level.
+
+  Entries below gene-level tagged as "basic" are retained. The transcripts
+  tagged as "basic" form part of a subset of representative transcripts for each
+  gene. This subset prioritizes full-length protein-coding transcripts over
+  partial or non-protein-coding transcripts within the same gene, and intends to
+  highlight those transcripts that will be useful to the majority of users.
+tools:
+  - pandas:
+      description: |
+        Flexible and powerful data analysis / manipulation library for Python,
+        providing labeled data structures similar to R data.frame objects,
+        statistical functions, and much more.
+      homepage: https://pandas.pydata.org/
+      documentation: https://pandas.pydata.org/docs/
+      licence: ["BSD-3"]
+input:
+  - gtf:
+      type: file
+      description: A GTF annotation file to filter.
+output:
+  - post_filtering_gtf:
+      type: file
+      description: A GTF that may have been filtered down.
+      pattern: "*.gtf"
+authors:
+  - "@marc-jones"

@@ -43,6 +43,7 @@ Every pipeline that is intended to be run stand-alone should have:
 - `star_build.nf` - creates a STAR genome index from a FASTA file and its GTF annotation.
 - `fastqc.nf` - performs basic quality control on a FASTQ reads file.
 - `trimgalore.nf` - trims sequencing artifacts from a FASTQ reads file.
+- `filter_gtf.nf` - selects representative transcripts per gene and removes the rest.
 
 ## Config
 
