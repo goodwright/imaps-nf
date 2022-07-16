@@ -170,7 +170,7 @@ class FilterGtfTests(PipelineTest):
         self.check_process(execution, "FILTER_GTF", ["genome.basic.gtf"], ["post_filtering.genome.basic.gtf"])
         with open(Path("testlocation/results/filter_gtf/post_filtering.genome.basic.gtf")) as f:
             gtf_lines = f.read().splitlines()
-        self.assertEqual(len(gtf_lines), 298)
+        self.assertEqual(len(gtf_lines), 1948)
     
 
     def test_can_run_filter_gtf_without_basic_tags(self):
