@@ -1,0 +1,21 @@
+name: find_longest_transcript
+description: |
+  In GTF files, genes sometimes have multiple transcripts. For each protein
+  coding transcript, this process finds the longest transcript - using the total
+  CDS length, and then total exon length as a tie-breaker.
+input:
+  - gtf:
+      type: file
+      description: A genome annotation file
+output:
+  - longest_transcript:
+      type: file
+      description: A list of representative protein coding transcript IDs
+      pattern: "longest_transcript.txt"
+  - transcriptome_index:
+      type: file
+      description: A genome index for the transcripts
+      pattern: "transcriptome_index.fa.fai"
+authors:
+  - "@rfara"
+  - "@samirelanduk"
