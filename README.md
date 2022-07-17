@@ -96,6 +96,6 @@ python -m unittest tests.test_general_pipelines.DemultiplexTests.test_can_run_wi
 
 ## Documentation
 
-Each runnable pipeline (except those which just wrap a single module) has a markdown file explaining in plain English what the pipeline is for, what its inputs are, the general flow of what it does, and what its key outputs are.
+Each runnable pipeline has a markdown file explaining in plain English what the pipeline is for, what its inputs are, the general flow of what it does, and what its key outputs are.
 
 This is in addition to the more cursory explanation in this README.

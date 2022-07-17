@@ -119,7 +119,7 @@ class LocalModuleTests(RepoTest):
 
 class PipelineFilesTests(RepoTest):
 
-    def get_pipeline_names(self, include_modules_workflows=True):
+    def get_pipeline_names(self):
         """What are the pipelines that should be runnable by themselves?"""
 
         command = 'grep -r -i --include="*.nf" "workflow {" subworkflows'
@@ -127,11 +127,6 @@ class PipelineFilesTests(RepoTest):
         subworkflow_names = [re.search(
             r"\/([a-z_]+?)\.nf", line
         )[1] for line in stdout.decode().splitlines()]
-        if not include_modules_workflows:
-            module_names = [f[:-3] for f in os.listdir("subworkflows/modules") if f.endswith(".nf")]
-            for name in module_names:
-                if name in subworkflow_names:
-                    subworkflow_names.remove(name)
         workflow_names = [f[:-3] for f in os.listdir("workflows") if f.endswith(".nf")]
         return sorted(set(workflow_names + subworkflow_names))
 
@@ -163,7 +158,7 @@ class PipelineFilesTests(RepoTest):
     
 
     def test_every_pipeline_has_docs_file(self):
-        pipeline_names = self.get_pipeline_names(include_modules_workflows=False)
+        pipeline_names = self.get_pipeline_names()
         for name in pipeline_names:
             self.assertIn(f"{name}.md", os.listdir("docs"), msg=f"{name}.nf has no docs file")
         for name in pipeline_names:
