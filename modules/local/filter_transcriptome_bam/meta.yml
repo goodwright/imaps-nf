@@ -1,0 +1,34 @@
+name: filter_transcriptome_bam
+description: |
+  Filters a BAM alignment file, leaving only those with transcript IDs matching
+  a provided list of transcript IDs
+tools:
+  - samtools:
+      description: Tools for manipulating next-generation sequencing data
+      homepage: http://www.htslib.org/
+      documentation: http://www.htslib.org/doc/
+      licence: ['MIT']
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - transcriptome_bam:
+      type: file
+      description: A BAM file of reads aligned to the transcriptome
+  - transcripts:
+      type: file
+      description: A list of transcript IDs
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - filtered_bam:
+      type: file
+      description: The filtered alignment
+      pattern: "*_filtered_transcriptome.bam"
+authors:
+  - "@rfara"

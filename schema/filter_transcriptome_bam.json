@@ -1,0 +1,20 @@
+{
+    "file_options": {
+        "name": "File options",
+        "description": "Files needed to run the module.",
+        "properties": {
+            "bam": {
+                "type": "file",
+                "pattern": "bam",
+                "required": true,
+                "description": "A BAM file with reads aligned to a transcriptome."
+            },
+            "transcripts": {
+                "type": "file",
+                "pattern": "txt",
+                "required": true,
+                "description": "A list of transcript IDs to preserve."
+            }
+        }
+    }
+}

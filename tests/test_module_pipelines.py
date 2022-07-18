@@ -227,3 +227,26 @@ class LongestTranscriptTests(PipelineTest):
         with open(Path("testlocation/results/find_longest_transcript/genome.gtf.transcriptome_index.fa.fai")) as f:
             txt_lines = f.read().splitlines()
         self.assertEqual(len(txt_lines), 116)
+
+
+
+class FilterTranscriptomeBamTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/filter_transcriptome_bam.nf",
+            config="conf/filter_transcriptome_bam.config"
+        )
+    
+
+    def test_can_run_find_longest_transcript_with_transcript_type(self):
+        execution = self.pipeline.run(params={
+            "bam": os.path.abspath("assets/transcriptome.bam"),
+            "transcripts": os.path.abspath("assets/transcripts.txt"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "FILTER_TRANSCRIPTOME_BAM", ["transcriptome.bam", "transcripts.txt"],
+            ["transcriptome.bam_filtered_transcriptome.bam"]
+        )

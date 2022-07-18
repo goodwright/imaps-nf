@@ -45,6 +45,7 @@ Every pipeline that is intended to be run stand-alone should have:
 - `trimgalore.nf` - trims sequencing artifacts from a FASTQ reads file.
 - `filter_gtf.nf` - selects representative transcripts per gene and removes the rest.
 - `find_longest_transcript.nf` - finds the longest protein coding transcript per gene.
+- `filter_transcriptome_bam.nf` - removes alignments outside certain transcripts.
 
 ## Config
 
