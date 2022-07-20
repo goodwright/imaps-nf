@@ -250,3 +250,25 @@ class FilterTranscriptomeBamTests(PipelineTest):
             execution, "FILTER_TRANSCRIPTOME_BAM", ["transcriptome.bam", "transcripts.txt"],
             ["transcriptome.bam_filtered_transcriptome.bam"]
         )
+
+
+
+class SamtoolsIndexTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/samtools_index.nf",
+            config="conf/samtools_index.config"
+        )
+    
+
+    def test_can_run_samtools_index(self):
+        execution = self.pipeline.run(params={
+            "bam": os.path.abspath("assets/transcriptome.bam"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "SAMTOOLS_INDEX", ["transcriptome.bam"],
+            ["transcriptome.bam.bai"]
+        )
