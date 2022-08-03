@@ -280,3 +280,39 @@ class SamtoolsIndexTests(PipelineTest):
             execution, "SAMTOOLS_INDEX", ["transcriptome.bam"],
             ["transcriptome.bam.bai"]
         )
+
+
+
+class UmicollapseTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/umicollapse.nf",
+            config="conf/umicollapse.config"
+        )
+    
+
+    def test_can_run_umicollapse(self):
+        execution = self.pipeline.run(params={
+            "bam": os.path.abspath("assets/transcriptome.bam"),
+            "bai": os.path.abspath("assets/transcriptome.bam.bai"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "UMICOLLAPSE", ["transcriptome.bam", "transcriptome.bam.bai"],
+            ["transcriptome.bam.bam", "transcriptome.bam_UMICollapse.log"]
+        )
+    
+
+    def test_can_run_umicollapse_with_custom_umi_separator(self):
+        execution = self.pipeline.run(params={
+            "bam": os.path.abspath("assets/transcriptome-umi.bam"),
+            "bai": os.path.abspath("assets/transcriptome.bam.bai"),
+            "umi_separator": "umi:"
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "UMICOLLAPSE", ["transcriptome-umi.bam", "transcriptome.bam.bai"],
+            ["transcriptome-umi.bam.bam", "transcriptome-umi.bam_UMICollapse.log"]
+        )
