@@ -18,20 +18,7 @@ class PrimaryClipAnalysisRunTests(TestCase):
             "Hs_genome": "assets/human_genome",
         }, profile=["iMaps", "local", "test"])
         self.assertEqual(execution.status, "OK", msg=execution.stdout)
-        self.assertEqual(len(execution.process_executions), 29)
-
-        # Default UMI Separator is rbc
-        for proc in execution.process_executions:
-            if "UMITOOLS_DEDUP" in proc.process:
-                p1, p2 = proc.hash.split("/")
-                subdirs = os.listdir(os.path.join("work", p1))
-                subdir = [d for d in subdirs if d.startswith(p2)][0]
-                meta_id = proc.name[proc.name.find("(") + 1 : proc.name.find(")")]
-                with open(os.path.join("work", p1, subdir, "{}.log".format(meta_id))) as f:
-                    self.assertIn(
-                        "--umi-separator=rbc:", f.read(),
-                        "Default umi-separator was not 'rbc'"
-                    )
+        self.assertEqual(len(execution.process_executions), 25)
     
 
     def test_can_run_pipeline_with_genome_that_has_no_gzip(self):
@@ -49,7 +36,7 @@ class PrimaryClipAnalysisRunTests(TestCase):
                 "Hs_genome": "assets/human_genome_no_gzip",
             }, profile=["iMaps", "local", "test"])
             self.assertEqual(execution.status, "OK", msg=execution.stdout)
-            self.assertEqual(len(execution.process_executions), 29)
+            self.assertEqual(len(execution.process_executions), 25)
         finally:
             if os.path.exists("assets/human_genome_no_gzip"):
                 shutil.rmtree("assets/human_genome_no_gzip")

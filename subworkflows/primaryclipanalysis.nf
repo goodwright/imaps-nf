@@ -5,21 +5,17 @@ nextflow.enable.dsl=2
 include { TRIMGALORE } from '../modules/nf-core/modules/trimgalore/main'
 include { BOWTIE_ALIGN } from '../modules/nf-core/modules/bowtie/align/main'
 include { STAR_ALIGN } from '../modules/nf-core/modules/star/align/main'
-include { DU } from '../modules/local/du/main'
-include { GET_UMI_LENGTH } from '../modules/local/get_umi_length/main'
-include { UMITOOLS_DEDUP } from '../modules/local/umitools_dedup/main'
+include { UMICOLLAPSE } from '../modules/local/UMICollapse/main'
 include { SAMTOOLS_INDEX as STAR_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
-include { SAMTOOLS_INDEX as UMITOOLS_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
+include { SAMTOOLS_INDEX as UMICOLLAPSE_SAMTOOLS_INDEX} from '../modules/nf-core/modules/samtools/index/main'
 include { GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'
 include { CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/coverage/main'
 include { CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'
 
 include { FILTER_TRANSCRIPTS } from '../modules/local/filter_transcriptome_bam/main'
-include { DU as TOME_DU } from '../modules/local/du/main'
-include { GET_UMI_LENGTH as TOME_GET_UMI_LENGTH } from '../modules/local/get_umi_length/main'
-include { UMITOOLS_DEDUP as TOME_UMITOOLS_DEDUP } from '../modules/local/umitools_dedup/main'
+include { UMICOLLAPSE as TOME_UMICOLLAPSE } from '../modules/local/UMICollapse/main'
 include { SAMTOOLS_INDEX as TOME_STAR_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'
-include { SAMTOOLS_INDEX as TOME_UMITOOLS_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'
+include { SAMTOOLS_INDEX as TOME_UMICOLLAPSE_SAMTOOLS_INDEX } from '../modules/nf-core/modules/samtools/index/main'
 include { GET_CROSSLINKS as TOME_GET_CROSSLINKS } from '../modules/local/get_crosslinks/main'
 include { CROSSLINKS_COVERAGE as TOME_CROSSLINKS_COVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/coverage/main'
 include { CROSSLINKS_NORMCOVERAGE as TOME_CROSSLINKS_NORMCOVERAGE } from '../modules/luslab/nf-core-modules/crosslinks/normcoverage/main'
@@ -34,15 +30,6 @@ include { PARACLU_PARACLU } from '../modules/luslab/nf-core-modules/paraclu/para
 include { PARACLU_CUT } from '../modules/luslab/nf-core-modules/paraclu/cut/main'
 include { PEKA } from '../modules/luslab/nf-core-modules/peka/main'
 
-// Closure to annotate UMITools Input
-annotate_umitools_input = { it ->
-    def meta = it[0].clone()
-    if (it[3].toInteger() >= params.max_kilobytes &
-        it[4].toInteger() >= params.max_umi_length) {
-        meta["low_memory"] = true
-    }
-    return [meta, it[1], it[2]]
-}
 
 workflow {
     // If running straight from command line, will need to construct the
@@ -146,25 +133,12 @@ workflow PRIMARY_CLIP_ANALYSIS {
     TOME_STAR_SAMTOOLS_INDEX ( FILTER_TRANSCRIPTS.out.filtered_bam )
     FILTER_TRANSCRIPTS.out.filtered_bam.join(TOME_STAR_SAMTOOLS_INDEX.out.bai)
         .set{ tome_ch_umi_input }
-
-    // Determine if UMITools needs to be run in "low_memory" mode
-    TOME_DU ( tome_ch_umi_input.map{it -> it[0, 1]} )
-    TOME_GET_UMI_LENGTH ( tome_ch_umi_input )
-    tome_ch_umi_input
-        .join( TOME_DU.out.size )
-        .join( TOME_GET_UMI_LENGTH.out.length )
-        .map( annotate_umitools_input )
-        .set{ tome_ch_umi_input_annotated }
-
-    TOME_UMITOOLS_DEDUP ( tome_ch_umi_input_annotated )
-    TOME_UMITOOLS_DEDUP.out.bam
-        .map{ it -> [it[0].findAll{key, val -> key != "low_memory"}, it[1]] }
-        .set{ ch_tome_umitools_bam }
-    TOME_UMITOOLS_SAMTOOLS_INDEX ( ch_tome_umitools_bam )
+    TOME_UMICOLLAPSE ( tome_ch_umi_input)
+    TOME_UMICOLLAPSE_SAMTOOLS_INDEX ( TOME_UMICOLLAPSE.out.bam )
     reads.map{triplet -> [
         triplet[0], file(triplet[2] + "/FIND_LONGEST_TRANSCRIPT/*.fa.fai")
     ]}.set{ ch_longest_transcript_index }
-    tome_ch_xl_input = ch_tome_umitools_bam.join(TOME_UMITOOLS_SAMTOOLS_INDEX.out.bai)
+    tome_ch_xl_input = TOME_UMICOLLAPSE.out.bam.join(TOME_UMICOLLAPSE_SAMTOOLS_INDEX.out.bai)
     tome_ch_xl_input.join( ch_longest_transcript_index ).set{ tome_with_index }
     tome_with_index.multiMap { tuple ->
         bam: [tuple[0], tuple[1], tuple[2]]
@@ -172,43 +146,21 @@ workflow PRIMARY_CLIP_ANALYSIS {
     }.set { ch_tome_input }
     TOME_GET_CROSSLINKS ( ch_tome_input.bam, ch_tome_input.transcript )
     TOME_CROSSLINKS_COVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed )
-    TOME_CROSSLINKS_NORMCOVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed )
-
+    TOME_CROSSLINKS_NORMCOVERAGE ( TOME_GET_CROSSLINKS.out.crosslinkBed ) 
 
     // Get crosslinks
     STAR_SAMTOOLS_INDEX ( STAR_ALIGN.out.bam_sorted )
     ch_umi_input = STAR_ALIGN.out.bam_sorted.combine(STAR_SAMTOOLS_INDEX.out.bai, by: 0)
 
-    // Determine if UMITools needs to be run in "low_memory" mode
-    DU ( ch_umi_input.map{it -> it[0, 1]} )
-    GET_UMI_LENGTH ( ch_umi_input )
-    ch_umi_input
-        .join( DU.out.size )
-        .join( GET_UMI_LENGTH.out.length )
-        .map( annotate_umitools_input )
-        .set{ ch_umi_input_annotated }
+    UMICOLLAPSE ( ch_umi_input )
 
-    UMITOOLS_DEDUP ( ch_umi_input_annotated )
-
-    // Strip out the low_memory key from the meta value so that the later joins
-    // actually work
-    UMITOOLS_DEDUP.out.bam
-        .map{ it -> [it[0].findAll{key, val -> key != "low_memory"}, it[1]] }
-        .set{ ch_umitools_bam }
-    // Keep a channel for converting between meta with the low_memory key and
-    // without, in case in the future you want to keep track of which files were
-    // run as low mem
-    UMITOOLS_DEDUP.out.bam
-        .map{ it -> [it[0].findAll{key, val -> key != "low_memory"}, it[0]] }
-        .set{ ch_meta_conversion }
-
-    UMITOOLS_SAMTOOLS_INDEX ( ch_umitools_bam )
+    UMICOLLAPSE_SAMTOOLS_INDEX ( UMICOLLAPSE.out.bam )
 
     reads.map{triplet -> [
         triplet[0], file(triplet[2] + "/SAMTOOLS_FAIDX/*.fa.fai")
     ]}.set{ ch_genome_fai }
 
-    ch_xl_input = ch_umitools_bam.join(UMITOOLS_SAMTOOLS_INDEX.out.bai)
+    ch_xl_input = UMICOLLAPSE.out.bam.join(UMICOLLAPSE_SAMTOOLS_INDEX.out.bai)
 
     ch_xl_input.join( ch_genome_fai ).set{ ch_with_index }
 
@@ -295,7 +247,7 @@ workflow PRIMARY_CLIP_ANALYSIS {
         trimgalore_log       = TRIMGALORE.out.log
         bowtie_align_log     = BOWTIE_ALIGN.out.log
         star_align_log_final = STAR_ALIGN.out.log_final
-        umitools_dedup_log   = UMITOOLS_DEDUP.out.log
+        umicollapse_log   = UMICOLLAPSE.out.log
         crosslinks           = GET_CROSSLINKS.out.crosslinkBed
         icount_peaks         = ICOUNT_PEAKS.out.peaks
         paraclu_peaks        = PARACLU_CONVERT.out.peaks
