@@ -1,8 +1,8 @@
-### STAR   --runMode genomeGenerate      --runThreadN 1   --genomeDir star/   --genomeFastaFiles genome.fasta      --genomeSAindexNbases 8   --sjdbGTFfile genome.gtf
+### STAR   --runMode genomeGenerate      --runThreadN 1   --genomeDir star/   --genomeFastaFiles human-21-slim.fasta      --genomeSAindexNbases 8   --sjdbGTFfile human-21-slim.gtf
 ### GstrandBit 32
 versionGenome	2.7.4a
 genomeType	Full
-genomeFastaFiles	genome.fasta 
+genomeFastaFiles	human-21-slim.fasta 
 genomeSAindexNbases	8
 genomeChrBinNbits	18
 genomeSAsparseD	1
@@ -10,10 +10,10 @@ genomeTransformType	None
 genomeTransformVCF	-
 sjdbOverhang	100
 sjdbFileChrStartEnd	- 
-sjdbGTFfile	genome.gtf
+sjdbGTFfile	human-21-slim.gtf
 sjdbGTFchrPrefix	-
 sjdbGTFfeatureExon	exon
 sjdbGTFtagExonParentTranscript	transcript_id
 sjdbGTFtagExonParentGene	gene_id
 sjdbInsertSave	Basic
-genomeFileSizes	263149 1907552
+genomeFileSizes	528107 3572146

@@ -1,6 +1,6 @@
 import os
-from pathlib import Path
 import nextflow
+from pathlib import Path
 from tests.base import PipelineTest
 
 class FaidxTests(PipelineTest):
@@ -181,7 +181,7 @@ class FilterGtfTests(PipelineTest):
         self.check_process(execution, "FILTER_GTF", ["genome.gtf"], ["post_filtering.genome.gtf"])
         with open(Path("testlocation/results/filter_gtf/post_filtering.genome.gtf")) as f:
             gtf_lines = f.read().splitlines()
-        self.assertEqual(len(gtf_lines), 600)
+        self.assertEqual(len(gtf_lines), 50)
 
 
 
@@ -193,6 +193,11 @@ class LongestTranscriptTests(PipelineTest):
             "subworkflows/modules/find_longest_transcript.nf",
             config="conf/find_longest_transcript.config"
         )
+    
+
+    def tearDown(self):
+        if os.path.exists(Path("assets/genome.biotype.gtf")):
+            os.remove(Path("assets/genome.biotype.gtf"))
     
 
     def test_can_run_find_longest_transcript_with_transcript_type(self):
@@ -213,20 +218,23 @@ class LongestTranscriptTests(PipelineTest):
     
 
     def test_can_run_find_longest_transcript_with_transcript_biotype(self):
+        with open(Path("assets/genome.basic.gtf")) as f1:
+            with open(Path("assets/genome.biotype.gtf"), "w") as f2:
+                f2.write(f1.read().replace("transcript_type", "transcript_biotype"))
         execution = self.pipeline.run(params={
-            "gtf": os.path.abspath("assets/genome.gtf"),
+            "gtf": os.path.abspath("assets/genome.biotype.gtf"),
         }, profile=["docker"], location="testlocation")
         self.check_execution_ok(execution, 1)
         self.check_process(
-            execution, "FIND_LONGEST_TRANSCRIPT", ["genome.gtf"],
-            ["genome.gtf.longest_transcript.txt", "genome.gtf.transcriptome_index.fa.fai"]
+            execution, "FIND_LONGEST_TRANSCRIPT", ["genome.biotype.gtf"],
+            ["genome.biotype.gtf.longest_transcript.txt", "genome.biotype.gtf.transcriptome_index.fa.fai"]
         )
-        with open(Path("testlocation/results/find_longest_transcript/genome.gtf.longest_transcript.txt")) as f:
+        with open(Path("testlocation/results/find_longest_transcript/genome.biotype.gtf.longest_transcript.txt")) as f:
             txt_lines = f.read().splitlines()
-        self.assertEqual(len(txt_lines), 116)
-        with open(Path("testlocation/results/find_longest_transcript/genome.gtf.transcriptome_index.fa.fai")) as f:
+        self.assertEqual(len(txt_lines), 31)
+        with open(Path("testlocation/results/find_longest_transcript/genome.biotype.gtf.transcriptome_index.fa.fai")) as f:
             txt_lines = f.read().splitlines()
-        self.assertEqual(len(txt_lines), 116)
+        self.assertEqual(len(txt_lines), 114)
 
 
 
