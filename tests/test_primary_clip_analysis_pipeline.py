@@ -18,7 +18,7 @@ class PrimaryClipAnalysisRunTests(TestCase):
             "Hs_genome": "assets/human_genome",
         }, profile=["iMaps", "local", "test"])
         self.assertEqual(execution.status, "OK", msg=execution.stdout)
-        self.assertEqual(len(execution.process_executions), 29)
+        self.assertEqual(len(execution.process_executions), 25)
 
         # Default UMI Separator is rbc
         for proc in execution.process_executions:
@@ -49,7 +49,7 @@ class PrimaryClipAnalysisRunTests(TestCase):
                 "Hs_genome": "assets/human_genome_no_gzip",
             }, profile=["iMaps", "local", "test"])
             self.assertEqual(execution.status, "OK", msg=execution.stdout)
-            self.assertEqual(len(execution.process_executions), 29)
+            self.assertEqual(len(execution.process_executions), 25)
         finally:
             if os.path.exists("assets/human_genome_no_gzip"):
                 shutil.rmtree("assets/human_genome_no_gzip")
