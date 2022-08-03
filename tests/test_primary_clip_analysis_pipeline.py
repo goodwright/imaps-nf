@@ -19,19 +19,6 @@ class PrimaryClipAnalysisRunTests(TestCase):
         }, profile=["iMaps", "local", "test"])
         self.assertEqual(execution.status, "OK", msg=execution.stdout)
         self.assertEqual(len(execution.process_executions), 25)
-
-        # Default UMI Separator is rbc
-        for proc in execution.process_executions:
-            if "UMICOLLAPSE" in proc.process:
-                p1, p2 = proc.hash.split("/")
-                subdirs = os.listdir(os.path.join("work", p1))
-                subdir = [d for d in subdirs if d.startswith(p2)][0]
-                meta_id = proc.name[proc.name.find("(") + 1 : proc.name.find(")")]
-                with open(os.path.join("work", p1, subdir, "{}.log".format(meta_id))) as f:
-                    self.assertIn(
-                        "--umi-sep rbc:", f.read(),
-                        "Default umi-separator was not 'rbc'"
-                    )
     
 
     def test_can_run_pipeline_with_genome_that_has_no_gzip(self):
