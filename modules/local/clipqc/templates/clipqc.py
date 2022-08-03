@@ -89,18 +89,19 @@ for dedup_log in dedup_logs:
 
     with open(dedup_log, 'r') as logfile:
 
-        exp = re.sub('.log', '', os.path.basename(dedup_log))
+        exp = re.sub('_UMICollapse.log', '', os.path.basename(dedup_log))
 
         lines = logfile.readlines()
 
-        input_reads = [i for i in lines if 'INFO Reads: Input Reads:' in i]
+        input_reads = [i for i in lines if 'Number of input reads' in i]
         input_reads = int(re.findall(r'\\d+', input_reads[0])[-1])
 
-        output_reads = [i for i in lines if 'Number of reads out:' in i]
+        output_reads = [i for i in lines if 'Number of reads after deduplicating' in i]
         output_reads = int(re.findall(r'\\d+', output_reads[0])[-1])
 
-        mean_umis = [i for i in lines if 'Mean number of unique UMIs per position:' in i]
-        mean_umis = float(re.findall(r'\\d+', mean_umis[0])[-1])
+        mean_umis = [i for i in lines if 'Average number of UMIs per alignment position' in i]
+        mean_umis = float(re.findall(r'\\d+\\.*\\d*', mean_umis[0])[-1])
+        mean_umis = np.round(mean_umis, 2)
 
         dedup['exp'].append(exp)
         dedup['input_reads'].append(input_reads)
