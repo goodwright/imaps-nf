@@ -4,6 +4,7 @@
         "description": "Files needed to run the module.",
         "properties": {
             "fastqc": {
+                "name": "FASTQC",
                 "type": "file",
                 "pattern": "fq\\.gz|fastq\\.gz",
                 "required": true,

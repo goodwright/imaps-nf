@@ -4,6 +4,7 @@
         "description": "Files needed to run the module.",
         "properties": {
             "fasta": {
+                "name": "FASTA",
                 "type": "file",
                 "pattern": "bam",
                 "required": true,

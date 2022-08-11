@@ -4,18 +4,21 @@
         "description": "Files needed to run the module.",
         "properties": {
             "fastqc": {
+                "name": "FASTQC",
                 "type": "file",
                 "pattern": "fq\\.gz|fastq\\.gz",
                 "required": true,
                 "description": "A FASTQ file to align."
             },
             "index": {
+                "name": "INDEX",
                 "type": "directory",
                 "pattern": "",
                 "required": true,
                 "description": "A STAR index to align against."
             },
             "gtf": {
+                "name": "GTF",
                 "type": "file",
                 "pattern": "gtf",
                 "required": true,

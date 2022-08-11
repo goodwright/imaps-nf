@@ -4,12 +4,14 @@
         "description": "Files needed to run the module.",
         "properties": {
             "bam": {
+                "name": "BAM",
                 "type": "file",
                 "pattern": "bam",
                 "required": true,
                 "description": "A BAM file with reads aligned to a transcriptome."
             },
             "transcripts": {
+                "name": "TRANSCRIPTS",
                 "type": "file",
                 "pattern": "txt",
                 "required": true,

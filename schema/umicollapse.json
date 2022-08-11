@@ -4,12 +4,14 @@
         "description": "Files needed to run the module.",
         "properties": {
             "bam": {
+                "name": "BAM",
                 "type": "file",
                 "pattern": "bam",
                 "required": true,
                 "description": "A BAM file with duplicated UMIs."
             },
             "bai": {
+                "name": "BAI",
                 "type": "file",
                 "pattern": "bai",
                 "required": true,
@@ -22,6 +24,7 @@
         "description": "Parameters for customising the behaviour of UMICollapse.",
         "properties": {
             "umi_separator": {
+                "name": "UMI Separator",
                 "type": "string",
                 "required": false,
                 "description": "The string used to denote the UMI in the read headers (if not 'rbc:')."
