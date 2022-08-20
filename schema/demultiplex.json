@@ -1,22 +1,25 @@
 {
-    "demux_options": {
-        "name": "File options",
-        "description": "Files needed for the demultiplexing.",
-        "properties": {
-            "annotation": {
-                "name": "ANNOTATION",
-                "type": "file",
-                "pattern": "csv|xlsx",
-                "required": true,
-                "description": "A CSV or XLSX file describing the contents of the multiplexed reads file."
-            },
-            "multiplexed_fastq": {
-                "name": "MULTIPLEXED_FASTQ",
-                "type": "file",
-                "pattern": "fq\\.gz|fastq\\.gz",
-                "required": true,
-                "description": "A multiplexed reads file containing reads from multiple experiments, distinguishable by barcode sequence."
+    "inputs": {
+        "demux_options": {
+            "name": "File options",
+            "description": "Files needed for the demultiplexing.",
+            "properties": {
+                "annotation": {
+                    "name": "ANNOTATION",
+                    "type": "file",
+                    "pattern": "csv|xlsx",
+                    "required": true,
+                    "description": "A CSV or XLSX file describing the contents of the multiplexed reads file."
+                },
+                "multiplexed_fastq": {
+                    "name": "MULTIPLEXED_FASTQ",
+                    "type": "file",
+                    "pattern": "fq\\.gz|fastq\\.gz",
+                    "required": true,
+                    "description": "A multiplexed reads file containing reads from multiple experiments, distinguishable by barcode sequence."
+                }
             }
         }
-    }
+    },
+    "outputs": []
 }
