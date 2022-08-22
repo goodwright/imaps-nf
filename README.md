@@ -49,6 +49,7 @@ Every pipeline that is intended to be run stand-alone should have:
 - `umicollapse.nf` - collapses PCR duplicates.
 - `get_crosslinks.nf` - identifies crosslink sites in a genome.
 - `crosslinks_coverage.nf` - converts a crosslinks BED file to Bedgraph format.
+- `crosslinks_normcoverage.nf` - converts a crosslinks BED file to normalised Bedgraph format.
 
 ## Config
 

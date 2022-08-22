@@ -366,3 +366,25 @@ class CrosslinkCoverageTests(PipelineTest):
             execution, "CROSSLINKS_COVERAGE",
             ["crosslinks.bed"], ["crosslinks.bed.bedgraph.gz"]
         )
+
+
+
+class CrosslinkNormCoverageTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/crosslinks_normcoverage.nf",
+            config="conf/crosslinks_normcoverage.config"
+        )
+    
+
+    def test_can_run_crosslinks_normcoverage(self):
+        execution = self.pipeline.run(params={
+            "crosslinks": os.path.abspath("assets/crosslinks.bed"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "CROSSLINKS_NORMCOVERAGE",
+            ["crosslinks.bed"], ["crosslinks.bed.norm.bedgraph.gz"]
+        )

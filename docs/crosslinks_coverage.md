@@ -1,12 +1,12 @@
-# Demultiplex
+# Crosslinks Coverage
 
-The `crosslinks_coverage.nf` pipeline 
+The `crosslinks_coverage.nf` pipeline creates a Bedgraph file from a crosslinks alignment file.
 
 ## Inputs
 
 Required files are:
 
-- `crosslinks` - a BED file describing the location and quantity of crosslinks."
+- `crosslinks` - a BED file describing the location and quantity of crosslinks.
 
 ## Processes
 
