@@ -48,6 +48,7 @@ Every pipeline that is intended to be run stand-alone should have:
 - `filter_transcriptome_bam.nf` - removes alignments outside certain transcripts.
 - `umicollapse.nf` - collapses PCR duplicates.
 - `get_crosslinks.nf` - identifies crosslink sites in a genome.
+- `crosslinks_coverage.nf` - converts a crosslinks BED file to Bedgraph format.
 
 ## Config
 

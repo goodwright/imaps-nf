@@ -344,3 +344,25 @@ class CrosslinksTests(PipelineTest):
         with open(Path("testlocation/results/get_crosslinks/alignments.bam.bed")) as f:
             lines = f.read().splitlines()
         self.assertEqual(len(lines), 218)
+
+
+
+class CrosslinkCoverageTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/crosslinks_coverage.nf",
+            config="conf/crosslinks_coverage.config"
+        )
+    
+
+    def test_can_run_crosslinks_coverage(self):
+        execution = self.pipeline.run(params={
+            "crosslinks": os.path.abspath("assets/crosslinks.bed"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "CROSSLINKS_COVERAGE",
+            ["crosslinks.bed"], ["crosslinks.bed.bedgraph.gz"]
+        )
