@@ -1,0 +1,39 @@
+{
+    "inputs": {
+        "file_options": {
+            "name": "File options",
+            "description": "Files needed to run the module.",
+            "properties": {
+                "bam": {
+                    "name": "BAM",
+                    "type": "file",
+                    "pattern": "bam",
+                    "required": true,
+                    "description": "A BAM file containing reads aligned to a genome."
+                },
+                "bai": {
+                    "name": "BAI",
+                    "type": "file",
+                    "pattern": "bai",
+                    "required": true,
+                    "description": "A BAM index for the BAM file."
+                },
+                "fai": {
+                    "name": "FAI",
+                    "type": "file",
+                    "pattern": "fai",
+                    "required": true,
+                    "description": "A Faidx index for the aligned-to genome."
+                }
+            }
+        }
+    },
+    "outputs": [
+        {
+            "name": "Crosslinks",
+            "description": "The crosslinks bed file.",
+            "process": "GET_CROSSLINKS",
+            "filetype": "bed"
+        }
+    ]
+}

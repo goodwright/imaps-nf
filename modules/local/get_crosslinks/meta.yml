@@ -1,0 +1,37 @@
+name: get_crosslinks
+description: |
+  Takes a BAM file and creates a BED file describing where the crosslinks are in
+  the genome.
+tools:
+  - bedtools:
+    description: Fast, flexible toolset for genome arithmetic.
+    homepage: https://bedtools.readthedocs.io/en/latest/
+    documentation: https://bedtools.readthedocs.io/en/latest/
+    licence: ['MIT']
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - bam:
+      type: file
+      description: A reads alignment file.
+  - bai:
+      type: file
+      description: The index for the BAM file.
+  - fai:
+      type: file
+      description: The Faidx index for the original genome.
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - crosslinkBed:
+      type: file
+      description: A description of where the crosslinks are.
+      pattern: "*bed.gz"
+authors:
+  - "@CharlotteAnne"

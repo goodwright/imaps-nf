@@ -316,3 +316,31 @@ class UmicollapseTests(PipelineTest):
             execution, "UMICOLLAPSE", ["transcriptome-umi.bam", "transcriptome.bam.bai"],
             ["transcriptome-umi.bam.bam", "transcriptome-umi.bam_UMICollapse.log"]
         )
+
+
+
+class CrosslinksTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/get_crosslinks.nf",
+            config="conf/get_crosslinks.config"
+        )
+    
+
+    def test_can_run_get_crosslinks(self):
+        execution = self.pipeline.run(params={
+            "bam": os.path.abspath("assets/alignments.bam"),
+            "bai": os.path.abspath("assets/alignments.bam.bai"),
+            "fai": os.path.abspath("assets/alignments.fa.fai"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "GET_CROSSLINKS",
+            ["alignments.bam", "alignments.bam.bai", "alignments.fa.fai"],
+            ["alignments.bam.bed"]
+        )
+        with open(Path("testlocation/results/get_crosslinks/alignments.bam.bed")) as f:
+            lines = f.read().splitlines()
+        self.assertEqual(len(lines), 218)

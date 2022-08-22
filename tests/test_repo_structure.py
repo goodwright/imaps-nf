@@ -148,7 +148,7 @@ class PipelineFilesTests(RepoTest):
         for name in pipeline_names:
             with open(Path(f"schema/{name}.json")) as f:
                 schema = json.load(f)
-            for category_name, category in schema.items():
+            for category_name, category in schema["inputs"].items():
                 self.assertIn("name", category, msg=f"{name}.json {category_name} category has no name")
                 self.assertIn("description", category, msg=f"{name}.json {category_name} category has no description")
                 self.assertIn("properties", category, msg=f"{name}.json {category_name} category has no properties")

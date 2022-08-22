@@ -7,3 +7,4 @@ rmnf.sh
 *.pyc
 __pycache__
 schema.png
+gen_*.py
