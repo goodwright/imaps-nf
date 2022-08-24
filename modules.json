@@ -3,6 +3,9 @@
     "homePage": "https://github.com/goodwright/flow-nf",
     "repos": {
         "luslab/nf-core-modules": {
+            "clippy": {
+                "git_sha": "b7638d3f3769c93b9ff343dd697068edcec79d5f"
+            },
             "crosslinks/coverage": {
                 "git_sha": "04cc5fb77c20afef7993e10227157894a5680d8e"
             },

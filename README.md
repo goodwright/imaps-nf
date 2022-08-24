@@ -50,6 +50,7 @@ Every pipeline that is intended to be run stand-alone should have:
 - `get_crosslinks.nf` - identifies crosslink sites in a genome.
 - `crosslinks_coverage.nf` - converts a crosslinks BED file to Bedgraph format.
 - `crosslinks_normcoverage.nf` - converts a crosslinks BED file to normalised Bedgraph format.
+- `clippy.nf` - uses the Clippy peak caller to identify RBP binding sites.
 
 ## Config
 

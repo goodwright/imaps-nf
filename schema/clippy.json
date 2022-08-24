@@ -1,0 +1,34 @@
+{
+    "inputs": {
+        "file_options": {
+            "name": "File options",
+            "description": "Files needed to run the module.",
+            "properties": {
+                "crosslinks": {
+                    "name": "Crosslinks",
+                    "type": "file",
+                    "pattern": "bed",
+                    "required": true,
+                    "description": "A BED file describing the location and quantity of crosslinks."
+                },
+                "gtf": {
+                    "name": "GTF",
+                    "type": "file",
+                    "pattern": "gtf",
+                    "required": true,
+                    "description": "An annotation for the original genome."
+                },
+                "fai": {
+                    "name": "FAI",
+                    "type": "file",
+                    "pattern": "fai",
+                    "required": true,
+                    "description": "A Faidx index for the original genome."
+                }
+            }
+        }
+    },
+    "outputs": [
+
+    ]
+}

@@ -388,3 +388,30 @@ class CrosslinkNormCoverageTests(PipelineTest):
             execution, "CROSSLINKS_NORMCOVERAGE",
             ["crosslinks.bed"], ["crosslinks.bed.norm.bedgraph.gz"]
         )
+
+
+
+class ClippyTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/clippy.nf",
+            config="conf/clippy.config"
+        )
+    
+
+    def test_can_run_clippy(self):
+        execution = self.pipeline.run(params={
+            "crosslinks": os.path.abspath("assets/clippy.bed.gz"),
+            "gtf": os.path.abspath("assets/clippy.gtf"),
+            "fai": os.path.abspath("assets/clippy.fai"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "CLIPPY",
+            ["clippy.bed.gz", "clippy.gtf", "clippy.fai"], [
+                "clippy.bed.gz_rollmean10_stdev1_minGeneCount5_Summits.bed.gz",
+                "clippy.bed.gz_rollmean10_stdev1_minGeneCount5_Peaks.bed.gz",
+            ]
+        )
