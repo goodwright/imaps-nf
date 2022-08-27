@@ -51,6 +51,9 @@ Every pipeline that is intended to be run stand-alone should have:
 - `crosslinks_coverage.nf` - converts a crosslinks BED file to Bedgraph format.
 - `crosslinks_normcoverage.nf` - converts a crosslinks BED file to normalised Bedgraph format.
 - `clippy.nf` - uses the Clippy peak caller to identify RBP binding sites.
+- `paraclu.nf` - uses the Paraclu peak caller to identify significant crosslinks.
+- `paraclu_cut.nf` - uses the Paraclu peak caller to identify peak crosslinks.
+- `paraclu_convert.nf` - converts a Paraclu TSV file back to BED format.
 
 ## Config
 

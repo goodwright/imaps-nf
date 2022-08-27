@@ -1,0 +1,20 @@
+{
+    "inputs": {
+        "file_options": {
+            "name": "File options",
+            "description": "Files needed to run the module.",
+            "properties": {
+                "sigxls": {
+                    "name": "sigxls",
+                    "type": "file",
+                    "pattern": "tsv",
+                    "required": true,
+                    "description": "A TSV output file of the main Paraclu pipeline."
+                }
+            }
+        }
+    },
+    "outputs": [
+
+    ]
+}

@@ -415,3 +415,69 @@ class ClippyTests(PipelineTest):
                 "clippy.bed.gz_rollmean10_stdev1_minGeneCount5_Peaks.bed.gz",
             ]
         )
+
+
+
+class ParacluTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/paraclu.nf",
+            config="conf/paraclu.config"
+        )
+    
+
+    def test_can_run_paraclu(self):
+        execution = self.pipeline.run(params={
+            "crosslinks": os.path.abspath("assets/crosslinks.bed.gz"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "PARACLU_PARACLU",
+            ["crosslinks.bed.gz"], ["crosslinks.bed.gz.sigxls.tsv.gz"]
+        )
+
+
+
+class ParacluCutTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/paraclu_cut.nf",
+            config="conf/paraclu_cut.config"
+        )
+    
+
+    def test_can_run_paraclu_cut(self):
+        execution = self.pipeline.run(params={
+            "sigxls": os.path.abspath("assets/crosslinks.sigxls.tsv.gz"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "PARACLU_CUT",
+            ["crosslinks.sigxls.tsv.gz"], ["crosslinks.sigxls.tsv.gz.peaks.tsv.gz"]
+        )
+
+
+
+class ParacluConvertTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/paraclu_convert.nf",
+            config="conf/paraclu_convert.config"
+        )
+    
+
+    def test_can_run_paraclu_convert(self):
+        execution = self.pipeline.run(params={
+            "peaks": os.path.abspath("assets/crosslinks.peaks.tsv.gz"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "PARACLU_CONVERT",
+            ["crosslinks.peaks.tsv.gz"], ["crosslinks.peaks.tsv.gz.peaks.bed.gz"]
+        )
