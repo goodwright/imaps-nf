@@ -1,0 +1,27 @@
+{
+    "inputs": {
+        "file_options": {
+            "name": "File options",
+            "description": "Files needed to run the module.",
+            "properties": {
+                "gtf": {
+                    "name": "GTF",
+                    "type": "file",
+                    "pattern": "gtf",
+                    "required": true,
+                    "description": "A genome annotation to process."
+                },
+                "fai": {
+                    "name": "FAI",
+                    "type": "file",
+                    "pattern": "fai",
+                    "required": true,
+                    "description": "A Faidx index for the genome."
+                }
+            }
+        }
+    },
+    "outputs": [
+
+    ]
+}

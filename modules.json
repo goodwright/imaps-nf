@@ -12,6 +12,9 @@
             "crosslinks/normcoverage": {
                 "git_sha": "04cc5fb77c20afef7993e10227157894a5680d8e"
             },
+            "icount/segment": {
+                "git_sha": "a13bab29e83f5459591bd0cec8b76cb2a9eac6ac"
+            },
             "paraclu/convert": {
                 "git_sha": "3de1783a14f036b43e594fd3843c10a76d7508ae"
             },

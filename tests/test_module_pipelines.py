@@ -481,3 +481,27 @@ class ParacluConvertTests(PipelineTest):
             execution, "PARACLU_CONVERT",
             ["crosslinks.peaks.tsv.gz"], ["crosslinks.peaks.tsv.gz.peaks.bed.gz"]
         )
+
+
+
+class IcountSegmentTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/icount_segment.nf",
+            config="conf/icount_segment.config"
+        )
+    
+
+    def test_can_run_icount_segment(self):
+        execution = self.pipeline.run(params={
+            "gtf": os.path.abspath("assets/genome.basic.gtf"),
+            "fai": os.path.abspath("assets/alignments.fa.fai"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "ICOUNT_SEGMENT",
+            ["genome.basic.gtf", "alignments.fa.fai"],
+            ["regions.gtf.gz", "icount_segmentation.gtf"]
+        )

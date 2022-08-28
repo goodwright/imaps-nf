@@ -54,6 +54,7 @@ Every pipeline that is intended to be run stand-alone should have:
 - `paraclu.nf` - uses the Paraclu peak caller to identify significant crosslinks.
 - `paraclu_cut.nf` - uses the Paraclu peak caller to identify peak crosslinks.
 - `paraclu_convert.nf` - converts a Paraclu TSV file back to BED format.
+- `icount_segment.nf` converts a GTF file into ones formatted according to iCount's needs.
 
 ## Config
 
