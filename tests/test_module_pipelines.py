@@ -505,3 +505,29 @@ class IcountSegmentTests(PipelineTest):
             ["genome.basic.gtf", "alignments.fa.fai"],
             ["regions.gtf.gz", "icount_segmentation.gtf"]
         )
+
+
+
+class ResolveUnannotatedRegionsTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/resolve_unannotated_regions.nf",
+            config="conf/resolve_unannotated_regions.config"
+        )
+    
+
+    def test_can_run_resolve_unannotated_regions(self):
+        execution = self.pipeline.run(params={
+            "filtered_regions": os.path.abspath("assets/regions.filtered.gtf.gz"),
+            "unfiltered_regions": os.path.abspath("assets/regions.gtf.gz"),
+            "gtf": os.path.abspath("assets/genome.basic.gtf"),
+            "fai": os.path.abspath("assets/alignments.fa.fai"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "RESOLVE_UNANNOTATED_REGIONS",
+            ["regions.filtered.gtf.gz", "regions.gtf.gz", "alignments.fa.fai", "genome.basic.gtf"],
+            ["sorted.annotated.regions.filtered.gtf"]
+        )

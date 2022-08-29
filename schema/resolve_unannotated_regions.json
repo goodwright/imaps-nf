@@ -1,0 +1,41 @@
+{
+    "inputs": {
+        "file_options": {
+            "name": "File options",
+            "description": "Files needed to run the module.",
+            "properties": {
+                "filtered_regions": {
+                    "name": "Filtered Regions",
+                    "type": "file",
+                    "pattern": "gtf",
+                    "required": true,
+                    "description": "An iCount regions annotation from a filtered GTF."
+                },
+                "unfiltered_regions": {
+                    "name": "Unfiltered Regions",
+                    "type": "file",
+                    "pattern": "gtf",
+                    "required": true,
+                    "description": "An iCount regions annotation from the original GTF."
+                },
+                "gtf": {
+                    "name": "GTF",
+                    "type": "file",
+                    "pattern": "gtf",
+                    "required": true,
+                    "description": "A genome annotation for the original genome."
+                },
+                "fai": {
+                    "name": "FAI",
+                    "type": "file",
+                    "pattern": "fai",
+                    "required": true,
+                    "description": "A Faidx index for the original genome."
+                }
+            }
+        }
+    },
+    "outputs": [
+
+    ]
+}
