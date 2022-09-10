@@ -531,3 +531,27 @@ class ResolveUnannotatedRegionsTests(PipelineTest):
             ["regions.filtered.gtf.gz", "regions.gtf.gz", "alignments.fa.fai", "genome.basic.gtf"],
             ["sorted.annotated.regions.filtered.gtf"]
         )
+
+
+
+class IcountSigxlsTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/icount_sigxls.nf",
+            config="conf/icount_sigxls.config"
+        )
+    
+
+    def test_can_run_icount_sigxls(self):
+        execution = self.pipeline.run(params={
+            "bed": os.path.abspath("assets/crosslinks.bed.gz"),
+            "segmentation": os.path.abspath("assets/regions.gtf.gz"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "ICOUNT_SIGXLS",
+            ["crosslinks.bed.gz", "regions.gtf.gz"],
+            ["crosslinks.bed.gz.scores.tsv", "crosslinks.bed.gz.sigxls.bed.gz"]
+        )

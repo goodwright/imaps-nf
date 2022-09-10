@@ -56,6 +56,7 @@ Every pipeline that is intended to be run stand-alone should have:
 - `paraclu_convert.nf` - converts a Paraclu TSV file back to BED format.
 - `icount_segment.nf` - converts a GTF file into ones formatted according to iCount's needs.
 - `resolve_unannotated_regions.nf` - fills in empty regions in an iCount regions file.
+- `icount_sigxls.nf` - uses iCount to find significant peaks from a list of crosslink sites.
 
 ## Config
 
