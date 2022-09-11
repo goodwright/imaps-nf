@@ -1,16 +1,13 @@
-name: icount_sigxls
-description: Runs iCount peaks on a BED file of crosslinks
+name: icount_rnamaps
+description: Computes distribution of cross-links relative to genomic landmarks.
 keywords:
   - iCLIP
 tools:
   - icount:
       description: Computational pipeline for analysis of iCLIP data
-      homepage: None
-      documentation: None
-      tool_dev_url: None
-      doi: ""
+      homepage: https://icount.readthedocs.io/en/latest/
+      documentation: https://icount.readthedocs.io/en/latest/
       licence: ['MIT']
-
 input:
   - meta:
       type: map
@@ -20,30 +17,22 @@ input:
   - bed:
       type: file
       description: BED file of crosslinks
-      pattern: "*.{bam,bam.gz}"
-  - segmentation:
+  - regions:
       type: file
-      description: An iCount segmentation file
-      pattern: "*.{gtf}"
-
+      description: An iCount regions file
 output:
   - meta:
       type: map
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
+  - rnamaps:
+      type: file
+      description: TODO
+      pattern: "rnamaps*"
   - version:
       type: file
       description: File containing software version
-      pattern: "*.{version.txt}"
-  - peaks:
-      type: file
-      description: Crosslinks deemed significant by iCount
-      pattern: "*.{bed.gz}"
-  - scores:
-      type: file
-      description: Crosslink scores calculated by iCount
-      pattern: "*.{tsv}"
-
+      pattern: "*.{version.yml}"
 authors:
   - "@marc-jones"

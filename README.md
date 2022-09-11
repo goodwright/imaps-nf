@@ -57,6 +57,7 @@ Every pipeline that is intended to be run stand-alone should have:
 - `icount_segment.nf` - converts a GTF file into ones formatted according to iCount's needs.
 - `resolve_unannotated_regions.nf` - fills in empty regions in an iCount regions file.
 - `icount_sigxls.nf` - uses iCount to find significant peaks from a list of crosslink sites.
+- `icount_rnamaps.nf` - computes distribution of cross-links relative to genomic landmarks.
 
 ## Config
 

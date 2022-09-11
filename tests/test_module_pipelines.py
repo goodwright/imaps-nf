@@ -555,3 +555,27 @@ class IcountSigxlsTests(PipelineTest):
             ["crosslinks.bed.gz", "regions.gtf.gz"],
             ["crosslinks.bed.gz.scores.tsv", "crosslinks.bed.gz.sigxls.bed.gz"]
         )
+
+
+
+class IcountRnamapsTests(PipelineTest):
+
+    def setUp(self):
+        PipelineTest.setUp(self)
+        self.pipeline = nextflow.Pipeline(
+            "subworkflows/modules/icount_rnamaps.nf",
+            config="conf/icount_rnamaps.config"
+        )
+    
+
+    def test_can_run_icount_rnamaps(self):
+        execution = self.pipeline.run(params={
+            "bed": os.path.abspath("assets/crosslinks.bed.gz"),
+            "regions": os.path.abspath("assets/regions.gtf.gz"),
+        }, profile=["docker"], location="testlocation")
+        self.check_execution_ok(execution, 1)
+        self.check_process(
+            execution, "ICOUNT_RNAMAPS",
+            ["crosslinks.bed.gz", "regions.gtf.gz"],
+            ["rnamaps_crosslinks"]
+        )
