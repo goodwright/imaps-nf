@@ -1,0 +1,46 @@
+name: icount_summary
+description: Reports count of cross-link events in each region type.
+keywords:
+  - iCLIP
+tools:
+  - icount:
+      description: Computational pipeline for analysis of iCLIP data
+      homepage: https://icount.readthedocs.io/en/latest/
+      documentation: https://icount.readthedocs.io/en/latest/
+      licence: ['MIT']
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - bed:
+      type: file
+      description: BED file of crosslinks
+  - regions:
+      type: file
+      description: An iCount regions GTF file
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - summary_type:
+      type: file
+      description: TODO
+      pattern: "*summary_type.tsv"
+  - summary_subtype:
+      type: file
+      description: TODO
+      pattern: "*summary_subtype.tsv"
+  - summary_gene:
+      type: file
+      description: TODO
+      pattern: "*summary_gene.tsv"
+  - version:
+      type: file
+      description: File containing software version
+      pattern: "versions.yml"
+authors:
+  - "@marc-jones"
