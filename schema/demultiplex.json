@@ -21,5 +21,12 @@
             }
         }
     },
-    "outputs": []
+    "outputs": [
+        {
+            "name": "Reads Files",
+            "description": "The demultiplexed reads files.",
+            "process": "ULTRAPLEX",
+            "filetype": "fastq.gz"
+        }
+    ]
 }
